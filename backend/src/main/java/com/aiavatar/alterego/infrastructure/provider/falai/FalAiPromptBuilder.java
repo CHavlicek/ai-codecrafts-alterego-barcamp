@@ -106,7 +106,8 @@ public class FalAiPromptBuilder {
                 .append("Render the subject as an alter ego with the following attributes:\n\n");
         appendCategoryLines(sb, request);
         sb.append("\nComposition notes:\n");
-        sb.append("- Portrait orientation, 3:4 aspect ratio, dramatic rim lighting.\n");
+        sb.append("- Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subject.\n");
+        sb.append("- Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.\n");
         sb.append("- Clear focus on the subject; the universe aesthetic is the setting, not the subject.\n");
         sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the engineering-role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");
         return sb.toString();
@@ -122,7 +123,8 @@ public class FalAiPromptBuilder {
                 .append("Apply the same attributes uniformly to every person:\n\n");
         appendCategoryLines(sb, request);
         sb.append("\nComposition notes:\n");
-        sb.append("- Portrait orientation, 3:4 aspect ratio, dramatic rim lighting.\n");
+        sb.append("- Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subjects.\n");
+        sb.append("- Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.\n");
         sb.append("- Clear focus on all subjects as a group; the universe aesthetic is the setting, not the subjects.\n");
         sb.append("- Arrange the group so every face is clearly visible.\n");
         sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the engineering-role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");

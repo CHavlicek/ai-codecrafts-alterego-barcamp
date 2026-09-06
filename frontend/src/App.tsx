@@ -16,7 +16,7 @@ function App() {
       </div>
       <AlterEgoPage />
       <footer className="site-footer">
-        <span>AI @ Verbund 2026</span>
+        <span>AI @ VERBUND 2026</span>
         <span className="site-footer__sep" aria-hidden="true">
           ·
         </span>

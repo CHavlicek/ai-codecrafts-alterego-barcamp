@@ -2,8 +2,8 @@
  * 005 cinematic overhaul — "emergence / portal" aesthetic.
  *
  * Dark atmospheric base (tokens.css) + aurora gradient + SVG grain
- * overlay + Unbounded/Geist typography. The page reads as a portal
- * where the user's alter ego emerges, not as a form.
+ * overlay + Roboto typography (Verbund/Univers-family). The page reads
+ * as a portal where the user's alter ego emerges, not as a form.
  *
  * Animation strategy: one well-orchestrated mount sequence (title →
  * tabs → photo → numbered groups → Generate) plus the generation
@@ -68,8 +68,12 @@ button:disabled {
 }
 
 button:not(:disabled):hover {
-  border-color: var(--color-border-strong);
-  background: var(--color-bg-glass);
+  border-color: var(--color-border-glow);
+  background: var(--color-bg-hover);
+  /* Force a dark, legible label on the tinted hover fill — some buttons
+     rest with a muted/light/accent text colour that would otherwise wash
+     out against --color-bg-hover. */
+  color: var(--color-text);
 }
 
 [role='radio'][aria-checked='true'],
@@ -249,7 +253,7 @@ legend {
   font-size: clamp(14px, 1.6vw, 18px);
   font-weight: 400;
   color: var(--color-text-muted);
-  margin-top: calc(var(--space-4) * -1 + 2px);
+  margin-top: 0;
   margin-bottom: var(--space-7);
   max-width: 60ch;
   opacity: 0;
@@ -290,7 +294,11 @@ legend {
   font-weight: 700;
   font-size: clamp(32px, 4vw, 58px);
   letter-spacing: var(--tracking-display);
-  line-height: 0.98;
+  /* Roboto sits taller than the previous display face; keep a little more
+     line-height + bottom padding so the background-clip:text box doesn't
+     crop glyph bottoms and the title clears the subtitle below. */
+  line-height: 1.08;
+  padding-bottom: 4px;
   margin-bottom: var(--space-6);
   /* Three-stop gradient sliding across 12s so the headline lives
      without distracting. Fallback solid colour for older browsers. */
@@ -379,7 +387,7 @@ legend {
 
 .tabs-shell__tab:hover:not([disabled]) {
   color: var(--color-text);
-  background: var(--color-bg-glass);
+  background: var(--color-bg-hover);
 }
 
 .tabs-shell__tab.is-active {
@@ -610,8 +618,8 @@ legend {
 
 .selection-grid__option:not(:disabled):hover {
   color: var(--color-text);
-  border-color: var(--color-border-strong);
-  background: var(--color-bg-glass);
+  border-color: var(--color-border-glow);
+  background: var(--color-bg-hover);
 }
 
 .selection-grid__option[data-selected='true'] {
@@ -979,6 +987,7 @@ legend {
 }
 
 .generate-button > button:not(:disabled):hover {
+  color: var(--color-text);
   transform: translateY(-1px);
   box-shadow:
     var(--shadow-glow-pink),
@@ -1265,6 +1274,16 @@ legend {
   transform: translateY(-1px) scale(1.02);
 }
 
+/* Preserve each filled button's own label colour on hover — the generic
+   button:hover rule forces a dark label, which would wash out the white
+   text on these coloured fills. */
+.photo-intake__shutter:not(:disabled):hover {
+  color: #05080f;
+}
+.photo-intake__keep:not(:disabled):hover {
+  color: var(--color-text);
+}
+
 .photo-intake__shutter:not(:disabled):active,
 .photo-intake__keep:not(:disabled):active {
   transform: scale(0.96);
@@ -1300,7 +1319,7 @@ legend {
 .photo-intake__cancel:hover {
   color: var(--color-text);
   border-color: var(--color-accent-cyan);
-  background: var(--color-bg-glass);
+  background: var(--color-bg-hover);
 }
 
 .photo-intake__clear {
@@ -1681,7 +1700,7 @@ legend {
 .start-over-button:hover {
   color: var(--color-text);
   border-color: var(--color-accent-cyan);
-  background: var(--color-bg-glass);
+  background: var(--color-bg-hover);
 }
 
 /* === 011 — Photo Mode toggle (single sliding-thumb switch) ======== */
@@ -1738,8 +1757,8 @@ legend {
 }
 
 .photo-mode-switch__control:hover {
-  border-color: var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--color-border-glow);
+  background: var(--color-bg-hover);
 }
 
 .photo-mode-switch__track {
@@ -1855,7 +1874,7 @@ legend {
 .print-button:hover {
   color: var(--color-text);
   border-color: var(--color-accent-cyan);
-  background: var(--color-bg-glass);
+  background: var(--color-bg-hover);
 }
 
 /* 023 (issue #57) — Send As Email button. Mirrors .print-button's visual
@@ -1885,7 +1904,7 @@ legend {
 .send-as-email-button:hover:not(:disabled) {
   color: var(--color-text);
   border-color: var(--color-accent-cyan);
-  background: var(--color-bg-glass);
+  background: var(--color-bg-hover);
 }
 
 .send-as-email-button:disabled,

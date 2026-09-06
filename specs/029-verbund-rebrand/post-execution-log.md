@@ -51,6 +51,41 @@ A brand-only re-skin from SQUER / Code-Crafts → Verbund AG / fifty1 for the ev
 - **Overlay-test comments** still say "SQUER-mark coord" — they refer to the top-left wordmark **coordinate** (structural pixel probe), not brand text; the Verbund wordmark occupies the same spot. Left intentionally.
 - **`frontend/package-lock.json`** shows modified — pre-existing before this branch (present in the initial working tree), unrelated to the rebrand.
 
+## Follow-up polish (2026-09-06, post-review feedback)
+
+After the rebrand landed, a review pass surfaced five visual issues. All fixed in this same branch/PR; no HTTP-contract, mechanics, or persistence change.
+
+### 1. Button hover was invisible → legible blue tint
+- **Cause**: hover fill reused `--color-bg-glass` (`rgba(0,70,142,0.04)`, 4%) — near-invisible on the light ground, so buttons "disappeared" on hover.
+- **Fix**: new dedicated token `--color-bg-hover` in `tokens.css`; every button hover rule in `index.css` repointed to it (generic `button:hover`, tabs, selection grid, photo-intake, photo-mode switch, start-over, print, email), with `--color-border-glow` borders. Tuned to **6%** (`rgba(0,70,142,0.06)`) after "too bright" feedback (started at 10%).
+
+### 2. Hover text washed out on some buttons → forced dark label
+- **Cause**: the generic `button:hover` changed only bg+border, so buttons resting with a muted/accent label kept light text on the tinted fill.
+- **Fix**: generic `button:not(:disabled):hover` now also sets `color: var(--color-text)`. The two filled brand buttons (**Generate**, photo **Keep**) — gradient fill + white label — were per user preference also flipped to dark `var(--color-text)` on hover (their fill stays; dark VERBUND ink reads on it). Photo **Shutter** (cyan fill) keeps its dark `#05080f` label explicitly.
+
+### 3. Title "AI @ VERBUND 2026" — uppercase + clipping
+- **Copy**: `Verbund` → `VERBUND` in `AlterEgoPage.tsx` (h1), `App.tsx` (footer), `index.html` (`<title>`), and the two `/i` test assertions (`App.test.tsx`, `AlterEgoPage.test.tsx`).
+- **Clipping**: after the Roboto swap the `background-clip:text` box cropped glyph bottoms and the subtitle rode up into it. `.alter-ego-page__title` `line-height` `0.98 → 1.08` + `padding-bottom: 4px`; `.alter-ego-page__subtitle` negative `margin-top` (`-14px`, tuned for the old face) reset to `0`.
+
+### 4. App font matched to verbund.com → Roboto
+- verbund.com/de/konzern/strategie uses **Linotype Univers** (licensed Monotype — cannot legally bundle). Chose **Roboto** (free, Google-Fonts-hosted, closest neutral grotesque) for body + display. `index.html` Google-Fonts import swapped (Unbounded/Geist/Geist-Mono → Roboto/Roboto-Mono); `--font-display` / `--font-body` / `--font-mono` in `tokens.css` remapped; stale `index.css` header comment updated.
+
+### 5. Dark generated images clashed with the bright frame → prompt fix
+- **Diagnosis**: the frame's centre is a *transparent* cutout (not black); the generated image shows through, and the prompts ("dramatic rim lighting", no background guidance) trended dark/moody, clashing with the bright blue/white frame. Fix belongs in the **prompts**, not the frame (darkening the frame would fight the rebrand).
+- **Fix**: `GeminiPromptBuilder` + `FalAiPromptBuilder` (single + group, 4 sites) — softened "dramatic rim lighting" → "bright rim lighting" and added a **background** composition note steering to a bright/airy/high-key palette (whites, soft blues, cool daylight) and away from dark/murky/black. Updated the byte-pinned SINGLE fixture in `GeminiPromptBuilderTest`. **Behavioural steer, not a hard guarantee** — affects new generations only.
+
+### Follow-up verification
+| Check | Result |
+|-------|--------|
+| `GeminiPromptBuilderTest` (byte-pinned prompt fixture) | ✅ pass |
+| `PosterFrame*` loader + overlay ITs (regenerated frame) | ✅ pass — cutout geometry & pixel(68,38) unchanged |
+| `App.test.tsx` + `AlterEgoPage.test.tsx` (title copy) | ✅ 6 pass |
+| `tsc --noEmit` | ✅ clean |
+
+### Poster frame — fifty1 logo 25% smaller
+- Footer `fifty1` logo was too large and crowded the text overlay. `generate_poster_frame.py`: `target_w` `150 → 112` px (−25%); frame regenerated. Self-check confirms canvas 768×1152, cutout x=88 y=94 w=586 h=791, pixel(68,38) opaque non-black — all constraints held, no backend code/test change.
+- Pre-shrink Verbund asset backed up → `backend/branding-src/poster-frame.verbund-backup.png` (alongside the older `poster-frame.squer-backup.png`).
+
 ## Regeneration runbook (poster frame)
 
 ```sh

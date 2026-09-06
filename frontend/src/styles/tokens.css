@@ -19,6 +19,11 @@
   --color-bg-elevated: #ffffff;
   --color-bg-overlay: #eaf1f8;
   --color-bg-glass: rgba(0, 70, 142, 0.04);
+  /* Hover fill — a clearly visible VERBUND-blau tint. --color-bg-glass (4%)
+     is nearly invisible on the light ground, so buttons "disappeared" on
+     hover; this dedicated token gives every button a legible hover state
+     without disturbing the resting glass surfaces that still use -glass. */
+  --color-bg-hover: rgba(0, 70, 142, 0.06);
   --color-border: rgba(0, 70, 142, 0.14);
   --color-border-strong: rgba(0, 70, 142, 0.26);
   --color-border-glow: rgba(0, 70, 142, 0.4);
@@ -60,14 +65,14 @@
   --color-warning: #e2a12b;
   --color-error: #d4573b;
 
-  /* Type — Unbounded (display, geometric) / Geist (body, refined sans) /
-     Geist Mono (meta). Retained from the previous theme: a clean geometric
-     display paired with a corporate sans reads as professional on the
-     Verbund light ground. */
-  --font-display:
-    'Unbounded', 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'Geist Mono', 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+  /* Type — Roboto (body + display) to match verbund.com's corporate look.
+     The Verbund site uses Linotype Univers (a licensed Monotype grotesque);
+     Roboto is the closest freely-distributable, Google-Fonts-hosted stand-in
+     — a neutral grotesque with the same even, corporate rhythm. Applied to
+     both body and display so the whole UI reads as Univers-family. */
+  --font-display: 'Roboto', 'Arial', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Roboto', 'Arial', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Roboto Mono', 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
 
   /* Letter-spacing scale — tighter on display, looser on small labels. */
   --tracking-display: -0.03em;

@@ -145,7 +145,9 @@ def main():
     # fifty1 wordmark, white, centred in the very bottom margin (below the
     # text-overlay safe area so it never collides with name/role/quote).
     fifty1 = Image.open(os.path.join(FRONTEND_BRAND, "fifty1-logo-black.png")).convert("RGBA")
-    target_w = 150
+    # 25% smaller than the original 150px so the footer logo sits further
+    # clear of the 017 name/role/quote text overlay above it.
+    target_w = 112
     scale = target_w / fifty1.width
     fifty1 = fifty1.resize((target_w, int(fifty1.height * scale)), Image.LANCZOS)
     fifty1_white = recolor(fifty1, WHITE[:3])

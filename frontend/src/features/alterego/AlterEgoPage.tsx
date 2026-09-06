@@ -117,7 +117,7 @@ function AlterEgoPageContent() {
   return (
     <main className="alter-ego-page">
       <BrandHeader />
-      <h1 className="alter-ego-page__title">AI @ Verbund 2026</h1>
+      <h1 className="alter-ego-page__title">AI @ VERBUND 2026</h1>
       <p className="alter-ego-page__subtitle">
         Discover your AI alter ego — powering the energy transformation.
       </p>

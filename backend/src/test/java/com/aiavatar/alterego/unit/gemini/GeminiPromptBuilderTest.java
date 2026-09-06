@@ -399,7 +399,8 @@ class GeminiPromptBuilderTest {
                 - Vibe / tone: rebellious
 
                 Composition notes:
-                - Portrait orientation, 3:4 aspect ratio, dramatic rim lighting.
+                - Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subject.
+                - Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.
                 - Clear focus on the subject; the universe aesthetic is the setting, not the subject.
                 - ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the engineering-role label. The poster's text overlay is composited downstream — your job is the visual scene only.
                 """;
