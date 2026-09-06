@@ -31,6 +31,13 @@ gradle/
 gradlew
 gradlew.bat
 
+# Local secrets — real API keys / credentials. Never commit.
+# `.env.example` is the committed template; `.env` holds real values.
+.env
+.env.*
+!.env.example
+backend/run-gemini.sh
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
