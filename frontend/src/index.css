@@ -682,6 +682,20 @@ legend {
   color: var(--color-text-muted);
 }
 
+.email-input__optional {
+  text-transform: none;
+  letter-spacing: normal;
+  opacity: 0.7;
+}
+
+.email-input__hint {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
 .email-input__field {
   position: relative;
   display: flex;
