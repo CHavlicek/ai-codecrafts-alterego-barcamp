@@ -1,0 +1,93 @@
+openapi: 3.0.3
+info:
+  title: AI Alter Ego API — 019 delta (Retire three Art Style values)
+  version: "0.6.0"
+  description: |
+    Delta over the 006-art-style-category contract (which itself layered onto
+    the 002-sleek-tabbed-ui base). Only the changes for feature
+    019-remove-art-styles are captured here; unchanged schemas and operations
+    inherit from 006 / 002.
+
+    Delta summary:
+      - `ArtStyle` enum CARDINALITY REDUCED from nine wire values to six.
+        Removed (no longer accepted on requests, no longer emitted in any
+        response): `pixel-art`, `low-poly-3d`, `line-art`.
+        Surviving values, in declaration order: `oil-painting`, `watercolor`,
+        `pop-art`, `renaissance-portrait`, `japanese-woodblock`, `cel-shaded`.
+      - `Selections.artStyle` remains **required** (unchanged from 006). The
+        only change is which strings the closed set accepts.
+      - No other schema, no other operation, no fallback semantics change.
+
+    Backwards-compatibility note:
+      A request body carrying one of the removed wire values now produces an
+      RFC 7807 `400 Bad Request` problem-detail — the same path any other
+      unknown enum value follows today. There is no silent substitution and no
+      deprecated-but-accepted period (spec FR-1903, FR-1907). Stale tabs that
+      were loaded before the deploy may emit a removed value; these are
+      treated as invalid requests and the user is shown the standard
+      invalid-input notice.
+
+paths: {}
+
+components:
+  schemas:
+
+    Selections:
+      # Re-listed for self-containment. Identical to the 006 declaration; only
+      # the embedded `artStyle` reference is now narrower because the
+      # `ArtStyle` enum is.
+      type: object
+      required: [pose, archetype, universe, artStyle, firstName]
+      properties:
+        pose:
+          $ref: '#/components/schemas/Pose'
+        archetype:
+          $ref: '#/components/schemas/Archetype'
+        universe:
+          $ref: '#/components/schemas/Universe'
+        vibe:
+          $ref: '#/components/schemas/Vibe'
+          nullable: true
+          description: |
+            Optional vibe. Omit the field entirely or send `null` if the user
+            made no selection. (Unchanged from 002.)
+        artStyle:
+          $ref: '#/components/schemas/ArtStyle'
+          description: |
+            Required art style for the generated poster. Closed enumeration of
+            **six** kebab-case wire values (reduced from nine — see info.description
+            for the list of removed values). Missing or unknown values return
+            RFC 7807 400 Bad Request. Wire values for the surviving members are
+            unchanged from 006.
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 40
+          description: Trimmed first name. Surfaces uppercased as line 1 of the hero title.
+          example: "Paula"
+
+    Pose:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Pose'
+    Archetype:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Archetype'
+    Universe:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Universe'
+    Vibe:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Vibe'
+
+    ArtStyle:
+      type: string
+      description: |
+        Closed enumeration of **six** rendering styles for the generated poster
+        (reduced from nine in feature 006 — see `info.description` for the
+        list of removed values). Each value maps to a natural-language
+        description inside the prompt builders for the configured image
+        provider; the surviving mappings are unchanged from 006. Wire values
+        are stable public-contract strings for the surviving members.
+      enum:
+        - oil-painting
+        - watercolor
+        - pop-art
+        - renaissance-portrait
+        - japanese-woodblock
+        - cel-shaded

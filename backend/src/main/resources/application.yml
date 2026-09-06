@@ -1,0 +1,159 @@
+# AI-Avatar backend — application config.
+# Originally for 001-initial-poc (FR-014..FR-026); extended by 003-gemini-image-generator
+# (multipart limit bumped 5MB → 20MB to admit phone-sized photos that the backend
+# PhotoReducer brings under Gemini's per-request ceiling before the outbound call —
+# see 003 FR-206/FR-209/research.md R10).
+# 016 delta: aiavatar.falai.* block added below; image-generation provider is now
+# selected by Spring profile — `gemini` (003), `falai` (016), or neither (stub).
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: alter-ego-backend
+  profiles:
+    # Image-generation provider is chosen by Spring profile (016 FR-1602):
+    #   default              → stub-only (001 baseline)
+    #   gemini               → Google Gemini image generator (003)
+    #   falai                → fal.ai nano-banana-pro/edit (016)
+    # Setting an *_API_KEY env var alone does NOT activate the corresponding
+    # profile — profile activation is explicit (016 clarification Q1).
+    # Activating BOTH `gemini` AND `falai` simultaneously is a misconfiguration:
+    # ProviderProfileGuard fires at @PostConstruct and refuses startup with a
+    # fatal log line (016 FR-1605). Operator must pick exactly one.
+    active: ${SPRING_PROFILES_ACTIVE:default}
+  servlet:
+    multipart:
+      # Raised from 5MB (001 FR-014) to 20MB for 003 — see research.md R10.
+      max-file-size: 20MB
+      max-request-size: 21MB
+  mvc:
+    problemdetails:
+      enabled: true
+  # 023 → 027 — SMTP seam. The defaults now target Namecheap PrivateEmail's
+  # documented submission recipe (research.md R1): host
+  # `mail.privateemail.com`, port 587, STARTTLS forced (`starttls.enable` +
+  # `starttls.required`), SMTP-AUTH enabled. Operators supply only
+  # SPRING_MAIL_USERNAME + SPRING_MAIL_PASSWORD + AIAVATAR_EMAIL_FROM via
+  # Terraform-fed env vars; the rest of the recipe ships pre-set
+  # (specs/027-privateemail-smtp/quickstart.md).
+  #
+  # Pointing at a different SMTP provider: override SPRING_MAIL_HOST and
+  # related env vars. Setting SPRING_MAIL_HOST to the empty string is an
+  # explicit operator decision to disable email (FR-2705) — `EmailConfigured`
+  # returns false at startup and POST /api/v1/alter-egos/email replies
+  # with the typed 503 "not-configured" problem detail.
+  #
+  # "Configured" semantics (FR-2706 / 027): host + username + password +
+  # `aiavatar.email.from` MUST all be non-blank. See EmailConfigured.
+  mail:
+    host: ${SPRING_MAIL_HOST:mail.privateemail.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    protocol: ${SPRING_MAIL_PROTOCOL:smtp}
+    properties:
+      mail:
+        smtp:
+          auth: ${SPRING_MAIL_SMTP_AUTH:true}
+          starttls:
+            enable: ${SPRING_MAIL_SMTP_STARTTLS_ENABLE:true}
+            required: ${SPRING_MAIL_SMTP_STARTTLS_REQUIRED:true}
+
+# 003 Gemini-provider configuration. All keys env-var-overridable per
+# research.md R6. Blank api-key → both GeminiImageGenerator (003) and
+# GeminiCharacterGenerator (014) throw GenerationFailure(NOT_CONFIGURED)
+# pre-HTTP per FR-212 / FR-1403. The single api-key drives both paths
+# (014 FR-1414).
+#
+# 014 delta: text-model-id + text-request-timeout-ms (default 15000 ms
+# per FR-1417) added for the text-generation call; the image path's
+# model-id + request-timeout-ms above are unchanged.
+aiavatar:
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    model-id: ${GEMINI_MODEL_ID:gemini-3.1-flash-image-preview}
+    endpoint-url: ${GEMINI_ENDPOINT_URL:https://generativelanguage.googleapis.com/v1beta}
+    request-timeout-ms: ${GEMINI_REQUEST_TIMEOUT_MS:25000}
+    max-input-bytes: ${GEMINI_MAX_INPUT_BYTES:4194304}
+    max-input-longest-edge: ${GEMINI_MAX_INPUT_LONGEST_EDGE:1536}
+    reduced-target-longest-edge: ${GEMINI_REDUCED_TARGET_EDGE:1024}
+    reduced-jpeg-quality: ${GEMINI_REDUCED_JPEG_QUALITY:0.85}
+    text-model-id: ${GEMINI_TEXT_MODEL_ID:gemini-2.5-flash}
+    text-request-timeout-ms: ${GEMINI_TEXT_REQUEST_TIMEOUT_MS:15000}
+
+  # 016 fal.ai-provider configuration (FR-1610 / FR-1611 / FR-1614a / FR-1616).
+  # All keys env-var-overridable per 016 research.md R6. Blank api-key →
+  # FalAiImageGenerator throws GenerationFailure(NOT_CONFIGURED) pre-HTTP per
+  # FR-1604; backend continues to start.
+  #
+  # IMPORTANT: activate the `falai` Spring profile to use this provider.
+  # Setting FAL_AI_API_KEY alone does NOT activate the profile. Activating
+  # both `gemini` AND `falai` simultaneously refuses startup (FR-1605).
+  #
+  # end-to-end-timeout-ms is the FR-1614a wall-clock cap covering the full
+  # exchange (submit → queue → poll → fetch → image bytes). It is NOT a
+  # per-attempt timeout; submit/poll/fetch each have their own per-attempt
+  # bounds below. The deadline-aware FalAiClient enforces the cap.
+  falai:
+    api-key: ${FAL_AI_API_KEY:}
+    model-id: ${FAL_AI_MODEL_ID:fal-ai/nano-banana-pro/edit}
+    endpoint-url: ${FAL_AI_ENDPOINT_URL:https://queue.fal.run}
+    submit-timeout-ms: ${FAL_AI_SUBMIT_TIMEOUT_MS:8000}
+    poll-timeout-ms: ${FAL_AI_POLL_TIMEOUT_MS:5000}
+    fetch-timeout-ms: ${FAL_AI_FETCH_TIMEOUT_MS:10000}
+    end-to-end-timeout-ms: ${FAL_AI_END_TO_END_TIMEOUT_MS:30000}
+    poll-initial-interval-ms: ${FAL_AI_POLL_INITIAL_INTERVAL_MS:1000}
+    poll-max-interval-ms: ${FAL_AI_POLL_MAX_INTERVAL_MS:5000}
+    max-input-bytes: ${FAL_AI_MAX_INPUT_BYTES:4194304}
+    max-input-longest-edge: ${FAL_AI_MAX_INPUT_LONGEST_EDGE:1536}
+    reduced-target-longest-edge: ${FAL_AI_REDUCED_TARGET_EDGE:1024}
+    reduced-jpeg-quality: ${FAL_AI_REDUCED_JPEG_QUALITY:0.85}
+
+  # 023 Email seam — fixed `subject` matches spec FR-2313; `from` is the
+  # operator-supplied sender that appears in every outbound message. Both
+  # keys are read by EmailProperties (config/EmailProperties.java). The
+  # "configured" state is driven solely by `spring.mail.host` non-blank
+  # (FR-2311 / FR-2318) — see EmailConfigured.
+  email:
+    from: ${AIAVATAR_EMAIL_FROM:alter-ego@codecrafts.local}
+    subject: ${AIAVATAR_EMAIL_SUBJECT:Your AI Generated Alter Ego - CodeCrafts 2026}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    # 023 — disable the actuator mail health contributor. It's incompatible
+    # with @MockitoBean JavaMailSender (the bean replacement leaves the
+    # "JavaMailSenderImpl beans" candidate set empty, which fails the
+    # contributor's "beans must not be empty" precondition). We don't
+    # surface this indicator in the UI; clicks on Send As Email are the
+    # canonical signal that mail is wired (the typed 503 covers
+    # not-configured; the 502 covers transient SMTP failure).
+    mail:
+      enabled: false
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+
+logging:
+  # Structured JSON via logback-spring.xml; level overrides only.
+  level:
+    root: INFO
+    com.aiavatar.alterego: DEBUG
+    org.springframework.web: INFO
+    org.springframework.retry: DEBUG
+
+info:
+  app:
+    name: ${spring.application.name}
+    feature: 023-email-send-image
+    constitutional-version: 1.0.2

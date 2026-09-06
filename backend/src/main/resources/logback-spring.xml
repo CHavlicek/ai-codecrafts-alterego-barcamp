@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Structured JSON logging via logstash-logback-encoder.
+  PhotoRedactionFilter (FR-016) DROPS any event carrying photo bytes or
+  the sensitive field markers `photo` / `photoBytes` / `imageData`.
+
+  Spring Boot picks this file up automatically (logback-spring.xml takes
+  precedence over logback.xml).
+-->
+<configuration>
+
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="com.aiavatar.alterego.boundary.logging.PhotoRedactionFilter"/>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <customFields>{"service":"alter-ego-backend"}</customFields>
+            <fieldNames>
+                <timestamp>@timestamp</timestamp>
+                <message>message</message>
+                <thread>thread</thread>
+                <logger>logger</logger>
+                <level>level</level>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+
+    <logger name="com.aiavatar.alterego" level="DEBUG"/>
+    <logger name="org.springframework.retry" level="DEBUG"/>
+
+</configuration>

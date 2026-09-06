@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+package-lock.json
+src/features/alterego/types.generated.ts
+test-results
+playwright-report

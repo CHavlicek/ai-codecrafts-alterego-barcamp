@@ -1,0 +1,86 @@
+openapi: 3.0.3
+info:
+  title: AI Alter Ego API — 006 delta (Art Style Category)
+  version: "0.4.0"
+  description: |
+    Delta over the 002-sleek-tabbed-ui contract. Only the changes for
+    feature 006-art-style-category are captured here; unchanged schemas and
+    operations inherit from 002.
+
+    Delta summary:
+      - `Selections.artStyle` ADDED, **required**. Drives the rendering style
+        of the generated poster; passed to the image-generation backend
+        verbatim and translated into a natural-language cue inside the
+        Gemini prompt (see `GeminiPromptBuilder`).
+      - `Selections.required` now includes `artStyle` alongside
+        `pose`, `archetype`, `universe`, and `firstName`.
+      - New schema `ArtStyle` (closed enum of nine kebab-case wire values).
+      - No other breaking changes. Fallback semantics unchanged from 003.
+
+paths: {}
+
+components:
+  schemas:
+
+    Selections:
+      type: object
+      required: [pose, archetype, universe, artStyle, firstName]
+      properties:
+        pose:
+          $ref: '#/components/schemas/Pose'
+        archetype:
+          $ref: '#/components/schemas/Archetype'
+        universe:
+          $ref: '#/components/schemas/Universe'
+        vibe:
+          $ref: '#/components/schemas/Vibe'
+          nullable: true
+          description: |
+            Optional vibe. Omit the field entirely or send `null` if the user
+            made no selection. The absence of a vibe does not block generation
+            and does not change validation. (Unchanged from 002.)
+        artStyle:
+          $ref: '#/components/schemas/ArtStyle'
+          description: |
+            Required art style for the generated poster. Closed enumeration of
+            nine kebab-case wire values. Missing or unknown values return
+            RFC 7807 400 Bad Request. Wire values are stable contract from
+            first merge; renames are breaking changes.
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 40
+          description: Trimmed first name. Surfaces uppercased as line 1 of the hero title.
+          example: "Paula"
+
+    # Re-listed here for self-containment of the delta file; definitions are
+    # unchanged from the 002 contract. Consumers SHOULD treat the 002 file as
+    # the canonical definition of Pose / Archetype / Universe / Vibe and merge
+    # only the new schema + Selections delta from this file.
+    Pose:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Pose'
+    Archetype:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Archetype'
+    Universe:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Universe'
+    Vibe:
+      $ref: '../../002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml#/components/schemas/Vibe'
+
+    ArtStyle:
+      type: string
+      description: |
+        Closed enumeration of nine rendering styles for the generated poster.
+        Each value maps to a natural-language description inside the Gemini
+        prompt builder; see specs/006-art-style-category/data-model.md for
+        the current mapping. Wire values are stable public-contract strings
+        from first merge (FR-310).
+      enum:
+        - oil-painting
+        - watercolor
+        - pixel-art
+        - low-poly-3d
+        - line-art
+        - pop-art
+        - renaissance-portrait
+        - japanese-woodblock
+        - cel-shaded

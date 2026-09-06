@@ -1,0 +1,115 @@
+# Contract delta for feature 022-role-options-custom
+#
+# This file documents the additive changes vs. the 002 baseline at
+# specs/002-sleek-tabbed-ui/contracts/alter-egos.openapi.yaml. It is NOT
+# a standalone OpenAPI document — apply these deltas onto the baseline.
+#
+# Backwards-compatibility posture:
+#   - Three new enum values for selections.archetype (additive — old enum
+#     values keep their wire strings + relative order).
+#   - One new optional field selections.customRole (additive).
+#   - selections.archetype loses its `required: true` constraint at the
+#     property level; a new schema-level OR-rule is documented below.
+#   - No other field shape, response body, or status code is modified.
+#
+# Old clients (002..021) that send only the original six archetype values
+# and never set customRole continue to validate against the new schema.
+
+components:
+  schemas:
+    Selections:
+      type: object
+      properties:
+        archetype:
+          # CHANGED: enum widens from 6 → 9 values; relative order of the
+          # original 6 is preserved so any positional clients (which we do
+          # not have, but the contract permits) keep working.
+          type: string
+          enum:
+            - cloud-architect      # unchanged
+            - backend-dev          # unchanged
+            - frontend-dev         # unchanged
+            - ai-engineer          # unchanged
+            - platform-eng         # unchanged
+            - data-engineer        # unchanged
+            - hr                   # NEW (feature 022)
+            - administration       # NEW (feature 022)
+            - customer-relations   # NEW (feature 022)
+          description: |
+            User-selected prefab role. Required UNLESS `customRole` is
+            present with a non-blank trimmed value. When `customRole` is
+            present (non-blank), this field MAY be omitted.
+
+        universe:
+          # unchanged from 002
+          type: string
+          enum:
+            - marvel
+            - star-wars
+            - cyberpunk
+            - the-office
+            - indiana-jones
+            - lord-of-the-rings
+
+        artStyle:
+          # unchanged from 006/019
+          type: string
+          enum:
+            - oil-painting
+            - watercolor
+            - pop-art
+            - renaissance-portrait
+            - japanese-woodblock
+            - cel-shaded
+
+        photoMode:
+          # unchanged from 011
+          type: string
+          enum: [single, group]
+
+        firstName:
+          # unchanged from 011 (≤ 50 chars after trim + ValidFirstName rules)
+          type: string
+          minLength: 1
+          maxLength: 50
+
+        customRole:
+          # NEW (feature 022)
+          type: string
+          maxLength: 100
+          nullable: true
+          description: |
+            Optional free-form role string. When present and its trimmed
+            value is non-empty, this field becomes the role-of-record for
+            the request: it overrides `archetype` for the image prompt,
+            the character bio prompt, and the poster text overlay's role
+            label.
+
+            Clients SHOULD omit this field entirely when not used (instead
+            of sending `""`); the backend accepts both shapes (`omitted`
+            and `""`/`"  "`) and treats them identically — as "no custom
+            role".
+
+      # required-fields delta: archetype dropped from the `required` list.
+      # The OR-invariant is enforced server-side by a class-level Bean
+      # Validation constraint and surfaced via RFC 7807 problem details.
+      required:
+        - universe
+        - artStyle
+        - photoMode
+        - firstName
+      x-validation-rules:
+        - id: role-of-record-present
+          description: |
+            At least one of the following MUST hold per request:
+              (a) `archetype` is present AND is a member of the enum, OR
+              (b) `customRole` is present AND its trimmed value is non-empty.
+            A request violating this invariant is rejected with HTTP 400
+            and RFC 7807 problem details:
+              type:   "urn:problem-type:validation"
+              title:  "Bad Request"
+              status: 400
+              detail: "either archetype must be set or customRole must be non-blank"
+
+# Response shapes unchanged — `AlterEgoResponse` and its nested types are
+# byte-identical to the 016 / 021 contract.

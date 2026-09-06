@@ -1,0 +1,1806 @@
+/*
+ * 005 cinematic overhaul — "emergence / portal" aesthetic.
+ *
+ * Dark atmospheric base (tokens.css) + aurora gradient + SVG grain
+ * overlay + Unbounded/Geist typography. The page reads as a portal
+ * where the user's alter ego emerges, not as a form.
+ *
+ * Animation strategy: one well-orchestrated mount sequence (title →
+ * tabs → photo → numbered groups → Generate) plus the generation
+ * emergence beat, all gated by `prefers-reduced-motion` via the
+ * motion-duration tokens set in tokens.css.
+ */
+
+@import './styles/tokens.css';
+
+/* === Reset + global defaults ===================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge),
+    transform var(--motion-duration-fast) var(--motion-ease-elastic),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+button:not(:disabled):hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-bg-glass);
+}
+
+[role='radio'][aria-checked='true'],
+button[data-selected='true'] {
+  border-color: var(--grid-accent, var(--color-purple));
+  background: color-mix(in srgb, var(--grid-accent, #a855f7) 18%, transparent);
+  box-shadow:
+    0 0 0 1px var(--grid-accent, #a855f7),
+    0 0 24px -4px color-mix(in srgb, var(--grid-accent, #a855f7) 60%, transparent);
+  transform: translateY(-1px);
+}
+
+input[type='text'],
+input[type='email'] {
+  font: inherit;
+  color: inherit;
+  background: var(--color-bg-glass);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+input[type='text']:focus,
+input[type='email']:focus {
+  outline: none;
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.2);
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+legend {
+  font-weight: 500;
+  padding: 0;
+}
+
+/* === Atmosphere layer ============================================
+ *
+ * Three stacked fixed layers behind everything:
+ *   1. Aurora — slow-drifting radial gradient blobs in the brand
+ *      palette. Runs a 40s drift keyframe to avoid a static
+ *      wallpaper feel.
+ *   2. Grain — SVG turbulence at 4% opacity to break up gradient
+ *      banding and give dark-mode authenticity.
+ *   3. Vignette — subtle darkening at the corners so the content
+ *      card composition reads as a stage.
+ *
+ * All three are pointer-events: none. prefers-reduced-motion freezes
+ * the aurora drift but keeps the layered gradients.
+ * ================================================================= */
+
+.atmosphere {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.atmosphere__aurora {
+  position: absolute;
+  inset: -20%;
+  filter: blur(80px) saturate(120%);
+  opacity: 0.55;
+  background:
+    radial-gradient(40% 35% at 18% 22%, rgba(232, 66, 122, 0.35), transparent 65%),
+    radial-gradient(38% 30% at 82% 18%, rgba(0, 191, 255, 0.35), transparent 65%),
+    radial-gradient(55% 40% at 52% 90%, rgba(168, 85, 247, 0.35), transparent 70%);
+  animation: aurora-drift 40s linear infinite;
+  will-change: transform;
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-2%, 1%, 0) rotate(2deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atmosphere__aurora {
+    animation: none;
+  }
+}
+
+.atmosphere__grain {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: overlay;
+  opacity: 0.04;
+  background-image:
+    /* tiny inline SVG — one turbulence filter, no external asset */ url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
+}
+
+.atmosphere__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 70% at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* === Page shell =================================================== */
+
+.alter-ego-page {
+  position: relative;
+  z-index: 1;
+  max-width: 1460px;
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-6) var(--space-8);
+}
+
+.alter-ego-page__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(32px, 4vw, 58px);
+  letter-spacing: var(--tracking-display);
+  line-height: 0.98;
+  margin-bottom: var(--space-6);
+  /* Three-stop gradient sliding across 12s so the headline lives
+     without distracting. Fallback solid colour for older browsers. */
+  background: var(--gradient-brand);
+  background-size: 200% 100%;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: title-shimmer 12s linear infinite;
+  /* Mount reveal */
+  opacity: 0;
+  transform: translateY(14px);
+  animation-name: title-shimmer, mount-rise;
+  animation-duration: 12s, var(--motion-duration-slow);
+  animation-timing-function: linear, var(--motion-ease-emerge);
+  animation-iteration-count: infinite, 1;
+  animation-fill-mode: both, both;
+}
+
+@keyframes mount-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Tabs shell (FR-101..FR-106 carry-over) ======================= */
+
+.tabs-shell {
+  opacity: 0;
+  animation: mount-rise var(--motion-duration-slow) var(--motion-ease-emerge) 120ms both;
+}
+
+.tabs-shell__tablist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-7);
+  padding-bottom: var(--space-1);
+  position: relative;
+}
+
+.tabs-shell__tablist::after {
+  /* Thin glowing underline beneath whichever tab is active. Pure CSS —
+     the `.is-active` rule below promotes its own tab's ::after, not
+     this. Kept here only to draw the rail colour. */
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(255, 255, 255, 0.08) 80%,
+    transparent 100%
+  );
+}
+
+.tabs-shell__tab {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: var(--space-3) var(--space-4);
+  text-align: center;
+  letter-spacing: var(--tracking-all-caps);
+  text-transform: uppercase;
+  position: relative;
+  transition:
+    color var(--motion-duration-fast) var(--motion-ease-emerge),
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.tabs-shell__tab:hover:not([disabled]) {
+  color: var(--color-text);
+  background: var(--color-bg-glass);
+}
+
+.tabs-shell__tab.is-active {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* 007 FR-502 — disabled tab header. `aria-disabled` is the single source
+ * of truth for both screen readers and CSS (R5 in research.md). Opacity
+ * + cursor together are the non-colour-only distinction required by the
+ * spec — either change alone is enough; together they leave no ambiguity. */
+.tabs-shell__tab[aria-disabled='true'] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.tabs-shell__tab[aria-disabled='true']:hover,
+.tabs-shell__tab[aria-disabled='true']:focus,
+.tabs-shell__tab[aria-disabled='true']:focus-visible {
+  color: var(--color-text-muted);
+  background: transparent;
+  border-bottom-color: transparent;
+  outline: none;
+}
+
+/* 005 cinematic overhaul — glowing underline beneath the active tab.
+ * By FR-507 a disabled tab is never simultaneously .is-active, so no
+ * defensive override is needed to suppress this pseudo-element on
+ * disabled tabs. */
+.tabs-shell__tab.is-active::after {
+  content: '';
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: -2px;
+  height: 2px;
+  background: var(--gradient-brand-flat);
+  box-shadow: 0 0 14px rgba(232, 66, 122, 0.5);
+  border-radius: 2px;
+}
+
+.tabs-shell__panel {
+  outline: none;
+}
+
+/* 005 tab-switch entrance (carry-over from existing config) */
+@keyframes tabs-shell-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tabs-shell__panel--animate-in {
+  animation: tabs-shell-panel-in var(--motion-duration-base) var(--motion-ease-emerge) both;
+  will-change: opacity, transform;
+}
+
+/* === Setup layout — asymmetric portrait/selections split ========== */
+
+.setup-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+  opacity: 0;
+  animation: mount-rise var(--motion-duration-slow) var(--motion-ease-emerge) 240ms both;
+}
+
+@media (max-width: 1023px) {
+  .setup-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.setup-layout__photo,
+.setup-layout__selections {
+  position: relative;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 40%), var(--color-bg-elevated);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  backdrop-filter: blur(12px);
+}
+
+/* Photo card gets a halo so the circle inside reads as the hero control. */
+.setup-layout__photo::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    160deg,
+    rgba(0, 191, 255, 0.28) 0%,
+    transparent 35%,
+    transparent 70%,
+    rgba(232, 66, 122, 0.24) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.setup-layout__section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.setup-layout__section-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-all-caps);
+  color: var(--color-accent-cyan);
+  text-transform: uppercase;
+}
+
+.setup-layout__section-subtitle {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-subtle);
+  letter-spacing: var(--tracking-meta);
+}
+
+/* === Numbered groups — large serif-display numerals =============== */
+
+.setup-layout__numbered-group {
+  position: relative;
+  padding-left: calc(var(--space-8) + var(--space-3));
+  opacity: 0;
+  animation: mount-rise var(--motion-duration-slow) var(--motion-ease-emerge) both;
+}
+
+.setup-layout__numbered-group[data-step='1'] {
+  animation-delay: 360ms;
+}
+.setup-layout__numbered-group[data-step='2'] {
+  animation-delay: 440ms;
+}
+.setup-layout__numbered-group[data-step='3'] {
+  animation-delay: 520ms;
+}
+.setup-layout__numbered-group[data-step='4'] {
+  animation-delay: 600ms;
+}
+
+.setup-layout__numbered-group::before {
+  content: attr(data-step);
+  position: absolute;
+  left: 0;
+  top: -10px;
+  font-family: var(--font-display);
+  font-weight: 200;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.15) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.setup-layout__numbered-group > .selection-grid > legend {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-all-caps);
+  text-transform: uppercase;
+  padding-bottom: var(--space-2);
+}
+
+/* The ::before data-step prefixes from the old design are retired — the
+   hanging numerals replace them. */
+.setup-layout__numbered-group > .selection-grid > legend::before {
+  content: none;
+}
+
+/* === Selection grid — pills with per-sub-group accent ============= */
+
+.selection-grid__options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.selection-grid__option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  background: rgba(255, 255, 255, 0.018);
+  backdrop-filter: blur(6px);
+  min-height: 48px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-body);
+  line-height: 1.2;
+  text-align: left;
+  color: var(--color-text-muted);
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge),
+    color var(--motion-duration-fast) var(--motion-ease-emerge),
+    transform var(--motion-duration-fast) var(--motion-ease-elastic),
+    box-shadow var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.selection-grid__option:not(:disabled):hover {
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+  background: var(--color-bg-glass);
+}
+
+.selection-grid__option[data-selected='true'] {
+  color: var(--color-text);
+  border-color: var(--grid-accent, var(--color-purple));
+  background: color-mix(in srgb, var(--grid-accent, #a855f7) 14%, transparent);
+  box-shadow:
+    0 0 0 1px var(--grid-accent, #a855f7),
+    0 0 30px -6px color-mix(in srgb, var(--grid-accent, #a855f7) 70%, transparent);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.selection-grid__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--grid-accent, #a855f7) 12%, transparent);
+  color: var(--grid-accent, var(--color-text-muted));
+  flex: 0 0 28px;
+}
+
+.selection-grid__option[data-selected='true'] .selection-grid__icon {
+  background: color-mix(in srgb, var(--grid-accent, #a855f7) 28%, transparent);
+  color: var(--color-text);
+}
+
+.selection-grid__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* === 022 (issue #50) — disabled grid (custom-role precedence) ====== */
+
+.selection-grid.is-disabled {
+  filter: blur(2px);
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+  user-select: none;
+  transition:
+    filter var(--motion-duration-fast) var(--motion-ease-emerge),
+    opacity var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+/* === 022 (issue #50) — custom-role input ========================== */
+
+.custom-role-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.custom-role-input__label {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-body);
+  color: var(--color-text-muted);
+}
+
+.custom-role-input__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.custom-role-input__control {
+  width: 100%;
+  padding: var(--space-3) calc(var(--space-3) + 32px) var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  background: rgba(255, 255, 255, 0.018);
+  backdrop-filter: blur(6px);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.2;
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.custom-role-input__control:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-role, var(--color-purple));
+  box-shadow:
+    0 0 0 1px var(--color-accent-role, #a855f7),
+    0 0 30px -6px color-mix(in srgb, var(--color-accent-role, #a855f7) 70%, transparent);
+}
+
+.custom-role-input__control:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.custom-role-input__clear {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background var(--motion-duration-fast) var(--motion-ease-emerge),
+    color var(--motion-duration-fast) var(--motion-ease-emerge),
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.custom-role-input__clear:hover,
+.custom-role-input__clear:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text);
+  outline: none;
+  border-color: var(--color-border-strong);
+}
+
+.custom-role-input__clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.custom-role-input__clear-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+/* === 023 (issue #57) — email input ================================ */
+/*
+ * Mirrors `.custom-role-input` (022) for visual + behavioural parity
+ * per spec FR-2307. Duplication chosen over extraction at two callers
+ * (research.md R8 — re-evaluate at the third clear-X caller).
+ */
+
+.email-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.email-input__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  color: var(--color-text-muted);
+}
+
+.email-input__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.email-input__control {
+  width: 100%;
+  padding: var(--space-3) calc(var(--space-3) + 32px) var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-strong);
+  background: rgba(255, 255, 255, 0.018);
+  backdrop-filter: blur(6px);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.2;
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.email-input__control:focus-visible {
+  outline: none;
+  border-color: var(--color-accent-role, var(--color-purple));
+  box-shadow:
+    0 0 0 1px var(--color-accent-role, #a855f7),
+    0 0 30px -6px color-mix(in srgb, var(--color-accent-role, #a855f7) 70%, transparent);
+}
+
+.email-input__control[aria-invalid='true'] {
+  border-color: var(--color-accent-error, #f87171);
+  box-shadow:
+    0 0 0 1px var(--color-accent-error, #f87171),
+    0 0 30px -6px color-mix(in srgb, var(--color-accent-error, #f87171) 70%, transparent);
+}
+
+.email-input__control:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.email-input__clear {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background var(--motion-duration-fast) var(--motion-ease-emerge),
+    color var(--motion-duration-fast) var(--motion-ease-emerge),
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.email-input__clear:hover,
+.email-input__clear:focus-visible {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text);
+  outline: none;
+  border-color: var(--color-border-strong);
+}
+
+.email-input__clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.email-input__clear-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.email-input__error {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-accent-error, #f87171);
+}
+
+/* === First-name input + Generate button =========================== */
+
+.first-name-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.first-name-input label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  color: var(--color-text-muted);
+}
+
+.first-name-input input[type='text'] {
+  padding: var(--space-3) var(--space-4);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* === Setup actions row — Generate + Surprise Me (009) ============== */
+
+.setup-layout__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+  margin-top: var(--space-3);
+}
+
+.setup-layout__actions .generate-button {
+  flex: 1 1 260px;
+  margin-top: 0;
+}
+
+.setup-layout__actions .surprise-me-button {
+  flex: 0 1 220px;
+  margin-top: 0;
+}
+
+@media (max-width: 520px) {
+  .setup-layout__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .setup-layout__actions .surprise-me-button,
+  .setup-layout__actions .generate-button {
+    flex-basis: auto;
+  }
+}
+
+.generate-button {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  opacity: 0;
+  animation: mount-rise var(--motion-duration-slow) var(--motion-ease-emerge) 680ms both;
+}
+
+.generate-button > button {
+  position: relative;
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-md);
+  background: var(--gradient-brand);
+  background-size: 200% 200%;
+  border: 0;
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  min-height: 56px;
+  overflow: hidden;
+  animation: gen-gradient-shift 6s ease-in-out infinite;
+  box-shadow: var(--shadow-glow-pink);
+}
+
+@keyframes gen-gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.generate-button > button:disabled {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--color-text-subtle);
+  box-shadow: none;
+  animation: none;
+}
+
+.generate-button > button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow:
+    var(--shadow-glow-pink),
+    0 18px 40px -12px rgba(232, 66, 122, 0.5);
+}
+
+.generate-button__hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--tracking-all-caps);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+/* === Surprise Me button (009) — secondary action ================== *
+ * Visually distinct from Generate: outline style instead of filled
+ * gradient, so the information hierarchy reads Generate > Surprise Me.
+ * Same disabled-state contract (opacity + cursor) as the shared button
+ * rule near the top of this file.                                    */
+
+.surprise-me-button {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  opacity: 0;
+  animation: mount-rise var(--motion-duration-slow) var(--motion-ease-emerge) 760ms both;
+}
+
+.surprise-me-button > button {
+  position: relative;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid var(--color-accent-cyan);
+  color: var(--color-accent-cyan);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  min-height: 56px;
+  transition:
+    background var(--motion-duration-fast) var(--motion-ease-emerge),
+    color var(--motion-duration-fast) var(--motion-ease-emerge),
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    transform var(--motion-duration-fast) var(--motion-ease-elastic),
+    box-shadow var(--motion-duration-base) var(--motion-ease-emerge);
+}
+
+.surprise-me-button > button:not(:disabled):hover {
+  background: color-mix(in srgb, var(--color-accent-cyan) 14%, transparent);
+  color: var(--color-text);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px -10px rgba(0, 191, 255, 0.4);
+}
+
+.surprise-me-button > button:disabled {
+  background: transparent;
+  border-color: var(--color-border-strong);
+  color: var(--color-text-subtle);
+  box-shadow: none;
+}
+
+.surprise-me-button__hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--tracking-all-caps);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+/* === Photo intake — circle-as-viewfinder (004) ==================== */
+
+.photo-intake {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: calc(var(--space-3) * -1);
+}
+
+.photo-intake__circle {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-overlay);
+  overflow: hidden;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  isolation: isolate;
+  transition:
+    transform var(--motion-duration-fast) var(--motion-ease-elastic),
+    box-shadow var(--motion-duration-base) var(--motion-ease-emerge);
+}
+
+/* Conic-gradient ring rotates slowly when idle to signal "active
+   control". When filled / live / still, the ring state changes per
+   data-status (below). */
+.photo-intake__circle::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    var(--color-accent-cyan),
+    var(--color-pink),
+    var(--color-purple),
+    var(--color-accent-cyan)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: circle-ring-spin 8s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes circle-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Idle empty state — ring animates, soft inner glow. */
+.photo-intake__circle[data-filled='false'][data-status='idle']::before {
+  opacity: 0.8;
+}
+
+/* Live state — ring holds still, cyan-dominant, pulse glow. */
+.photo-intake__circle[data-status='live']::before,
+.photo-intake__circle[data-status='requesting']::before,
+.photo-intake__circle[data-status='capturing']::before {
+  background: conic-gradient(
+    from 0deg,
+    var(--color-accent-cyan),
+    var(--color-accent-cyan),
+    rgba(0, 191, 255, 0.55),
+    var(--color-accent-cyan)
+  );
+  animation: none;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.15);
+}
+
+.photo-intake__circle[data-status='live'] {
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+/* Still-preview state — ring brightens with pink. */
+.photo-intake__circle[data-status='still-preview']::before {
+  background: conic-gradient(from 90deg, var(--color-pink), var(--color-purple), var(--color-pink));
+  animation: none;
+}
+
+/* Unavailable — dashed ring. */
+.photo-intake__circle[data-status='unavailable']::before {
+  background: repeating-conic-gradient(
+    from 0deg,
+    rgba(255, 255, 255, 0.35) 0deg 6deg,
+    transparent 6deg 14deg
+  );
+  animation: none;
+}
+
+/* Committed — calm double-ring hint via inset shadow. */
+.photo-intake__circle[data-filled='true'][data-status='idle'] {
+  box-shadow:
+    0 0 0 3px rgba(168, 85, 247, 0.18),
+    var(--shadow-glow-purple);
+}
+
+.photo-intake__circle:disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.photo-intake__circle:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 5px var(--color-accent-cyan),
+    0 0 28px rgba(0, 191, 255, 0.5);
+}
+
+.photo-intake__circle:not(:disabled):active {
+  transform: scale(0.98);
+}
+
+.photo-intake__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-intake__viewfinder,
+.photo-intake__still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-intake__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.photo-intake__placeholder-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-cyan);
+  filter: drop-shadow(0 0 18px rgba(0, 191, 255, 0.5));
+}
+
+.photo-intake__placeholder-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  color: var(--color-text-muted);
+}
+
+.photo-intake__actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.photo-intake__shutter,
+.photo-intake__keep {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-cyan);
+  color: #05080f;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: var(--shadow-glow-cyan);
+  transition:
+    transform var(--motion-duration-fast) var(--motion-ease-elastic),
+    box-shadow var(--motion-duration-base) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.photo-intake__keep {
+  background: var(--gradient-brand-flat);
+  color: white;
+  box-shadow: var(--shadow-glow-pink);
+}
+
+.photo-intake__shutter:not(:disabled):hover,
+.photo-intake__keep:not(:disabled):hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.photo-intake__shutter:not(:disabled):active,
+.photo-intake__keep:not(:disabled):active {
+  transform: scale(0.96);
+}
+
+.photo-intake__shutter:disabled,
+.photo-intake__keep:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.photo-intake__retake,
+.photo-intake__cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.photo-intake__retake:hover,
+.photo-intake__cancel:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-cyan);
+  background: var(--color-bg-glass);
+}
+
+.photo-intake__clear {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  color: var(--color-text-subtle);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+}
+
+.photo-intake__clear:hover {
+  color: var(--color-text);
+}
+
+.photo-intake__status {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-meta);
+}
+
+.photo-intake__unavailable,
+.photo-intake__error {
+  max-width: 280px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+  text-align: center;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid rgba(224, 88, 88, 0.25);
+  border-radius: var(--radius-md);
+  background: rgba(224, 88, 88, 0.05);
+}
+
+/* === Alter ego panel — three states =============================== */
+
+.alter-ego-panel {
+  min-height: 520px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-7);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 40%), var(--color-bg-elevated);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-5);
+  backdrop-filter: blur(12px);
+}
+
+.alter-ego-panel--empty {
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.alter-ego-panel__empty-icon {
+  color: var(--color-accent-cyan);
+  opacity: 0.55;
+  filter: drop-shadow(0 0 22px rgba(0, 191, 255, 0.45));
+}
+
+.alter-ego-panel__empty-copy {
+  max-width: 420px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  font-size: 15px;
+}
+
+/* Loading state — pulsing aurora ring + stepper counter */
+.generation-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+
+.generation-loading > p {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: var(--tracking-headline);
+  color: var(--color-text);
+  position: relative;
+  padding-top: calc(140px + var(--space-5));
+}
+
+/* The pulsing aurora ring — a spinning conic gradient masked into a
+   disc, sitting above the copy like the portal is opening. */
+.generation-loading > p::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--color-accent-cyan),
+    var(--color-pink),
+    var(--color-purple),
+    var(--color-accent-cyan)
+  );
+  filter: blur(4px);
+  animation:
+    circle-ring-spin 3s linear infinite,
+    generation-pulse 2s var(--motion-ease-emerge) infinite;
+  opacity: 0.9;
+}
+
+.generation-loading > p::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: var(--color-bg-elevated);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.6);
+}
+
+/* 013 — live progress percent centred inside the inner disc of the pulsating
+   ring. Layered above ::after via z-index so it reads against the dark inset.
+   Plain text node (not animated, not aria-live) — sighted decoration only. */
+.generation-loading__percent {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: var(--color-accent-cyan);
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes generation-pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.06);
+    opacity: 1;
+  }
+}
+
+.generation-loading__steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.generation-loading__steps li {
+  counter-increment: step;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.generation-loading__steps li::before {
+  content: counter(step, decimal-leading-zero);
+  color: var(--color-accent-cyan);
+  font-weight: 500;
+}
+
+/* === Poster view — cinema-poster composition ====================== */
+
+.poster-view {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--space-4) 0;
+  /* 013 — Emergence animation, enhanced from the original 005 cross-fade:
+     the poster now blooms out of a small circular clip-path that mimics
+     the position and size of the loading view's inner disc, so the eye
+     reads the swap as "the progress disc opened and revealed the
+     poster" rather than "the loading view disappeared, then a separate
+     poster faded in". The circle expands beyond the bounding box so the
+     final state is fully unclipped. */
+  animation: poster-emerge 900ms var(--motion-ease-emerge) both;
+}
+
+@keyframes poster-emerge {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+    filter: blur(6px);
+    /* Small circle anchored near the top of the poster container, at
+       roughly the same screen position the loading view's inner disc
+       occupied. 46px radius ≈ the loading disc's 92px diameter / 2. */
+    clip-path: circle(46px at 50% 70px);
+  }
+  35% {
+    clip-path: circle(40% at 50% 50%);
+  }
+  60% {
+    filter: blur(0);
+    clip-path: circle(75% at 50% 50%);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+    /* Final state — fully unclipped (radius beyond the bounding box). */
+    clip-path: circle(150% at 50% 50%);
+  }
+}
+
+/* Reduced-motion users get the destination, no scale/blur/clip-reveal. */
+@media (prefers-reduced-motion: reduce) {
+  .poster-view {
+    animation: none;
+  }
+}
+
+.poster-view__fallback-banner {
+  align-self: stretch;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid rgba(240, 160, 48, 0.35);
+  background: rgba(240, 160, 48, 0.08);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: var(--tracking-meta);
+  text-align: center;
+}
+
+.poster-view__frame {
+  position: relative;
+  width: 100%;
+  /* 015: poster bytes arrive at 2:3 (10×15 vertical, print-ready) — was
+     3:4 before this feature. The previous 3:4 container with
+     object-fit: cover was cropping the top and bottom of the new frame.
+     Match the source aspect so the entire framed image is visible. */
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-poster);
+  transform: rotate(-1.2deg);
+  transition: transform var(--motion-duration-base) var(--motion-ease-elastic);
+  /* Letterbox frame border — thin gold rule that reads as "printed". */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.poster-view__frame::after {
+  /* Inner halation — warms up the edges of the image */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(232, 66, 122, 0.15) 100%);
+  mix-blend-mode: screen;
+}
+
+.poster-view__frame:hover {
+  transform: rotate(0deg);
+}
+
+.poster-view__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.poster-view__title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  text-align: center;
+}
+
+.poster-view__title-line-2 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 30px);
+  letter-spacing: -0.01em;
+  color: var(--color-text-muted);
+  line-height: 1.1;
+}
+
+.poster-view__superpowers {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  counter-reset: power;
+  width: 100%;
+}
+
+.poster-view__superpowers li {
+  counter-increment: power;
+  position: relative;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-7);
+  border-left: 2px solid var(--color-accent-cyan);
+  background: var(--color-bg-glass);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-text);
+}
+
+.poster-view__superpowers li::before {
+  content: counter(power, decimal-leading-zero);
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-meta);
+  color: var(--color-accent-cyan);
+}
+
+/* === Start-over button ============================================ */
+
+.start-over-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  cursor: pointer;
+}
+
+.start-over-button:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-cyan);
+  background: var(--color-bg-glass);
+}
+
+/* === 011 — Photo Mode toggle (single sliding-thumb switch) ======== */
+
+.setup-layout__photo-mode {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.photo-mode-switch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.photo-mode-switch__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.photo-mode-switch__title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-all-caps);
+  color: var(--color-accent-cyan);
+  text-transform: uppercase;
+}
+
+.photo-mode-switch__subtitle {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-subtle);
+  letter-spacing: var(--tracking-meta);
+}
+
+.photo-mode-switch__control {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-glass);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.photo-mode-switch__control:hover {
+  border-color: var(--color-border-strong);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.photo-mode-switch__track {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.photo-mode-switch__option {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-all-caps);
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  user-select: none;
+  transition: color var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+/* Single is the off state (the thumb sits on the left); Group is the on
+   state (the thumb is on the right). Whichever side the thumb covers is
+   highlighted to full text colour. */
+.photo-mode-switch__control[data-state='single'] .photo-mode-switch__option--single,
+.photo-mode-switch__control[data-state='group'] .photo-mode-switch__option--group {
+  color: var(--color-text);
+}
+
+/* Sliding thumb — half the track width, animates via translateX. */
+.photo-mode-switch__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, rgba(0, 191, 255, 0.18) 0%, rgba(168, 85, 247, 0.16) 100%);
+  border: 1px solid rgba(0, 191, 255, 0.45);
+  box-shadow:
+    0 0 18px rgba(0, 191, 255, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  transition: transform var(--motion-duration-base) var(--motion-ease-elastic);
+  pointer-events: none;
+}
+
+.photo-mode-switch__control[data-state='group'] .photo-mode-switch__thumb {
+  transform: translateX(100%);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(232, 66, 122, 0.18) 100%);
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow:
+    0 0 18px rgba(168, 85, 247, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+.photo-mode-switch__hint {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: var(--tracking-meta);
+}
+
+/* === Inline email fallback (025-conditional-email-on-tab-2) ======== */
+
+/* Spacing between the poster and the inline email fallback that sits
+   directly above the actions row when the captured email is not
+   send-ready. Reuses .email-input's visual treatment verbatim. */
+.alter-ego-panel__email-fallback {
+  margin-top: var(--space-4);
+  width: 100%;
+  max-width: 32rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* === Print (010-print-alter-ego) ================================== */
+
+/* Action row hosting Start Over + Print as siblings. */
+.alter-ego-panel__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-4);
+}
+
+/* Mirror .start-over-button's visual weight so the two read as peers. */
+.print-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  cursor: pointer;
+}
+
+.print-button:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent-cyan);
+  background: var(--color-bg-glass);
+}
+
+/* 023 (issue #57) — Send As Email button. Mirrors .print-button's visual
+   weight so Start Over / Print / Send As Email read as peers across the
+   actions row. Disabled state reduces opacity + clears the hover affordance
+   (clarification 2026-05-11 Q1 — disabled-with-accessible-indication). */
+.send-as-email-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  cursor: pointer;
+  transition:
+    color var(--motion-duration-fast) var(--motion-ease-emerge),
+    border-color var(--motion-duration-fast) var(--motion-ease-emerge),
+    background var(--motion-duration-fast) var(--motion-ease-emerge);
+}
+
+.send-as-email-button:hover:not(:disabled) {
+  color: var(--color-text);
+  border-color: var(--color-accent-cyan);
+  background: var(--color-bg-glass);
+}
+
+.send-as-email-button:disabled,
+.send-as-email-button[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Print path lives in printPosterImage.ts — it writes the poster into a
+   hidden same-origin iframe and prints that iframe. No @media print
+   rules are needed on the main document. */
+
+/* === Accessibility helpers ======================================== */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

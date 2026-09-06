@@ -1,0 +1,380 @@
+{
+  "cloud-architect": [
+    {
+      "heroTitleLine2": "The Cloud Guardrail",
+      "tagline": "STILL SHIPS ON FRIDAYS.",
+      "superpowers": [
+        "Rolls back with a single keystroke",
+        "Hears pager alerts before they fire",
+        "Speaks fluent YAML in all dialects"
+      ],
+      "quote": "It's always DNS. Always."
+    },
+    {
+      "heroTitleLine2": "The Multi-Region Mediator",
+      "tagline": "KEEPS THE LATENCY HONEST.",
+      "superpowers": [
+        "Diagrams availability zones in her sleep",
+        "Refactors IAM policies into poetry",
+        "Negotiates SLAs across three clouds"
+      ],
+      "quote": "Uptime is a team sport."
+    },
+    {
+      "heroTitleLine2": "The Terraform Tactician",
+      "tagline": "PLANS TWICE. APPLIES ONCE.",
+      "superpowers": [
+        "Writes modules other people actually reuse",
+        "Predicts state-file conflicts on sight",
+        "Turns infrastructure into line-edited prose"
+      ],
+      "quote": "The diff is the design."
+    },
+    {
+      "heroTitleLine2": "The Cost-Optimised Pragmatist",
+      "tagline": "SHAVES CENTS UNTIL THEY ADD UP.",
+      "superpowers": [
+        "Reads billing dashboards like tarot",
+        "Turns spot interrupts into features",
+        "Right-sizes before anyone asks"
+      ],
+      "quote": "Every byte has a balance sheet."
+    }
+  ],
+  "backend-dev": [
+    {
+      "heroTitleLine2": "The Request-Path Engineer",
+      "tagline": "UNBREAKS MAIN BEFORE STANDUP.",
+      "superpowers": [
+        "Reads stack traces in fifty shades of gray",
+        "Writes migrations that actually migrate",
+        "Deletes code for fun and profit"
+      ],
+      "quote": "Ship it. I'll watch the graphs."
+    },
+    {
+      "heroTitleLine2": "The Zero-Downtime Surgeon",
+      "tagline": "CUTS OVER WITHOUT A PAUSE.",
+      "superpowers": [
+        "Feature-flags in both directions",
+        "Dual-writes like a conductor",
+        "Rolls forward when others roll back"
+      ],
+      "quote": "The best deploy is the one nobody noticed."
+    },
+    {
+      "heroTitleLine2": "The Query-Plan Whisperer",
+      "tagline": "INDEXES WHAT THE APP ACTUALLY ASKS.",
+      "superpowers": [
+        "Spots N+1s from the commit message alone",
+        "Measures before optimising",
+        "Speaks EXPLAIN ANALYZE fluently"
+      ],
+      "quote": "The database knows. Ask it."
+    },
+    {
+      "heroTitleLine2": "The API Contract Custodian",
+      "tagline": "GUARDS THE VERSION HEADERS.",
+      "superpowers": [
+        "Deprecates with dignity",
+        "Writes changelogs people read",
+        "Closes 400s that were 500s yesterday"
+      ],
+      "quote": "Backwards-compatible until it's not."
+    }
+  ],
+  "frontend-dev": [
+    {
+      "heroTitleLine2": "The Pixel Diplomat",
+      "tagline": "NEGOTIATES WITH DESIGN DAILY.",
+      "superpowers": [
+        "Turns Figma frames into React in one sitting",
+        "Speaks both CSS cascade and designer",
+        "Ships accessible components on the first review"
+      ],
+      "quote": "The user is the spec."
+    },
+    {
+      "heroTitleLine2": "The Bundle-Size Custodian",
+      "tagline": "KEEPS THE WIRE UNDER A HUNDRED K.",
+      "superpowers": [
+        "Tree-shakes what shouldn't even be a branch",
+        "Dynamically imports the thirtieth chart library",
+        "Reads source maps for sport"
+      ],
+      "quote": "Every kilobyte is a user's patience."
+    },
+    {
+      "heroTitleLine2": "The Interaction Alchemist",
+      "tagline": "MAKES CLICKS FEEL INEVITABLE.",
+      "superpowers": [
+        "Times transitions to human anticipation",
+        "Traps focus the moment you need it",
+        "Announces state changes to every reader"
+      ],
+      "quote": "Accessibility is not a feature, it is the feature."
+    },
+    {
+      "heroTitleLine2": "The Edge-Case Cartographer",
+      "tagline": "MAPS WHAT USERS ACTUALLY DO.",
+      "superpowers": [
+        "Tests the empty state, the loading state, and the 3:59am state",
+        "Reads the analytics funnel upside down",
+        "Surfaces the long tail into the UI"
+      ],
+      "quote": "If it isn't in the design, it's still a state."
+    }
+  ],
+  "ai-engineer": [
+    {
+      "heroTitleLine2": "The Prompt Negotiator",
+      "tagline": "MAKES THE MODEL EARN ITS PAY.",
+      "superpowers": [
+        "Writes prompts that stay prompts",
+        "Evals every change against a golden set",
+        "Knows when a bigger model is the wrong answer"
+      ],
+      "quote": "Measure the loss. Then measure the user."
+    },
+    {
+      "heroTitleLine2": "The Retrieval Curator",
+      "tagline": "FINDS THE RIGHT SENTENCE.",
+      "superpowers": [
+        "Chunks a corpus like a sommelier",
+        "Reranks with context in mind",
+        "Knows when to stop at keyword search"
+      ],
+      "quote": "The model is a stranger; the index is the invitation."
+    },
+    {
+      "heroTitleLine2": "The Latency Tamer",
+      "tagline": "STREAMS TOKENS YOU CAN READ.",
+      "superpowers": [
+        "Caches what's safe, regenerates what isn't",
+        "Parallelises tool calls without the mess",
+        "Measures cost in seconds, not cents"
+      ],
+      "quote": "Waiting is a feature when the answer arrives well."
+    },
+    {
+      "heroTitleLine2": "The Eval Harness Mechanic",
+      "tagline": "SHIPS ONLY WHEN THE METRIC MOVES.",
+      "superpowers": [
+        "Writes evals before fixtures",
+        "Separates rubric from sample",
+        "Catches regressions the humans missed"
+      ],
+      "quote": "A prompt with no eval is a wish."
+    }
+  ],
+  "platform-eng": [
+    {
+      "heroTitleLine2": "The Paved-Path Paver",
+      "tagline": "MAKES THE RIGHT THING THE EASY THING.",
+      "superpowers": [
+        "Templatises the tedious third of every service",
+        "Answers every 'how do I' with a manifest",
+        "Deletes boilerplate faster than it accretes"
+      ],
+      "quote": "The platform is for humans first."
+    },
+    {
+      "heroTitleLine2": "The Pipeline Plumber",
+      "tagline": "TURNS YAML INTO PROMOTIONS.",
+      "superpowers": [
+        "Keeps CI green without ignoring tests",
+        "Caches what's safe, rebuilds what isn't",
+        "Promotes artifacts with a single click"
+      ],
+      "quote": "Fast feedback beats clever plans."
+    },
+    {
+      "heroTitleLine2": "The Observability Architect",
+      "tagline": "NAMES THE METRIC THAT MATTERS.",
+      "superpowers": [
+        "Writes alerts that page only for pages",
+        "Joins logs and traces in one query",
+        "Makes SLOs the team actually defends"
+      ],
+      "quote": "If no one is paging, nothing is watching."
+    },
+    {
+      "heroTitleLine2": "The Golden-Path Gardener",
+      "tagline": "PRUNES THE SHORTCUTS YOU DON'T NEED.",
+      "superpowers": [
+        "Deprecates with a migration path",
+        "Writes docs that reduce Slack volume",
+        "Turns tribal knowledge into READMEs"
+      ],
+      "quote": "A platform is a library with manners."
+    }
+  ],
+  "data-engineer": [
+    {
+      "heroTitleLine2": "The Pipeline Sculptor",
+      "tagline": "LANDS DATA BEFORE BREAKFAST.",
+      "superpowers": [
+        "Backfills eight years overnight",
+        "Writes DAGs that read like a recipe",
+        "Catches schema drift at the boundary"
+      ],
+      "quote": "The freshest data is already old."
+    },
+    {
+      "heroTitleLine2": "The Schema Arbiter",
+      "tagline": "KEEPS THE CONTRACTS HONEST.",
+      "superpowers": [
+        "Evolves columns without downstream tears",
+        "Documents types in the table, not the wiki",
+        "Knows when a new field is a new system"
+      ],
+      "quote": "Column names are API."
+    },
+    {
+      "heroTitleLine2": "The Warehouse Whisperer",
+      "tagline": "CUTS A QUERY THAT RUNS IN SECONDS.",
+      "superpowers": [
+        "Partitions for the actual question",
+        "Reads query plans like weather maps",
+        "Knows which materialisation pays for itself"
+      ],
+      "quote": "Scan less. Compute later."
+    },
+    {
+      "heroTitleLine2": "The Lineage Librarian",
+      "tagline": "TRACES EVERY NUMBER HOME.",
+      "superpowers": [
+        "Names the source of every dashboard figure",
+        "Flags the silent-renamer PRs before merge",
+        "Explains 'why did the KPI move' in one paragraph"
+      ],
+      "quote": "A metric without lineage is a rumour."
+    }
+  ],
+  "hr": [
+    {
+      "heroTitleLine2": "The Culture Architect",
+      "tagline": "HIRES FOR THE LONG GAME.",
+      "superpowers": [
+        "Reads the room and the résumé",
+        "Turns awkward meetings into next steps",
+        "Knows when to push back"
+      ],
+      "quote": "People scale or they don't — your call."
+    },
+    {
+      "heroTitleLine2": "The Talent Whisperer",
+      "tagline": "FINDS THE SIGNAL IN THE STACK.",
+      "superpowers": [
+        "Spots intent under the bullet points",
+        "Asks the question the CV didn't answer",
+        "Closes the loop before it frays"
+      ],
+      "quote": "Hiring is the most expensive bug to introduce."
+    },
+    {
+      "heroTitleLine2": "The Conflict Translator",
+      "tagline": "TURNS HEAT INTO HEADWAY.",
+      "superpowers": [
+        "Listens longer than the meeting allows",
+        "Renders feelings into action items",
+        "Keeps confidences and momentum"
+      ],
+      "quote": "Most fires were a question someone didn't ask."
+    },
+    {
+      "heroTitleLine2": "The Onboarding Engineer",
+      "tagline": "BUILDS A FIRST WEEK WORTH STAYING FOR.",
+      "superpowers": [
+        "Writes the handbook the docs forgot",
+        "Makes day-one productive without burning out day-thirty",
+        "Connects new hires to the right room"
+      ],
+      "quote": "First week is a forever-promise; pay it."
+    }
+  ],
+  "administration": [
+    {
+      "heroTitleLine2": "The Operations Cartographer",
+      "tagline": "MAPS THE PATH SO NO ONE GETS LOST.",
+      "superpowers": [
+        "Turns chaos into a checklist",
+        "Closes loops the calendar missed",
+        "Knows every supplier's first name"
+      ],
+      "quote": "If it isn't written down, it's a rumour."
+    },
+    {
+      "heroTitleLine2": "The Vendor Diplomat",
+      "tagline": "NEGOTIATES THE LINE-ITEMS NOBODY READS.",
+      "superpowers": [
+        "Finds the clause that bites you in year three",
+        "Returns the call that nobody wants",
+        "Keeps the lights on under budget"
+      ],
+      "quote": "A good contract is the smallest possible promise."
+    },
+    {
+      "heroTitleLine2": "The Process Tuner",
+      "tagline": "OPTIMISES THE THINGS NOBODY NOTICES.",
+      "superpowers": [
+        "Removes the form that does nothing",
+        "Adds the one that prevents the fire",
+        "Keeps audit dates from sneaking up"
+      ],
+      "quote": "Good ops is invisible until it isn't."
+    },
+    {
+      "heroTitleLine2": "The Calm Coordinator",
+      "tagline": "RUNS THE ROOM WITHOUT RUNNING IT OVER.",
+      "superpowers": [
+        "Reschedules without breaking trust",
+        "Files what others forget",
+        "Owns the inbox that holds the company together"
+      ],
+      "quote": "Logistics is leadership without the speech."
+    }
+  ],
+  "customer-relations": [
+    {
+      "heroTitleLine2": "The Empathy Engineer",
+      "tagline": "TURNS COMPLAINTS INTO COMMITMENTS.",
+      "superpowers": [
+        "Hears the question under the complaint",
+        "Owns the apology and the next ship date",
+        "Translates feature requests into priorities"
+      ],
+      "quote": "Every angry user is a free user-research session."
+    },
+    {
+      "heroTitleLine2": "The Renewal Whisperer",
+      "tagline": "MAKES YEAR TWO WORTH MORE THAN YEAR ONE.",
+      "superpowers": [
+        "Reads the usage graph like a poem",
+        "Calls before the contract does",
+        "Turns lukewarm into loyal"
+      ],
+      "quote": "Churn is rarely sudden; it just looks that way."
+    },
+    {
+      "heroTitleLine2": "The Escalation Anchor",
+      "tagline": "HOLDS THE LINE WHEN THE LINE IS HOT.",
+      "superpowers": [
+        "De-escalates in the first sentence",
+        "Brings engineers the right context, not the loudest one",
+        "Closes incidents and feelings"
+      ],
+      "quote": "The customer remembers the recovery, not the outage."
+    },
+    {
+      "heroTitleLine2": "The Voice of the Customer",
+      "tagline": "MAKES THE ROADMAP HEAR ITS OWN USERS.",
+      "superpowers": [
+        "Quotes verbatim in the right meeting",
+        "Counts pain by frequency, not volume",
+        "Knows when to say not yet"
+      ],
+      "quote": "Listen until the user stops correcting you."
+    }
+  ]
+}

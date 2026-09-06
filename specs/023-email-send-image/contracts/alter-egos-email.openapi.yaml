@@ -1,0 +1,184 @@
+# OpenAPI 3.0 contract for the new email-send endpoint introduced by
+# specs/023-email-send-image. Additive: no existing endpoint is changed.
+#
+# Spec linkage: FR-2310..FR-2318. Clarifications session 2026-05-11
+# locked the response taxonomy (200 / 503 / 502 / 400 / 415) and the
+# typed problem-detail URI for the "not configured" path.
+openapi: 3.0.3
+info:
+  title: AI-Avatar — Send Generated Alter Ego By Email
+  version: "023.0"
+  description: |
+    Single endpoint for emailing the currently-displayed generated alter
+    ego poster to the address captured on the Setup tab. The endpoint is
+    purely additive to the 002/003/016 baseline; the Generate endpoint
+    (`POST /api/v1/alter-egos`) is unchanged.
+
+    Configuration semantics: the backend evaluates "mail server
+    configured" once at startup as a non-blank check on
+    `spring.mail.host`. When unconfigured, this endpoint returns the
+    typed 503 below regardless of input — no outbound SMTP is attempted
+    (spec FR-2311 / FR-2318).
+
+paths:
+  /api/v1/alter-egos/email:
+    post:
+      operationId: sendAlterEgoEmail
+      summary: Send the currently-displayed alter ego poster by email
+      parameters:
+        - $ref: "#/components/parameters/XRequestId"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [to, firstName, image]
+              properties:
+                to:
+                  type: string
+                  format: email
+                  maxLength: 254
+                  description: |
+                    Validated email address captured on the Setup tab.
+                    Whitespace is trimmed by the server before
+                    validation. Backed by Jakarta `@Email` + `@NotBlank`
+                    + `@Size(max = 254)`.
+                  example: someone@example.com
+                firstName:
+                  type: string
+                  maxLength: 50
+                  description: |
+                    The first name captured on the Setup tab. Validated
+                    by the existing `@ValidFirstName` constraint (011)
+                    plus `@NotBlank`. Used to substitute `{firstName}`
+                    in the email body (spec FR-2314).
+                  example: Dmytro
+                image:
+                  type: string
+                  format: binary
+                  description: |
+                    The currently-displayed generated poster bytes.
+                    Content type MUST be `image/png` or `image/jpeg`
+                    — matches the Generate endpoint's allow-list.
+                    Subject to the existing 20 MB multipart cap.
+      responses:
+        "200":
+          description: Email accepted and dispatched.
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/XRequestId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SendAlterEgoEmailResponse"
+        "400":
+          description: |
+            Validation failure on `to` (not a valid email, blank, too long)
+            or `firstName` (blank, invalid characters, > 50 chars,
+            instruction-shaped). RFC 7807 problem detail.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "415":
+          description: |
+            Image MIME outside the `image/png` / `image/jpeg` allow-list.
+            RFC 7807 problem detail.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "502":
+          description: |
+            SMTP send failed after the project-wide RetryTemplate
+            exhausted its 5 attempts. The FE classifies this as a
+            retryable failure and presents the retryable alert.
+            No PII is included in the body.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+        "503":
+          description: |
+            Mail server is not configured at backend startup
+            (`spring.mail.host` is blank). The `type` field of the
+            problem detail equals
+            `https://aiavatar.local/problems/email/not-configured` —
+            the FE classifies on this URI to render the
+            "email server is not yet configured" alert.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/EmailNotConfiguredProblem"
+
+components:
+  parameters:
+    XRequestId:
+      in: header
+      name: X-Request-Id
+      required: false
+      schema:
+        type: string
+        format: uuid
+      description: |
+        Correlation ID. Reused if present and parseable as a UUID,
+        otherwise the server generates one. Echoed back in the
+        response header.
+
+  headers:
+    XRequestId:
+      schema:
+        type: string
+        format: uuid
+      description: Correlation ID echoed by the server.
+
+  schemas:
+    SendAlterEgoEmailResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [sent]
+          description: Stable terminal status; "sent" iff the SMTP send returned without error.
+      example:
+        status: sent
+
+    ProblemDetail:
+      type: object
+      description: RFC 7807 problem detail (Spring Boot default shape).
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+      example:
+        type: about:blank
+        title: Bad Request
+        status: 400
+        detail: "to must be a well-formed email address"
+
+    EmailNotConfiguredProblem:
+      allOf:
+        - $ref: "#/components/schemas/ProblemDetail"
+        - type: object
+          properties:
+            type:
+              type: string
+              const: https://aiavatar.local/problems/email/not-configured
+            status:
+              type: integer
+              const: 503
+      example:
+        type: https://aiavatar.local/problems/email/not-configured
+        title: Email service is not configured
+        status: 503
+        detail: The mail server is not configured. Contact the operator to enable email delivery.

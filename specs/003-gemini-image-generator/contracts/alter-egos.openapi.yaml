@@ -1,0 +1,434 @@
+openapi: 3.1.0
+info:
+  title: AI Alter Ego API
+  description: |
+    Backend API for the AI-Avatar project, shared by features 001-initial-poc,
+    002-sleek-tabbed-ui, and 003-gemini-image-generator. Exposes a single
+    endpoint that accepts a photo + selection metadata and returns a generated
+    alter-ego character plus a rendered poster image.
+
+    **Delta from 002** (this version):
+      - `ResponseMeta.outcome` wire value RENAMED: `success` → `real`.
+        Semantics change in lockstep: `real` now means "the real image provider
+        was used" (not merely "no exception occurred"). Callers SHOULD treat an
+        unknown outcome value as `fallback` for graceful degradation.
+      - `ResponseMeta.reason` ADDED, optional. Present (non-null) iff
+        `outcome == fallback`. One of a fixed, enumerated set. For operator /
+        automated-test visibility only — the frontend MUST NOT surface this
+        value to the end user (see feature 003's FR-214 / FR-218).
+      - Photo upload `max-file-size` raised from 5 MB → 20 MB at the Spring
+        multipart layer (backend resize brings it under the Gemini provider's
+        per-request ceiling before the outbound call; backend-side and
+        transparent to the caller).
+      - No change to `Selections`, `GeneratedCharacter`, `Poster`, or the
+        `Pose`/`Archetype`/`Universe`/`Vibe` enums.
+  version: "3.0.0"
+  contact:
+    name: AI-Avatar team
+
+servers:
+  - url: http://localhost:8080
+    description: Local Spring Boot dev server
+  - url: /
+    description: Same-origin (behind the Vite dev proxy or the production nginx)
+
+tags:
+  - name: alter-egos
+    description: Generate an alter-ego poster from a user photo and selections.
+
+paths:
+  /api/v1/alter-egos:
+    post:
+      tags: [alter-egos]
+      operationId: generateAlterEgo
+      summary: Generate a new alter-ego poster.
+      description: |
+        Accepts the user's photo (multipart part `photo`) and their selection
+        metadata (multipart part `selections`, JSON). Returns a generated
+        character (hero title, tagline, superpowers, quote) and a poster image
+        encoded as a data URL.
+
+        The backend image path is determined by the active Spring profile:
+        - Profile `gemini` (active when `GEMINI_API_KEY` env var is set) calls
+          Google's Gemini image-generation model (`gemini-2.5-flash-image-preview`
+          by default, configurable via `GEMINI_MODEL_ID`) with the user's photo
+          as a reference and a prompt composed from all Setup fields.
+        - Profile `default` (no Gemini key configured) uses the 001 stub
+          image generator.
+
+        Behaviour on stubbed or real success AND on fallback is all HTTP
+        `200 OK` — callers use `meta.outcome` (`real` / `fallback`) to
+        distinguish, and `meta.reason` (fallback only) to classify. Per
+        resilience Principle IV the backend retries 5 times with exponential
+        back-off + jitter before falling back.
+      parameters:
+        - in: header
+          name: X-Request-Id
+          description: |
+            Optional client-supplied correlation ID. If absent, the server
+            generates one and echoes it in the response header and body. Used to
+            join frontend and backend logs.
+          required: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [photo, selections]
+              properties:
+                photo:
+                  type: string
+                  format: binary
+                  description: |
+                    User's photo. MIME MUST be one of `image/jpeg` or `image/png`.
+                    Size MUST NOT exceed 20 MB (raised from 5 MB in 002 so that
+                    large phone photos reach the backend resize step). The
+                    backend reduces overlarge photos before the outbound Gemini
+                    call; reduction is transparent to the caller.
+                selections:
+                  $ref: '#/components/schemas/Selections'
+            encoding:
+              photo:
+                contentType: image/jpeg, image/png
+              selections:
+                contentType: application/json
+      responses:
+        '200':
+          description: |
+            Generation completed (either real Gemini provider or fallback).
+            Body is always an `AlterEgoResponse`; distinguish outcomes via
+            `meta.outcome`, and on fallback the classification via
+            `meta.reason`.
+          headers:
+            X-Request-Id:
+              description: Echo of the request's correlation ID (generated if absent on request).
+              schema: { type: string, format: uuid }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlterEgoResponse'
+              examples:
+                real:
+                  summary: Real Gemini success — Cloud Architect × Star Wars × Rebel vibe
+                  value:
+                    character:
+                      heroTitleLine1: "PAULA"
+                      heroTitleLine2: "The Rebel Cloud Architect"
+                      tagline: "COMMITS ON FRIDAYS, ROLLS BACK ON SATURDAYS."
+                      superpowers:
+                        - "Turns YAML into fighting words"
+                        - "Hears the Force in a paged alert"
+                        - "Drafts a rebellion at the whiteboard"
+                      quote: "May the cache be with you."
+                    poster:
+                      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSU…"
+                      mediaType: "image/png"
+                      widthPx: 900
+                      heightPx: 1200
+                    meta:
+                      outcome: "real"
+                      correlationId: "ce2b9b84-0c9b-4b9a-81a5-7b2e0f39a2c1"
+                real-no-vibe:
+                  summary: Real Gemini success — vibe omitted
+                  value:
+                    character:
+                      heroTitleLine1: "PAULA"
+                      heroTitleLine2: "The Backend Dev"
+                      tagline: "UNBREAKS MAIN BEFORE STANDUP."
+                      superpowers:
+                        - "Reads stack traces in 50 shades of gray"
+                        - "Writes migrations that actually migrate"
+                        - "Deletes code for fun"
+                      quote: "Ship it. I'll watch the graphs."
+                    poster:
+                      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSU…"
+                      mediaType: "image/png"
+                      widthPx: 900
+                      heightPx: 1200
+                    meta:
+                      outcome: "real"
+                      correlationId: "d0f1a7e4-1234-4ed4-b09a-0c4a0c4a0c4a"
+                fallback-not-configured:
+                  summary: No GEMINI_API_KEY configured — stub fallback
+                  value:
+                    character:
+                      heroTitleLine1: "PAULA"
+                      heroTitleLine2: "The Resilient"
+                      tagline: "EVEN WHEN THE ROBOTS SLEEP."
+                      superpowers:
+                        - "Outlasts every timeout"
+                        - "Turns errors into signage"
+                        - "Always returns a poster"
+                      quote: "Degraded, not defeated."
+                    poster:
+                      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSU…"
+                      mediaType: "image/png"
+                      widthPx: 900
+                      heightPx: 1200
+                    meta:
+                      outcome: "fallback"
+                      reason: "not_configured"
+                      correlationId: "2d5f2f18-3f76-4bfa-a1c3-bdb1cbe3d0aa"
+                fallback-rate-limited:
+                  summary: Gemini returned HTTP 429 — retries exhausted, stub fallback
+                  value:
+                    character:
+                      heroTitleLine1: "PAULA"
+                      heroTitleLine2: "The Resilient"
+                      tagline: "EVEN WHEN THE ROBOTS SLEEP."
+                      superpowers:
+                        - "Outlasts every timeout"
+                        - "Turns errors into signage"
+                        - "Always returns a poster"
+                      quote: "Degraded, not defeated."
+                    poster:
+                      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSU…"
+                      mediaType: "image/png"
+                      widthPx: 900
+                      heightPx: 1200
+                    meta:
+                      outcome: "fallback"
+                      reason: "rate_limited"
+                      correlationId: "aa4c0e9a-7c41-4f7d-9a21-9d4f3a4e2c0f"
+                fallback-safety-refused:
+                  summary: Gemini 200 with promptFeedback.blockReason=SAFETY — stub fallback
+                  value:
+                    character:
+                      heroTitleLine1: "PAULA"
+                      heroTitleLine2: "The Resilient"
+                      tagline: "EVEN WHEN THE ROBOTS SLEEP."
+                      superpowers:
+                        - "Outlasts every timeout"
+                        - "Turns errors into signage"
+                        - "Always returns a poster"
+                      quote: "Degraded, not defeated."
+                    poster:
+                      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSU…"
+                      mediaType: "image/png"
+                      widthPx: 900
+                      heightPx: 1200
+                    meta:
+                      outcome: "fallback"
+                      reason: "safety_refused"
+                      correlationId: "6d72d7c6-3c3c-4b1f-8e8c-7b6e9c0e7c3a"
+        '400':
+          description: |
+            Invalid request — malformed JSON, bad enum value, blank firstName,
+            wrong photo MIME. A `null`/absent `vibe` is NOT a 400; vibe is
+            optional.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '413':
+          description: Photo exceeds the 20 MB Spring multipart limit.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '415':
+          description: Photo MIME not in { image/jpeg, image/png }.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  schemas:
+
+    Selections:
+      type: object
+      required: [pose, archetype, universe, firstName]
+      properties:
+        pose:
+          $ref: '#/components/schemas/Pose'
+        archetype:
+          $ref: '#/components/schemas/Archetype'
+        universe:
+          $ref: '#/components/schemas/Universe'
+        vibe:
+          $ref: '#/components/schemas/Vibe'
+          nullable: true
+          description: |
+            Optional vibe. Omit the field entirely or send `null` if the user
+            made no selection. The absence of a vibe does not block generation
+            and does not change validation.
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 40
+          description: Trimmed first name. Surfaces uppercased as line 1 of the hero title.
+          example: "Paula"
+
+    Pose:
+      type: string
+      description: |
+        Visual composition / stance. Carried forward from 001 unchanged.
+      enum:
+        - heroic
+        - stealthy
+        - mystical
+        - scholar
+
+    Archetype:
+      type: string
+      description: |
+        Engineering role. Re-themed in 002 to match the mockup; unchanged in 003.
+      enum:
+        - cloud-architect
+        - backend-dev
+        - frontend-dev
+        - ai-engineer
+        - platform-eng
+        - data-engineer
+
+    Universe:
+      type: string
+      description: |
+        Fictional setting for the poster's visual framing. Carried forward from 002 unchanged.
+      enum:
+        - marvel
+        - star-wars
+        - cyberpunk
+        - the-office
+        - indiana-jones
+        - lord-of-the-rings
+
+    Vibe:
+      type: string
+      description: |
+        Optional mood / disposition hint. Carried forward from 002 unchanged.
+      enum:
+        - builder
+        - thinker
+        - rebel
+        - architect
+
+    GeneratedCharacter:
+      type: object
+      required: [heroTitleLine1, heroTitleLine2, tagline, superpowers, quote]
+      properties:
+        heroTitleLine1:
+          type: string
+          description: First name in uppercase (e.g. "PAULA").
+          minLength: 1
+          maxLength: 40
+        heroTitleLine2:
+          type: string
+          description: Archetype-flavoured title line.
+          minLength: 1
+          maxLength: 80
+        tagline:
+          type: string
+          description: Short punchy statement, typically 4–6 words in uppercase.
+          minLength: 1
+          maxLength: 80
+        superpowers:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+        quote:
+          type: string
+          description: Short dev-flavoured quote under ~12 words.
+          minLength: 1
+          maxLength: 140
+
+    Poster:
+      type: object
+      required: [dataUrl, mediaType, widthPx, heightPx]
+      properties:
+        dataUrl:
+          type: string
+          description: |
+            Data URL carrying the rendered poster image. On the `real` outcome,
+            the bytes come from Gemini (JPEG or PNG per the model's response).
+            On any `fallback` outcome, the bytes come from the 001 stub
+            procedural renderer (PNG).
+          pattern: "^data:image\\/(png|jpeg);base64,[A-Za-z0-9+/=]+$"
+        mediaType:
+          type: string
+          enum: [image/png, image/jpeg]
+        widthPx:
+          type: integer
+          minimum: 1
+        heightPx:
+          type: integer
+          minimum: 1
+
+    FallbackReason:
+      type: string
+      description: |
+        Classification of WHY a fallback was served. Fixed, closed enumeration
+        per feature 003 FR-218. Present iff `meta.outcome == fallback`. For
+        operator / automated-test visibility only — the frontend MUST NOT
+        render this value to the end user.
+      enum:
+        - not_configured
+        - network_error
+        - rate_limited
+        - timeout
+        - malformed_response
+        - safety_refused
+
+    ResponseMeta:
+      type: object
+      required: [outcome, correlationId]
+      properties:
+        outcome:
+          type: string
+          enum: [real, fallback]
+          description: |
+            `real` — the Gemini image-generation provider was called
+            successfully and its image is carried in `poster.dataUrl`.
+            `fallback` — the 001 stub image was returned (either because
+            Gemini wasn't configured, the call failed after retries, the
+            response was malformed, or the provider refused on safety grounds).
+            In either case the HTTP status is 200 and the body is fully
+            populated. Renamed from `success` → `real` in 003 to reflect
+            the new "real provider was used" semantic; unknown values from
+            a forward-compatible client SHOULD be treated as `fallback`.
+        reason:
+          $ref: '#/components/schemas/FallbackReason'
+          description: |
+            Present iff `outcome == fallback`. Absent on the `real` path.
+        correlationId:
+          type: string
+          format: uuid
+
+    AlterEgoResponse:
+      type: object
+      required: [character, poster, meta]
+      properties:
+        character:
+          $ref: '#/components/schemas/GeneratedCharacter'
+        poster:
+          $ref: '#/components/schemas/Poster'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+
+    ProblemDetail:
+      type: object
+      description: RFC 7807 problem details (Spring Boot 3 default shape).
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+          example: "about:blank"
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri

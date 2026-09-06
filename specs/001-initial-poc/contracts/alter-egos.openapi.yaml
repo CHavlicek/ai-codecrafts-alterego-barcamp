@@ -1,0 +1,301 @@
+openapi: 3.1.0
+info:
+  title: AI Alter Ego API
+  description: |
+    Backend API for the AI-Avatar project's initial POC feature (`001-initial-poc`).
+    Exposes a single endpoint that accepts a photo + selection metadata and returns a
+    generated alter-ego character plus a rendered poster image. All third-party
+    integrations are stubbed on the backend; this contract does not change when
+    real providers are wired in.
+  version: "1.0.0"
+  contact:
+    name: AI-Avatar team
+
+servers:
+  - url: http://localhost:8080
+    description: Local Spring Boot dev server
+  - url: /
+    description: Same-origin (behind the Vite dev proxy or the production nginx)
+
+tags:
+  - name: alter-egos
+    description: Generate an alter-ego poster from a user photo and selections.
+
+paths:
+  /api/v1/alter-egos:
+    post:
+      tags: [alter-egos]
+      operationId: generateAlterEgo
+      summary: Generate a new alter-ego poster.
+      description: |
+        Accepts the user's photo (multipart part `photo`) and their selection metadata
+        (multipart part `selections`, JSON). Returns a generated character (hero title,
+        tagline, superpowers, quote) and a poster image encoded as a data URL.
+
+        Behaviour is the same on stubbed success and stubbed fallback — the response is
+        `200 OK` in both cases, and callers use `meta.outcome` to distinguish them
+        (FR-018 guarantees the user always gets a complete poster).
+      parameters:
+        - in: header
+          name: X-Request-Id
+          description: |
+            Optional client-supplied correlation ID. If absent, the server generates one
+            and echoes it in the response header and body. Used to join frontend and
+            backend logs.
+          required: false
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [photo, selections]
+              properties:
+                photo:
+                  type: string
+                  format: binary
+                  description: |
+                    User's photo. MIME MUST be one of `image/jpeg` or `image/png`.
+                    Size MUST NOT exceed 5 MB. No filename semantics are inferred.
+                selections:
+                  $ref: '#/components/schemas/Selections'
+            encoding:
+              photo:
+                contentType: image/jpeg, image/png
+              selections:
+                contentType: application/json
+      responses:
+        '200':
+          description: |
+            Generation completed (either primary stub or fallback). Body is always an
+            `AlterEgoResponse`; distinguish outcomes via `meta.outcome`.
+          headers:
+            X-Request-Id:
+              description: Echo of the request's correlation ID (generated if absent on request).
+              schema: { type: string, format: uuid }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlterEgoResponse'
+              examples:
+                success:
+                  summary: Primary stub success
+                  value:
+                    character:
+                      heroTitleLine1: "PAULA"
+                      heroTitleLine2: "The Cloud Guardrail"
+                      tagline: "STILL SHIPS ON FRIDAYS."
+                      superpowers:
+                        - "Rolls back with a single keystroke"
+                        - "Hears pager alerts before they fire"
+                        - "Speaks fluent YAML in all dialects"
+                      quote: "It's always DNS. Always."
+                    poster:
+                      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSU…"
+                      mediaType: "image/png"
+                      widthPx: 900
+                      heightPx: 1200
+                    meta:
+                      outcome: "success"
+                      correlationId: "ce2b9b84-0c9b-4b9a-81a5-7b2e0f39a2c1"
+                fallback:
+                  summary: Stub failed, fallback content returned
+                  value:
+                    character:
+                      heroTitleLine1: "PAULA"
+                      heroTitleLine2: "The Resilient"
+                      tagline: "EVEN WHEN THE ROBOTS SLEEP."
+                      superpowers:
+                        - "Outlasts every timeout"
+                        - "Turns errors into signage"
+                        - "Always returns a poster"
+                      quote: "Degraded, not defeated."
+                    poster:
+                      dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSU…"
+                      mediaType: "image/png"
+                      widthPx: 900
+                      heightPx: 1200
+                    meta:
+                      outcome: "fallback"
+                      correlationId: "2d5f2f18-3f76-4bfa-a1c3-bdb1cbe3d0aa"
+        '400':
+          description: Invalid request — malformed JSON, bad enum value, blank firstName, wrong photo MIME.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '413':
+          description: Photo exceeds the 5 MB limit (Spring multipart).
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+        '415':
+          description: Photo MIME not in { image/jpeg, image/png }.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
+
+components:
+  schemas:
+
+    Selections:
+      type: object
+      required: [pose, colour, archetype, universe, firstName]
+      properties:
+        pose:
+          $ref: '#/components/schemas/Pose'
+        colour:
+          $ref: '#/components/schemas/Colour'
+        archetype:
+          $ref: '#/components/schemas/Archetype'
+        universe:
+          $ref: '#/components/schemas/Universe'
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 40
+          description: Trimmed first name. Surfaces uppercased as line 1 of the hero title.
+          example: "Paula"
+
+    Pose:
+      type: string
+      description: |
+        Visual composition / stance. Replaces the biometric gender cue (see
+        /speckit.clarify Q3 answer in spec.md).
+      enum:
+        - heroic
+        - stealthy
+        - mystical
+        - scholar
+
+    Colour:
+      type: string
+      description: Accent colour rendered on the poster and mapped to an RGB value by the frontend.
+      enum:
+        - blue
+        - purple
+        - red
+        - cyan
+        - gold
+        - green
+
+    Archetype:
+      type: string
+      description: Developer-themed hero archetype; drives hero title / tagline tone.
+      enum:
+        - bug-hunter
+        - cloud-wizard
+        - code-breaker
+        - data-oracle
+        - ai-sorcerer
+        - deploy-lord
+
+    Universe:
+      type: string
+      description: Fictional setting for the poster's visual framing.
+      enum:
+        - star-wars
+        - harry-potter
+        - indiana-jones
+        - cyberpunk
+
+    GeneratedCharacter:
+      type: object
+      required: [heroTitleLine1, heroTitleLine2, tagline, superpowers, quote]
+      properties:
+        heroTitleLine1:
+          type: string
+          description: First name in uppercase (e.g. "PAULA").
+          minLength: 1
+          maxLength: 40
+        heroTitleLine2:
+          type: string
+          description: Archetype-flavoured title line (e.g. "The Cloud Guardrail").
+          minLength: 1
+          maxLength: 80
+        tagline:
+          type: string
+          description: Short punchy statement, typically 4–6 words in uppercase.
+          minLength: 1
+          maxLength: 80
+        superpowers:
+          type: array
+          minItems: 3
+          maxItems: 3
+          items:
+            type: string
+            minLength: 1
+            maxLength: 120
+        quote:
+          type: string
+          description: Short dev-flavoured quote under ~12 words.
+          minLength: 1
+          maxLength: 140
+
+    Poster:
+      type: object
+      required: [dataUrl, mediaType, widthPx, heightPx]
+      properties:
+        dataUrl:
+          type: string
+          description: Data URL carrying the rendered poster image. MIME prefix matches `mediaType`.
+          pattern: "^data:image\\/(png|jpeg);base64,[A-Za-z0-9+/=]+$"
+        mediaType:
+          type: string
+          enum: [image/png, image/jpeg]
+        widthPx:
+          type: integer
+          minimum: 1
+        heightPx:
+          type: integer
+          minimum: 1
+
+    ResponseMeta:
+      type: object
+      required: [outcome, correlationId]
+      properties:
+        outcome:
+          type: string
+          enum: [success, fallback]
+          description: |
+            `success` — primary stub path completed cleanly.
+            `fallback` — primary stub failed and the canned fallback poster was returned.
+            In either case, the HTTP status is 200 and the body is fully populated.
+        correlationId:
+          type: string
+          format: uuid
+
+    AlterEgoResponse:
+      type: object
+      required: [character, poster, meta]
+      properties:
+        character:
+          $ref: '#/components/schemas/GeneratedCharacter'
+        poster:
+          $ref: '#/components/schemas/Poster'
+        meta:
+          $ref: '#/components/schemas/ResponseMeta'
+
+    ProblemDetail:
+      type: object
+      description: RFC 7807 problem details (Spring Boot 3 default shape).
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri
+          example: "about:blank"
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri

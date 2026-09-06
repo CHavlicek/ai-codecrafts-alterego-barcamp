@@ -1,0 +1,92 @@
+#!/bin/bash
+set -euxo pipefail
+
+# Terraform bakes: ${artifacts_bucket}, ${jar_key}, ${gemini_param_name},
+# ${fal_ai_param_name}, ${fal_ai_timeout_param_name}, ${smtp_username_param_name},
+# ${smtp_password_param_name}, ${email_from_override}, ${active_profile},
+# ${region}.
+
+dnf update -y
+dnf install -y java-21-amazon-corretto-headless
+
+id -u aiavatar &>/dev/null || useradd -r -s /sbin/nologin aiavatar
+install -d -o aiavatar -g aiavatar /opt/aiavatar
+
+# refresh.sh — pulls latest jar + both real-provider keys, restarts service.
+# Invoked on first boot below and later via `aws ssm send-command` from deploy-backend.sh.
+# 016: writes BOTH GEMINI_API_KEY and FAL_AI_API_KEY into /etc/aiavatar.env so
+# the backend can switch providers via SPRING_PROFILES_ACTIVE without changing
+# the runtime env file. Only one provider profile is active at a time per
+# FR-1605 (ProviderProfileGuard refuses both-active startups).
+cat >/opt/aiavatar/refresh.sh <<'EOS'
+#!/bin/bash
+set -euo pipefail
+aws s3 cp "s3://${artifacts_bucket}/${jar_key}" /opt/aiavatar/app.jar --region ${region}
+chown aiavatar:aiavatar /opt/aiavatar/app.jar
+chmod 644 /opt/aiavatar/app.jar
+
+GEMINI_KEY=$(aws ssm get-parameter --name "${gemini_param_name}" --with-decryption --region ${region} --query 'Parameter.Value' --output text)
+FAL_AI_KEY=$(aws ssm get-parameter --name "${fal_ai_param_name}" --with-decryption --region ${region} --query 'Parameter.Value' --output text)
+# 016 FR-1614a tuning knob: read on every refresh.sh run so an SSM rotation
+# (no Terraform apply needed) takes effect on the next refresh.sh trigger.
+FAL_AI_END_TO_END_TIMEOUT_MS=$(aws ssm get-parameter --name "${fal_ai_timeout_param_name}" --region ${region} --query 'Parameter.Value' --output text)
+# 027: SMTP mailbox credentials for the outbound-email seam. Cross-namespace
+# reuse — the same SecureString parameters the ai-closing-letter project
+# already manages (var.smtp_{username,password}_ssm_arn). EmailConfigured's
+# 4-input AND-gate at startup needs both non-blank or POST
+# /api/v1/alter-egos/email returns 503 not-configured.
+SMTP_USER=$(aws ssm get-parameter --name "${smtp_username_param_name}" --with-decryption --region ${region} --query 'Parameter.Value' --output text)
+SMTP_PASS=$(aws ssm get-parameter --name "${smtp_password_param_name}" --with-decryption --region ${region} --query 'Parameter.Value' --output text)
+# 027: From / sender header. Defaults to the SMTP username to satisfy
+# PrivateEmail's From-alignment rule (rejects mis-aligned senders at
+# MAIL FROM time). Override via var.email_from_override when a mailbox
+# alias is configured for the sending mailbox in PrivateEmail.
+EMAIL_FROM_OVERRIDE="${email_from_override}"
+EMAIL_FROM="$${EMAIL_FROM_OVERRIDE:-$SMTP_USER}"
+umask 077
+cat >/etc/aiavatar.env <<EOF
+SPRING_PROFILES_ACTIVE=${active_profile}
+SERVER_PORT=8080
+GEMINI_API_KEY=$GEMINI_KEY
+FAL_AI_API_KEY=$FAL_AI_KEY
+FAL_AI_END_TO_END_TIMEOUT_MS=$FAL_AI_END_TO_END_TIMEOUT_MS
+SPRING_MAIL_USERNAME=$SMTP_USER
+SPRING_MAIL_PASSWORD=$SMTP_PASS
+AIAVATAR_EMAIL_FROM=$EMAIL_FROM
+EOF
+chown root:aiavatar /etc/aiavatar.env
+chmod 640 /etc/aiavatar.env
+
+systemctl restart aiavatar.service
+EOS
+chmod 755 /opt/aiavatar/refresh.sh
+
+cat >/etc/systemd/system/aiavatar.service <<'EOS'
+[Unit]
+Description=AI Avatar backend (Spring Boot, profile: ${active_profile})
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aiavatar
+Group=aiavatar
+EnvironmentFile=/etc/aiavatar.env
+ExecStart=/usr/bin/java -Xms256m -Xmx768m -jar /opt/aiavatar/app.jar
+Restart=on-failure
+RestartSec=5
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
+EOS
+
+systemctl daemon-reload
+systemctl enable aiavatar.service
+
+# Best-effort first-boot pull. If the jar or either provider key isn't
+# uploaded/set yet, refresh.sh fails and the service stays stopped — operator
+# runs deploy-backend.sh (which calls refresh.sh via SSM) once artefacts are
+# in place. Both keys are pulled regardless of which profile is active so
+# switching providers later is one ssm put-parameter + one terraform apply.
+/opt/aiavatar/refresh.sh || true
