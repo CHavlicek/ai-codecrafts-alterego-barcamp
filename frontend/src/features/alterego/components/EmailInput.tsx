@@ -46,8 +46,11 @@ export function EmailInput({ value, onChange, disabled = false, maxLength = 254 
   return (
     <div className="email-input">
       <label className="email-input__label" htmlFor="email-input">
-        Email
+        Email <span className="email-input__optional">(optional)</span>
       </label>
+      <p id="email-input-hint" className="email-input__hint">
+        Add your email to have your alter ego sent to you — leave it blank to skip.
+      </p>
       <div className="email-input__field">
         <input
           id="email-input"
@@ -58,7 +61,9 @@ export function EmailInput({ value, onChange, disabled = false, maxLength = 254 
           className="email-input__control"
           aria-label="Email"
           aria-invalid={showError || undefined}
-          aria-describedby={showError ? 'email-input-error' : undefined}
+          aria-describedby={
+            showError ? 'email-input-hint email-input-error' : 'email-input-hint'
+          }
           value={value}
           maxLength={maxLength}
           disabled={disabled}
