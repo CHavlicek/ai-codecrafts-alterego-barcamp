@@ -1,61 +1,69 @@
 /*
- * Design tokens — 005 cinematic overhaul.
+ * Design tokens — Verbund rebrand ("AI @ Verbund 2026").
  *
- * Dark "emergence / portal" aesthetic: deep ink-violet base, per-sub-group
- * neon accents, Unbounded display / Geist body / Geist Mono meta.
+ * Light corporate aesthetic in the VERBUND look & feel: VERBUND-blau
+ * (#00468E) on a clean white/light ground, with an energy-transition
+ * green and a hydro/water cyan as supporting accents. Replaces the
+ * previous dark ink-violet "portal" theme. Variable NAMES are preserved
+ * so every component keeps consuming the same tokens; only the values
+ * are remapped to the new palette.
+ *
  * Loaded once via main.tsx; consumed by every component.
  */
 
 :root {
-  /* Surfaces — shifted off pure black onto a deep ink-violet so the
-     aurora + grain atmosphere (index.css) has something to sit against. */
-  --color-bg: #080612;
-  --color-bg-elevated: #0e0b1c;
-  --color-bg-overlay: #15112a;
-  --color-bg-glass: rgba(255, 255, 255, 0.04);
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-strong: rgba(255, 255, 255, 0.18);
-  --color-border-glow: rgba(0, 191, 255, 0.3);
+  /* Surfaces — clean corporate light ground. A faint blue-tinted white so
+     the aurora + grain atmosphere (index.css) has something to sit against
+     without looking flat. Elevated/overlay step slightly bluer for cards. */
+  --color-bg: #f4f7fb;
+  --color-bg-elevated: #ffffff;
+  --color-bg-overlay: #eaf1f8;
+  --color-bg-glass: rgba(0, 70, 142, 0.04);
+  --color-border: rgba(0, 70, 142, 0.14);
+  --color-border-strong: rgba(0, 70, 142, 0.26);
+  --color-border-glow: rgba(0, 70, 142, 0.4);
 
-  /* Text */
-  --color-text: #f3eefb;
-  --color-text-muted: rgba(243, 238, 251, 0.72);
-  --color-text-subtle: rgba(243, 238, 251, 0.48);
+  /* Text — VERBUND-blau ink on light. Muted/subtle step down in opacity. */
+  --color-text: #0b2a4a;
+  --color-text-muted: rgba(11, 42, 74, 0.7);
+  --color-text-subtle: rgba(11, 42, 74, 0.5);
 
-  /* Brand */
-  --color-pink: #e8427a;
-  --color-pink-hot: #ff4f9e;
-  --color-purple: #a855f7;
-  --color-purple-deep: #7c3aed;
-  --gradient-brand: linear-gradient(135deg, #e8427a 0%, #a855f7 50%, #00bfff 100%);
-  --gradient-brand-flat: linear-gradient(135deg, #e8427a 0%, #a855f7 100%);
+  /* Brand — VERBUND-blau primary, with the energy-transition green as the
+     warm counterpart. The "pink/purple" names from the old theme are
+     retained but remapped onto the Verbund palette so legacy references
+     stay on-brand: pink → energy green, purple → deep navy. */
+  --color-pink: #5aaa46; /* energy green (legacy 'pink' slot) */
+  --color-pink-hot: #6fc04f; /* brighter energy green */
+  --color-purple: #00468e; /* VERBUND-blau (legacy 'purple' slot) */
+  --color-purple-deep: #002b54; /* deep navy */
+  --gradient-brand: linear-gradient(135deg, #00468e 0%, #0090c7 55%, #5aaa46 100%);
+  --gradient-brand-flat: linear-gradient(135deg, #00468e 0%, #0090c7 100%);
 
-  /* Accent palette — six-value source for poster accents (backend derives
-     per-poster colour from the archetype×universe pair; see 002 FR-132). */
-  --color-accent-blue: #1a8aaa;
-  --color-accent-purple: #a855f7;
-  --color-accent-red: #e05858;
-  --color-accent-cyan: #00bfff;
-  --color-accent-gold: #f0a030;
-  --color-accent-green: #3dd68a;
+  /* Accent palette — Verbund-family hues for per-poster accents. */
+  --color-accent-blue: #00468e; /* VERBUND-blau */
+  --color-accent-purple: #0090c7; /* water/hydro cyan-blue */
+  --color-accent-red: #d4573b; /* warm alert clay */
+  --color-accent-cyan: #0090c7; /* water cyan (primary interactive accent) */
+  --color-accent-gold: #e2a12b; /* solar amber */
+  --color-accent-green: #5aaa46; /* energy-transition green */
 
-  /* Selection accents — one per Setup sub-group (research.md §R4). Each
-     sub-group lights up in its own colour rather than sharing purple.
-     006 adds Art Style at a distinct hue so the fifth category stays
-     visually distinguishable from the other four. */
-  --color-accent-pose: #00bfff; /* cyan */
-  --color-accent-role: #3dd68a; /* spring green */
-  --color-accent-universe: #f0a030; /* amber */
-  --color-accent-vibe: #e8427a; /* magenta */
-  --color-accent-artstyle: #a855f7; /* violet */
+  /* Selection accents — one per Setup sub-group. Kept distinct but all
+     drawn from the Verbund energy family (blue / green / amber / cyan). */
+  --color-accent-pose: #0090c7; /* water cyan */
+  --color-accent-role: #5aaa46; /* energy green */
+  --color-accent-universe: #e2a12b; /* solar amber */
+  --color-accent-vibe: #00468e; /* VERBUND-blau */
+  --color-accent-artstyle: #0090c7; /* hydro cyan */
 
-  /* Status — for the fallback banner / live-region announcements */
-  --color-success: #3dd68a;
-  --color-warning: #f0a030;
-  --color-error: #e05858;
+  /* Status */
+  --color-success: #5aaa46;
+  --color-warning: #e2a12b;
+  --color-error: #d4573b;
 
-  /* Type — Unbounded (display, arcade geometric) / Geist (body, refined
-     sans) / Geist Mono (meta, timestamps, hero-title line 2 credits). */
+  /* Type — Unbounded (display, geometric) / Geist (body, refined sans) /
+     Geist Mono (meta). Retained from the previous theme: a clean geometric
+     display paired with a corporate sans reads as professional on the
+     Verbund light ground. */
   --font-display:
     'Unbounded', 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -84,27 +92,24 @@
   --space-8: 64px;
   --space-9: 96px;
 
-  /* Shadows — chroma-tinted so dark-on-dark elements read with depth. */
-  --shadow-glow-cyan: 0 0 28px rgba(0, 191, 255, 0.25);
-  --shadow-glow-purple: 0 0 28px rgba(168, 85, 247, 0.25);
-  --shadow-glow-pink: 0 0 28px rgba(232, 66, 122, 0.28);
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 48px -24px rgba(0, 0, 0, 0.8);
-  --shadow-poster: 0 30px 60px -20px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  /* Shadows — soft blue-tinted depth for light-on-light elements. Glows
+     retuned from neon to the Verbund blue/green/cyan family. */
+  --shadow-glow-cyan: 0 0 28px rgba(0, 144, 199, 0.25);
+  --shadow-glow-purple: 0 0 28px rgba(0, 70, 142, 0.2);
+  --shadow-glow-pink: 0 0 28px rgba(90, 170, 70, 0.28);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 18px 40px -24px rgba(0, 43, 84, 0.35);
+  --shadow-poster: 0 30px 60px -20px rgba(0, 43, 84, 0.4), 0 0 0 1px rgba(0, 70, 142, 0.08) inset;
 
-  /* Motion — shared easing + durations so every surface animates in concert.
-     Tokens keep the prefers-reduced-motion override in index.css in one
-     place: zero out --motion-duration-* and keyframes fall through. */
+  /* Motion — shared easing + durations so every surface animates in concert. */
   --motion-ease-emerge: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
   --motion-duration-fast: 160ms;
   --motion-duration-base: 320ms;
   --motion-duration-slow: 720ms;
 
-  /* Focus — visible focus indicator per FR-020 (WCAG 2.1 AA). Glow +
-     outline together reads as a premium keyboard halo rather than an
-     OS-default ring. */
+  /* Focus — visible focus indicator (WCAG 2.1 AA), retuned to Verbund cyan. */
   --focus-ring:
-    0 0 0 2px var(--color-bg), 0 0 0 4px rgba(0, 191, 255, 0.65), 0 0 18px rgba(0, 191, 255, 0.35);
+    0 0 0 2px var(--color-bg), 0 0 0 4px rgba(0, 144, 199, 0.7), 0 0 18px rgba(0, 144, 199, 0.35);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -130,11 +135,12 @@ body {
 
 body {
   /* Atmosphere anchor — see .atmosphere in index.css for the layered
-     aurora + grain that paints over this base. */
+     aurora + grain that paints over this base. Soft Verbund blue/green/cyan
+     washes evoke water + energy against the light ground. */
   background:
-    radial-gradient(ellipse at 15% -10%, rgba(232, 66, 122, 0.2), transparent 55%),
-    radial-gradient(ellipse at 100% 20%, rgba(0, 191, 255, 0.14), transparent 55%),
-    radial-gradient(ellipse at 50% 110%, rgba(168, 85, 247, 0.18), transparent 60%), var(--color-bg);
+    radial-gradient(ellipse at 15% -10%, rgba(0, 70, 142, 0.1), transparent 55%),
+    radial-gradient(ellipse at 100% 20%, rgba(0, 144, 199, 0.1), transparent 55%),
+    radial-gradient(ellipse at 50% 110%, rgba(90, 170, 70, 0.1), transparent 60%), var(--color-bg);
   background-attachment: fixed;
 }
 

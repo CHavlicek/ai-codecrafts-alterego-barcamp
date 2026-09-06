@@ -18,7 +18,7 @@ class AlterEgoEmailBodyBuilderTest {
     private static final String EXPECTED_BODY_DMYTRO =
             "Hey, Dmytro!\n"
                     + "\n"
-                    + "Thank you, for being a part of CodeCrafts 2026!\n"
+                    + "Thank you, for being a part of AI @ Verbund 2026!\n"
                     + "\n"
                     + "Find your AI Generated Alter Ego attached to this letter.\n"
                     + "\n"
@@ -34,7 +34,7 @@ class AlterEgoEmailBodyBuilderTest {
         String expected =
                 "Hey, Paula!\n"
                         + "\n"
-                        + "Thank you, for being a part of CodeCrafts 2026!\n"
+                        + "Thank you, for being a part of AI @ Verbund 2026!\n"
                         + "\n"
                         + "Find your AI Generated Alter Ego attached to this letter.\n"
                         + "\n"

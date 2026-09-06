@@ -15,6 +15,15 @@ function App() {
         <div className="atmosphere__vignette" />
       </div>
       <AlterEgoPage />
+      <footer className="site-footer">
+        <span>AI @ Verbund 2026</span>
+        <span className="site-footer__sep" aria-hidden="true">
+          ·
+        </span>
+        <span>
+          An AI Experience Barcamp by <strong>fifty1</strong> for <strong>VERBUND</strong>
+        </span>
+      </footer>
     </LiveRegionProvider>
   )
 }

@@ -3,6 +3,7 @@ import { AlterEgoProvider } from './state/AlterEgoProvider'
 import { useAlterEgoSession } from './hooks/useAlterEgoSession'
 import { useGenerateAlterEgo } from './hooks/useGenerateAlterEgo'
 import { AlterEgoPanel } from './components/AlterEgoPanel'
+import { BrandHeader } from './components/BrandHeader'
 import { SetupLayout } from './components/SetupLayout'
 import { TabsShell } from './components/TabsShell'
 import { tabDisabled } from './state/selectors'
@@ -115,7 +116,11 @@ function AlterEgoPageContent() {
 
   return (
     <main className="alter-ego-page">
-      <h1 className="alter-ego-page__title">AI Alter Ego</h1>
+      <BrandHeader />
+      <h1 className="alter-ego-page__title">AI @ Verbund 2026</h1>
+      <p className="alter-ego-page__subtitle">
+        Discover your AI alter ego — powering the energy transformation.
+      </p>
       <TabsShell
         tabs={[
           {

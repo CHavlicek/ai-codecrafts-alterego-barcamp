@@ -75,10 +75,10 @@ button:not(:disabled):hover {
 [role='radio'][aria-checked='true'],
 button[data-selected='true'] {
   border-color: var(--grid-accent, var(--color-purple));
-  background: color-mix(in srgb, var(--grid-accent, #a855f7) 18%, transparent);
+  background: color-mix(in srgb, var(--grid-accent, #00468e) 18%, transparent);
   box-shadow:
-    0 0 0 1px var(--grid-accent, #a855f7),
-    0 0 24px -4px color-mix(in srgb, var(--grid-accent, #a855f7) 60%, transparent);
+    0 0 0 1px var(--grid-accent, #00468e),
+    0 0 24px -4px color-mix(in srgb, var(--grid-accent, #00468e) 60%, transparent);
   transform: translateY(-1px);
 }
 
@@ -99,7 +99,7 @@ input[type='text']:focus,
 input[type='email']:focus {
   outline: none;
   border-color: var(--color-accent-cyan);
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.2);
+  box-shadow: 0 0 0 3px rgba(0, 144, 199, 0.2);
 }
 
 fieldset {
@@ -140,11 +140,12 @@ legend {
   position: absolute;
   inset: -20%;
   filter: blur(80px) saturate(120%);
-  opacity: 0.55;
+  opacity: 0.5;
+  /* Verbund water + energy washes: hydro cyan, VERBUND-blau, energy green. */
   background:
-    radial-gradient(40% 35% at 18% 22%, rgba(232, 66, 122, 0.35), transparent 65%),
-    radial-gradient(38% 30% at 82% 18%, rgba(0, 191, 255, 0.35), transparent 65%),
-    radial-gradient(55% 40% at 52% 90%, rgba(168, 85, 247, 0.35), transparent 70%);
+    radial-gradient(40% 35% at 18% 22%, rgba(0, 144, 199, 0.22), transparent 65%),
+    radial-gradient(38% 30% at 82% 18%, rgba(0, 70, 142, 0.18), transparent 65%),
+    radial-gradient(55% 40% at 52% 90%, rgba(90, 170, 70, 0.2), transparent 70%);
   animation: aurora-drift 40s linear infinite;
   will-change: transform;
 }
@@ -170,8 +171,8 @@ legend {
 .atmosphere__grain {
   position: absolute;
   inset: 0;
-  mix-blend-mode: overlay;
-  opacity: 0.04;
+  mix-blend-mode: multiply;
+  opacity: 0.03;
   background-image:
     /* tiny inline SVG — one turbulence filter, no external asset */ url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
 }
@@ -179,7 +180,13 @@ legend {
 .atmosphere__vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 80% 70% at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+  /* Soft blue vignette instead of black — frames the stage on the light
+     ground without dirtying the corners. */
+  background: radial-gradient(
+    ellipse 85% 75% at center,
+    transparent 60%,
+    rgba(0, 43, 84, 0.08) 100%
+  );
 }
 
 /* === Page shell =================================================== */
@@ -189,7 +196,93 @@ legend {
   z-index: 1;
   max-width: 1460px;
   margin: 0 auto;
-  padding: var(--space-7) var(--space-6) var(--space-8);
+  padding: var(--space-6) var(--space-6) var(--space-8);
+}
+
+/* === Brand header (Verbund rebrand) ===============================
+ * Partner bar: VERBUND wordmark (customer) left, fifty1 wordmark
+ * (format operator) right. Sits above the event title on every screen.
+ * ================================================================= */
+
+.brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+  opacity: 0;
+  animation: mount-rise var(--motion-duration-slow) var(--motion-ease-emerge) both;
+}
+
+.brand-header__verbund {
+  height: 30px;
+  width: auto;
+  display: block;
+}
+
+.brand-header__partner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand-header__partner-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-all-caps);
+  color: var(--color-text-subtle);
+}
+
+.brand-header__fifty1 {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+.alter-ego-page__subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(14px, 1.6vw, 18px);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  margin-top: calc(var(--space-4) * -1 + 2px);
+  margin-bottom: var(--space-7);
+  max-width: 60ch;
+  opacity: 0;
+  animation: mount-rise var(--motion-duration-slow) var(--motion-ease-emerge) 80ms both;
+}
+
+/* === Site footer (Verbund rebrand) =============================== */
+
+.site-footer {
+  position: relative;
+  z-index: 1;
+  max-width: 1460px;
+  margin: 0 auto;
+  padding: var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: var(--tracking-meta);
+  color: var(--color-text-subtle);
+  text-transform: uppercase;
+}
+
+.site-footer strong {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.site-footer__sep {
+  opacity: 0.5;
 }
 
 .alter-ego-page__title {
@@ -258,8 +351,8 @@ legend {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.08) 20%,
-    rgba(255, 255, 255, 0.08) 80%,
+    rgba(0, 70, 142, 0.14) 20%,
+    rgba(0, 70, 142, 0.14) 80%,
     transparent 100%
   );
 }
@@ -323,7 +416,7 @@ legend {
   bottom: -2px;
   height: 2px;
   background: var(--gradient-brand-flat);
-  box-shadow: 0 0 14px rgba(232, 66, 122, 0.5);
+  box-shadow: 0 0 14px rgba(0, 144, 199, 0.45);
   border-radius: 2px;
 }
 
@@ -389,10 +482,10 @@ legend {
   padding: 1px;
   background: linear-gradient(
     160deg,
-    rgba(0, 191, 255, 0.28) 0%,
+    rgba(0, 144, 199, 0.28) 0%,
     transparent 35%,
     transparent 70%,
-    rgba(232, 66, 122, 0.24) 100%
+    rgba(90, 170, 70, 0.24) 100%
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -460,7 +553,7 @@ legend {
   line-height: 1;
   letter-spacing: -0.04em;
   color: transparent;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.15) 100%);
+  background: linear-gradient(180deg, rgba(0, 70, 142, 0.85) 0%, rgba(0, 70, 142, 0.22) 100%);
   background-clip: text;
   -webkit-background-clip: text;
 }
@@ -497,7 +590,7 @@ legend {
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(0, 70, 142, 0.03);
   backdrop-filter: blur(6px);
   min-height: 48px;
   font-family: var(--font-body);
@@ -524,10 +617,10 @@ legend {
 .selection-grid__option[data-selected='true'] {
   color: var(--color-text);
   border-color: var(--grid-accent, var(--color-purple));
-  background: color-mix(in srgb, var(--grid-accent, #a855f7) 14%, transparent);
+  background: color-mix(in srgb, var(--grid-accent, #00468e) 14%, transparent);
   box-shadow:
-    0 0 0 1px var(--grid-accent, #a855f7),
-    0 0 30px -6px color-mix(in srgb, var(--grid-accent, #a855f7) 70%, transparent);
+    0 0 0 1px var(--grid-accent, #00468e),
+    0 0 30px -6px color-mix(in srgb, var(--grid-accent, #00468e) 70%, transparent);
   transform: translateY(-2px) scale(1.02);
 }
 
@@ -538,13 +631,13 @@ legend {
   width: 28px;
   height: 28px;
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--grid-accent, #a855f7) 12%, transparent);
+  background: color-mix(in srgb, var(--grid-accent, #00468e) 12%, transparent);
   color: var(--grid-accent, var(--color-text-muted));
   flex: 0 0 28px;
 }
 
 .selection-grid__option[data-selected='true'] .selection-grid__icon {
-  background: color-mix(in srgb, var(--grid-accent, #a855f7) 28%, transparent);
+  background: color-mix(in srgb, var(--grid-accent, #00468e) 28%, transparent);
   color: var(--color-text);
 }
 
@@ -594,7 +687,7 @@ legend {
   padding: var(--space-3) calc(var(--space-3) + 32px) var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(0, 70, 142, 0.03);
   backdrop-filter: blur(6px);
   color: var(--color-text);
   font-family: var(--font-body);
@@ -609,8 +702,8 @@ legend {
   outline: none;
   border-color: var(--color-accent-role, var(--color-purple));
   box-shadow:
-    0 0 0 1px var(--color-accent-role, #a855f7),
-    0 0 30px -6px color-mix(in srgb, var(--color-accent-role, #a855f7) 70%, transparent);
+    0 0 0 1px var(--color-accent-role, #00468e),
+    0 0 30px -6px color-mix(in srgb, var(--color-accent-role, #00468e) 70%, transparent);
 }
 
 .custom-role-input__control:disabled {
@@ -630,7 +723,7 @@ legend {
   height: 28px;
   border-radius: 999px;
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(0, 70, 142, 0.08);
   color: var(--color-text-muted);
   cursor: pointer;
   transition:
@@ -641,7 +734,7 @@ legend {
 
 .custom-role-input__clear:hover,
 .custom-role-input__clear:focus-visible {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 70, 142, 0.16);
   color: var(--color-text);
   outline: none;
   border-color: var(--color-border-strong);
@@ -707,7 +800,7 @@ legend {
   padding: var(--space-3) calc(var(--space-3) + 32px) var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border-strong);
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(0, 70, 142, 0.03);
   backdrop-filter: blur(6px);
   color: var(--color-text);
   font-family: var(--font-body);
@@ -722,15 +815,15 @@ legend {
   outline: none;
   border-color: var(--color-accent-role, var(--color-purple));
   box-shadow:
-    0 0 0 1px var(--color-accent-role, #a855f7),
-    0 0 30px -6px color-mix(in srgb, var(--color-accent-role, #a855f7) 70%, transparent);
+    0 0 0 1px var(--color-accent-role, #00468e),
+    0 0 30px -6px color-mix(in srgb, var(--color-accent-role, #00468e) 70%, transparent);
 }
 
 .email-input__control[aria-invalid='true'] {
-  border-color: var(--color-accent-error, #f87171);
+  border-color: var(--color-accent-error, #d4573b);
   box-shadow:
-    0 0 0 1px var(--color-accent-error, #f87171),
-    0 0 30px -6px color-mix(in srgb, var(--color-accent-error, #f87171) 70%, transparent);
+    0 0 0 1px var(--color-accent-error, #d4573b),
+    0 0 30px -6px color-mix(in srgb, var(--color-accent-error, #d4573b) 70%, transparent);
 }
 
 .email-input__control:disabled {
@@ -750,7 +843,7 @@ legend {
   height: 28px;
   border-radius: 999px;
   border: 1px solid transparent;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(0, 70, 142, 0.08);
   color: var(--color-text-muted);
   cursor: pointer;
   transition:
@@ -761,7 +854,7 @@ legend {
 
 .email-input__clear:hover,
 .email-input__clear:focus-visible {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 70, 142, 0.16);
   color: var(--color-text);
   outline: none;
   border-color: var(--color-border-strong);
@@ -783,7 +876,7 @@ legend {
   margin: 0;
   font-size: 12px;
   line-height: 1.4;
-  color: var(--color-accent-error, #f87171);
+  color: var(--color-accent-error, #d4573b);
 }
 
 /* === First-name input + Generate button =========================== */
@@ -889,7 +982,7 @@ legend {
   transform: translateY(-1px);
   box-shadow:
     var(--shadow-glow-pink),
-    0 18px 40px -12px rgba(232, 66, 122, 0.5);
+    0 18px 40px -12px rgba(90, 170, 70, 0.5);
 }
 
 .generate-button__hint {
@@ -940,7 +1033,7 @@ legend {
   background: color-mix(in srgb, var(--color-accent-cyan) 14%, transparent);
   color: var(--color-text);
   transform: translateY(-1px);
-  box-shadow: 0 12px 30px -10px rgba(0, 191, 255, 0.4);
+  box-shadow: 0 12px 30px -10px rgba(0, 144, 199, 0.4);
 }
 
 .surprise-me-button > button:disabled {
@@ -1037,11 +1130,11 @@ legend {
     from 0deg,
     var(--color-accent-cyan),
     var(--color-accent-cyan),
-    rgba(0, 191, 255, 0.55),
+    rgba(0, 144, 199, 0.55),
     var(--color-accent-cyan)
   );
   animation: none;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 144, 199, 0.15);
 }
 
 .photo-intake__circle[data-status='live'] {
@@ -1067,7 +1160,7 @@ legend {
 /* Committed — calm double-ring hint via inset shadow. */
 .photo-intake__circle[data-filled='true'][data-status='idle'] {
   box-shadow:
-    0 0 0 3px rgba(168, 85, 247, 0.18),
+    0 0 0 3px rgba(0, 70, 142, 0.18),
     var(--shadow-glow-purple);
 }
 
@@ -1081,7 +1174,7 @@ legend {
   box-shadow:
     0 0 0 2px var(--color-bg),
     0 0 0 5px var(--color-accent-cyan),
-    0 0 28px rgba(0, 191, 255, 0.5);
+    0 0 28px rgba(0, 144, 199, 0.5);
 }
 
 .photo-intake__circle:not(:disabled):active {
@@ -1116,7 +1209,7 @@ legend {
   align-items: center;
   justify-content: center;
   color: var(--color-accent-cyan);
-  filter: drop-shadow(0 0 18px rgba(0, 191, 255, 0.5));
+  filter: drop-shadow(0 0 18px rgba(0, 144, 199, 0.5));
 }
 
 .photo-intake__placeholder-text {
@@ -1276,7 +1369,7 @@ legend {
 .alter-ego-panel__empty-icon {
   color: var(--color-accent-cyan);
   opacity: 0.55;
-  filter: drop-shadow(0 0 22px rgba(0, 191, 255, 0.45));
+  filter: drop-shadow(0 0 22px rgba(0, 144, 199, 0.45));
 }
 
 .alter-ego-panel__empty-copy {
@@ -1498,8 +1591,8 @@ legend {
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: radial-gradient(ellipse at center, transparent 60%, rgba(232, 66, 122, 0.15) 100%);
-  mix-blend-mode: screen;
+  background: radial-gradient(ellipse at center, transparent 62%, rgba(0, 43, 84, 0.16) 100%);
+  mix-blend-mode: multiply;
 }
 
 .poster-view__frame:hover {
@@ -1692,22 +1785,22 @@ legend {
   width: calc(50% - 3px);
   height: calc(100% - 6px);
   border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, rgba(0, 191, 255, 0.18) 0%, rgba(168, 85, 247, 0.16) 100%);
-  border: 1px solid rgba(0, 191, 255, 0.45);
+  background: linear-gradient(135deg, rgba(0, 144, 199, 0.16) 0%, rgba(0, 70, 142, 0.14) 100%);
+  border: 1px solid rgba(0, 144, 199, 0.5);
   box-shadow:
-    0 0 18px rgba(0, 191, 255, 0.22),
-    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+    0 0 18px rgba(0, 144, 199, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
   transition: transform var(--motion-duration-base) var(--motion-ease-elastic);
   pointer-events: none;
 }
 
 .photo-mode-switch__control[data-state='group'] .photo-mode-switch__thumb {
   transform: translateX(100%);
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(232, 66, 122, 0.18) 100%);
-  border-color: rgba(168, 85, 247, 0.5);
+  background: linear-gradient(135deg, rgba(0, 70, 142, 0.16) 0%, rgba(90, 170, 70, 0.18) 100%);
+  border-color: rgba(90, 170, 70, 0.55);
   box-shadow:
-    0 0 18px rgba(168, 85, 247, 0.28),
-    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+    0 0 18px rgba(90, 170, 70, 0.26),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
 }
 
 .photo-mode-switch__hint {

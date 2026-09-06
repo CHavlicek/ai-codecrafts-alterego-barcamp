@@ -117,8 +117,8 @@ aiavatar:
   # "configured" state is driven solely by `spring.mail.host` non-blank
   # (FR-2311 / FR-2318) — see EmailConfigured.
   email:
-    from: ${AIAVATAR_EMAIL_FROM:alter-ego@codecrafts.local}
-    subject: ${AIAVATAR_EMAIL_SUBJECT:Your AI Generated Alter Ego - CodeCrafts 2026}
+    from: ${AIAVATAR_EMAIL_FROM:alter-ego@ai-verbund-2026.local}
+    subject: ${AIAVATAR_EMAIL_SUBJECT:Your AI Generated Alter Ego - AI @ Verbund 2026}
 
 management:
   endpoints:

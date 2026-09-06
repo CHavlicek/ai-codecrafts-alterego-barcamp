@@ -26,7 +26,7 @@ public class AlterEgoEmailBodyBuilder {
         String trimmed = firstName.trim();
         return "Hey, " + trimmed + "!\n"
                 + "\n"
-                + "Thank you, for being a part of CodeCrafts 2026!\n"
+                + "Thank you, for being a part of AI @ Verbund 2026!\n"
                 + "\n"
                 + "Find your AI Generated Alter Ego attached to this letter.\n"
                 + "\n"

@@ -22,7 +22,9 @@ describe('App', () => {
         <App />
       </QueryClientProvider>,
     )
-    expect(screen.getByRole('heading', { name: /AI Alter Ego/i, level: 1 })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: /AI @ Verbund 2026/i, level: 1 }),
+    ).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /take a photo of yourself/i })).toBeInTheDocument()
   })
 })

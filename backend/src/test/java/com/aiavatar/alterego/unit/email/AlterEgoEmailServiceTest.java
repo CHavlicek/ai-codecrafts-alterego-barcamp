@@ -66,8 +66,8 @@ class AlterEgoEmailServiceTest {
 
         emailConfigured = mock(EmailConfigured.class);
         emailProperties = new EmailProperties(
-                "alter-ego@codecrafts.local",
-                "Your AI Generated Alter Ego - CodeCrafts 2026");
+                "alter-ego@ai-verbund-2026.local",
+                "Your AI Generated Alter Ego - AI @ Verbund 2026");
         bodyBuilder = new AlterEgoEmailBodyBuilder();
 
         service = new AlterEgoEmailService(
@@ -121,17 +121,17 @@ class AlterEgoEmailServiceTest {
 
         MimeMessage sent = captor.getValue();
         // Subject must match FR-2313 exactly.
-        assertThat(sent.getSubject()).isEqualTo("Your AI Generated Alter Ego - CodeCrafts 2026");
+        assertThat(sent.getSubject()).isEqualTo("Your AI Generated Alter Ego - AI @ Verbund 2026");
         // Recipient must be the trimmed-to address.
         assertThat(sent.getAllRecipients()).hasSize(1);
         assertThat(sent.getAllRecipients()[0].toString()).isEqualTo("someone@example.com");
         // From must come from EmailProperties.
         assertThat(sent.getFrom()).hasSize(1);
-        assertThat(sent.getFrom()[0].toString()).isEqualTo("alter-ego@codecrafts.local");
+        assertThat(sent.getFrom()[0].toString()).isEqualTo("alter-ego@ai-verbund-2026.local");
         // Body must contain the FR-2314 substituted text.
         String raw = extractContent(sent);
         assertThat(raw).contains("Hey, Dmytro!");
-        assertThat(raw).contains("Thank you, for being a part of CodeCrafts 2026!");
+        assertThat(raw).contains("Thank you, for being a part of AI @ Verbund 2026!");
         assertThat(raw).contains("Find your AI Generated Alter Ego attached to this letter.");
         assertThat(raw).contains("Happy times!");
     }
