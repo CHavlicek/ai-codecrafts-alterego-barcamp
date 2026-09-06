@@ -53,7 +53,7 @@ class GenerateAlterEgoTextOverlayIT {
     @Test
     void fallbackPosterCarriesNameTitleAndTaglineInBottomRegion() throws Exception {
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Ada", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(

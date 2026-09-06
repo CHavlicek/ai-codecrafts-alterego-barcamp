@@ -10,10 +10,14 @@ import type { AlterEgoResponse } from '../types'
 const sampleResult: AlterEgoResponse = {
   character: {
     heroTitleLine1: 'PAULA',
-    heroTitleLine2: 'The Cloud Guardrail',
-    tagline: 'STILL SHIPS ON FRIDAYS.',
-    superpowers: ['Rolls back with a single keystroke', 'Hears pager alerts', 'YAML fluency'],
-    quote: 'It is always DNS.',
+    heroTitleLine2: 'The Future Builder',
+    tagline: 'TURNS IDEAS INTO IMPACT.',
+    superpowers: [
+      'Codes tools that brighten every workday',
+      'Turns challenges into commits',
+      'Builds tomorrow',
+    ],
+    quote: 'Every line of code can move the world forward.',
   },
   poster: {
     dataUrl: 'data:image/png;base64,AAAA',
@@ -35,7 +39,7 @@ describe('PosterView', () => {
         result={sampleResult}
         errorMessage={null}
         firstName="Paula"
-        roleLabel="Cloud Architect"
+        roleLabel="Software Developer"
       />,
     )
     // 017 FR-1713 (refined 2026-05-08): heroTitleLine1, tagline, AND
@@ -43,12 +47,12 @@ describe('PosterView', () => {
     // live only on the poster image. heroTitleLine2 + the superpowers
     // list remain on screen as the only HTML next to the poster.
     expect(screen.queryByRole('heading', { name: 'PAULA' })).toBeNull()
-    expect(screen.queryByText('STILL SHIPS ON FRIDAYS.')).toBeNull()
-    expect(screen.queryByText('It is always DNS.')).toBeNull()
+    expect(screen.queryByText('TURNS IDEAS INTO IMPACT.')).toBeNull()
+    expect(screen.queryByText('Every line of code can move the world forward.')).toBeNull()
     expect(document.querySelector('.poster-view__title-line-1')).toBeNull()
     expect(document.querySelector('.poster-view__tagline')).toBeNull()
     expect(document.querySelector('.poster-view__quote')).toBeNull()
-    expect(screen.getByText('The Cloud Guardrail')).toBeInTheDocument()
+    expect(screen.getByText('The Future Builder')).toBeInTheDocument()
     expect(screen.getAllByRole('listitem')).toHaveLength(3)
   })
 
@@ -58,11 +62,13 @@ describe('PosterView', () => {
         result={sampleResult}
         errorMessage={null}
         firstName="Paula"
-        roleLabel="Cloud Architect"
+        roleLabel="Software Developer"
       />,
     )
     const img = screen.getByRole('img') as HTMLImageElement
-    expect(img.alt).toBe('Alter ego poster for Paula, Cloud Architect. It is always DNS.')
+    expect(img.alt).toBe(
+      'Alter ego poster for Paula, Software Developer. Every line of code can move the world forward.',
+    )
     expect(img.src).toBe('data:image/png;base64,AAAA')
     expect(img.width).toBe(900)
     expect(img.height).toBe(1200)
@@ -82,7 +88,7 @@ describe('PosterView', () => {
         }}
         errorMessage="We had trouble reaching the generation service."
         firstName="Paula"
-        roleLabel="Cloud Architect"
+        roleLabel="Software Developer"
       />,
     )
     // LiveRegionProvider also renders a role="alert" assertive channel, so
@@ -99,7 +105,7 @@ describe('PosterView', () => {
         result={sampleResult}
         errorMessage={null}
         firstName="Paula"
-        roleLabel="Cloud Architect"
+        roleLabel="Software Developer"
       />,
     )
     await waitFor(() => {
@@ -114,7 +120,7 @@ describe('PosterView', () => {
         result={sampleResult}
         errorMessage="Service down"
         firstName="Paula"
-        roleLabel="Cloud Architect"
+        roleLabel="Software Developer"
       />,
     )
     await waitFor(() => {
@@ -160,7 +166,7 @@ describe('PosterView', () => {
         }}
         errorMessage={FALLBACK_NOTICE_COPY}
         firstName="Paula"
-        roleLabel="Cloud Architect"
+        roleLabel="Software Developer"
       />,
     )
     const article = screen.getByRole('article')

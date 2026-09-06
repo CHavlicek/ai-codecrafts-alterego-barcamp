@@ -117,7 +117,7 @@ class FalAiTimeoutBudgetIT {
 
         long wallClockStart = System.currentTimeMillis();
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
                 "/api/v1/alter-egos", HttpMethod.POST,

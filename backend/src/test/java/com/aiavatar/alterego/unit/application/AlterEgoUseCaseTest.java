@@ -49,7 +49,7 @@ class AlterEgoUseCaseTest {
     private static final UUID CORRELATION = UUID.fromString("00000000-0000-0000-0000-000000000024");
 
     private final AlterEgoRequest request = new AlterEgoRequest(
-            Pose.HEROIC, Archetype.BACKEND_DEV, Universe.STAR_WARS, Vibe.BUILDER,
+            Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.BUILDER,
             ArtStyle.OIL_PAINTING, "Sam", PhotoMode.SINGLE, null);
     private final PhotoPayload photo = new PhotoPayload(new byte[]{1, 2, 3}, "image/jpeg");
     private final GeneratedCharacter realChar = new GeneratedCharacter(

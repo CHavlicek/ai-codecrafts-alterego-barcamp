@@ -13,15 +13,15 @@ describe('ArchetypeGrid', () => {
   test('renders all 9 prefab options in stable order (022)', () => {
     render(<ArchetypeGrid value={null} onChange={() => {}} />)
     const expectedOrder = [
-      'Cloud Architect',
-      'Backend Developer',
-      'Frontend Developer',
-      'AI Engineer',
-      'Platform Engineer',
-      'Data Engineer',
-      'People Operations',
-      'Administration',
-      'Customer Relations',
+      'Software Developer',
+      'Project Manager',
+      'Data Analyst',
+      'Marketing Specialist',
+      'Sales & Customer Relations',
+      'People & Culture',
+      'Operations Manager',
+      'Finance Controller',
+      'Sustainability Lead',
     ]
     for (const label of expectedOrder) {
       expect(screen.getByRole('radio', { name: label })).toBeInTheDocument()
@@ -42,29 +42,29 @@ describe('ArchetypeGrid', () => {
     const onChange = vi.fn()
     const user = userEvent.setup()
     render(<ArchetypeGrid value={null} onChange={onChange} />)
-    await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
-    expect(onChange).toHaveBeenCalledWith('cloud-architect')
+    await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
+    expect(onChange).toHaveBeenCalledWith('software-developer')
   })
 
   test('022 — new options fire onChange with their kebab-case wire values', async () => {
     const onChange = vi.fn()
     const user = userEvent.setup()
     render(<ArchetypeGrid value={null} onChange={onChange} />)
-    await user.click(screen.getByRole('radio', { name: 'People Operations' }))
-    expect(onChange).toHaveBeenCalledWith('hr')
-    await user.click(screen.getByRole('radio', { name: 'Administration' }))
-    expect(onChange).toHaveBeenCalledWith('administration')
-    await user.click(screen.getByRole('radio', { name: 'Customer Relations' }))
-    expect(onChange).toHaveBeenCalledWith('customer-relations')
+    await user.click(screen.getByRole('radio', { name: 'People & Culture' }))
+    expect(onChange).toHaveBeenCalledWith('people-culture')
+    await user.click(screen.getByRole('radio', { name: 'Operations Manager' }))
+    expect(onChange).toHaveBeenCalledWith('operations-manager')
+    await user.click(screen.getByRole('radio', { name: 'Sales & Customer Relations' }))
+    expect(onChange).toHaveBeenCalledWith('sales-customer-relations')
   })
 
   test('ArrowDown advances selection', async () => {
     const onChange = vi.fn()
     const user = userEvent.setup()
-    render(<ArchetypeGrid value="cloud-architect" onChange={onChange} />)
-    screen.getByRole('radio', { name: 'Cloud Architect' }).focus()
+    render(<ArchetypeGrid value="software-developer" onChange={onChange} />)
+    screen.getByRole('radio', { name: 'Software Developer' }).focus()
     await user.keyboard('{ArrowDown}')
-    expect(onChange).toHaveBeenCalledWith('backend-dev')
+    expect(onChange).toHaveBeenCalledWith('project-manager')
   })
 
   // 022 (issue #50) — disabled state: when the custom-role input has a
@@ -89,16 +89,16 @@ describe('ArchetypeGrid', () => {
       const onChange = vi.fn()
       const user = userEvent.setup()
       render(<ArchetypeGrid value={null} onChange={onChange} disabled />)
-      await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
-      await user.click(screen.getByRole('radio', { name: 'People Operations' }))
+      await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
+      await user.click(screen.getByRole('radio', { name: 'People & Culture' }))
       expect(onChange).not.toHaveBeenCalled()
     })
 
     test('ArrowDown is a no-op while disabled', async () => {
       const onChange = vi.fn()
       const user = userEvent.setup()
-      render(<ArchetypeGrid value="cloud-architect" onChange={onChange} disabled />)
-      screen.getByRole('radio', { name: 'Cloud Architect' }).focus()
+      render(<ArchetypeGrid value="software-developer" onChange={onChange} disabled />)
+      screen.getByRole('radio', { name: 'Software Developer' }).focus()
       await user.keyboard('{ArrowDown}')
       expect(onChange).not.toHaveBeenCalled()
     })
@@ -109,8 +109,8 @@ describe('ArchetypeGrid', () => {
       render(<ArchetypeGrid value={null} onChange={onChange} />)
       const fieldset = document.querySelector('.selection-grid') as HTMLFieldSetElement
       expect(fieldset.classList.contains('is-disabled')).toBe(false)
-      await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
-      expect(onChange).toHaveBeenCalledWith('cloud-architect')
+      await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
+      expect(onChange).toHaveBeenCalledWith('software-developer')
     })
   })
 })

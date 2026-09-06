@@ -55,6 +55,13 @@ export interface AlterEgoSession {
   photoPreviewUrl: string | null
   archetype: Archetype | null
   universe: Universe | null
+  /**
+   * 029 (verbund-rebrand): user-typed free-form universe string (≤ 100
+   * chars). When the trimmed value is non-empty it takes precedence over
+   * {@code universe} as the universe-of-record. Initial value is the empty
+   * string — never null — mirroring {@code customRole}.
+   */
+  customUniverse: string
   /** Required — Generate is gated until set (006 FR-304). */
   artStyle: ArtStyle | null
   /**
@@ -99,6 +106,7 @@ export type AlterEgoAction =
   | { type: 'SurpriseMePicked'; picks: SurpriseMePicks }
   | { type: 'FirstNameChanged'; firstName: string }
   | { type: 'CustomRoleChanged'; customRole: string }
+  | { type: 'CustomUniverseChanged'; customUniverse: string }
   | { type: 'EmailChanged'; email: string }
   | { type: 'GenerateSubmitted' }
   | { type: 'GenerateSucceeded'; result: AlterEgoResponse }
@@ -113,6 +121,7 @@ export function initialAlterEgoSession(): AlterEgoSession {
     photoPreviewUrl: null,
     archetype: null,
     universe: null,
+    customUniverse: '',
     artStyle: null,
     photoMode: 'single',
     firstName: '',
@@ -203,6 +212,20 @@ export function alterEgoReducer(state: AlterEgoSession, action: AlterEgoAction):
         ...state,
         customRole: action.customRole,
         archetype: trimmedNonEmpty ? null : state.archetype,
+        phase: 'picking',
+      }
+    }
+    case 'CustomUniverseChanged': {
+      // 029 (verbund-rebrand): mirrors CustomRoleChanged. When the trimmed
+      // payload is non-empty the input claims precedence — silently clear
+      // any prefab `universe` selection. When trimmed-empty the prefab
+      // selection is preserved so the user can type a space then a real
+      // character without thrashing.
+      const trimmedNonEmpty = action.customUniverse.trim().length > 0
+      return {
+        ...state,
+        customUniverse: action.customUniverse,
+        universe: trimmedNonEmpty ? null : state.universe,
         phase: 'picking',
       }
     }

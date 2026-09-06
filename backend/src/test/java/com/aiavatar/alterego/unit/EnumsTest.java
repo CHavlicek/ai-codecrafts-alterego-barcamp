@@ -34,42 +34,39 @@ class EnumsTest {
 
     @Test
     void archetypeExposesExpectedWireValues() {
-        // 022 (issue #50): three non-engineering prefab options added —
-        // HR / ADMINISTRATION / CUSTOMER_RELATIONS. Existing six engineering
-        // wire values are unchanged.
-        Set<String> wires = Set.of(Archetype.CLOUD_ARCHITECT.wire(), Archetype.BACKEND_DEV.wire(),
-                Archetype.FRONTEND_DEV.wire(), Archetype.AI_ENGINEER.wire(),
-                Archetype.PLATFORM_ENG.wire(), Archetype.DATA_ENGINEER.wire(),
-                Archetype.HR.wire(), Archetype.ADMINISTRATION.wire(),
-                Archetype.CUSTOMER_RELATIONS.wire());
-        assertEquals(Set.of("cloud-architect", "backend-dev", "frontend-dev",
-                "ai-engineer", "platform-eng", "data-engineer",
-                "hr", "administration", "customer-relations"), wires);
-        assertEquals(9, Archetype.values().length, "022: Archetype is a nine-member closed enum");
+        // 029 (verbund-rebrand): the enum was fully re-themed to a broad
+        // corporate role mix for the "AI @ Verbund 2026" audience. Nine
+        // members, new wire values.
+        Set<String> wires = Set.of(Archetype.SOFTWARE_DEVELOPER.wire(),
+                Archetype.PROJECT_MANAGER.wire(), Archetype.DATA_ANALYST.wire(),
+                Archetype.MARKETING_SPECIALIST.wire(), Archetype.SALES_CUSTOMER_RELATIONS.wire(),
+                Archetype.PEOPLE_CULTURE.wire(), Archetype.OPERATIONS_MANAGER.wire(),
+                Archetype.FINANCE_CONTROLLER.wire(), Archetype.SUSTAINABILITY_LEAD.wire());
+        assertEquals(Set.of("software-developer", "project-manager",
+                "data-analyst", "marketing-specialist", "sales-customer-relations",
+                "people-culture", "operations-manager", "finance-controller",
+                "sustainability-lead"), wires);
+        assertEquals(9, Archetype.values().length, "029: Archetype is a nine-member closed enum");
     }
 
     @Test
     void archetypeNewOptionsRoundTripAndExposeLabels() {
-        // 022 — wire round-trip + UI label for the three new prefab options.
-        // 026 (issue #62): the HR option's guest-facing label is now
-        // "People Operations". The provider-side grounding string in
-        // GeminiPromptBuilder.ROLE_LABELS remains "Human Resources" by
-        // intent (see specs/026-role-label-wording/research.md §R2).
-        assertSame(Archetype.HR, Archetype.fromWire("hr"));
-        assertSame(Archetype.ADMINISTRATION, Archetype.fromWire("administration"));
-        assertSame(Archetype.CUSTOMER_RELATIONS, Archetype.fromWire("customer-relations"));
-        assertEquals("People Operations", Archetype.HR.label());
-        assertEquals("Administration", Archetype.ADMINISTRATION.label());
-        assertEquals("Customer Relations", Archetype.CUSTOMER_RELATIONS.label());
+        // 029 — wire round-trip + UI label for the corporate role options.
+        assertSame(Archetype.PEOPLE_CULTURE, Archetype.fromWire("people-culture"));
+        assertSame(Archetype.OPERATIONS_MANAGER, Archetype.fromWire("operations-manager"));
+        assertSame(Archetype.SALES_CUSTOMER_RELATIONS, Archetype.fromWire("sales-customer-relations"));
+        assertEquals("People & Culture", Archetype.PEOPLE_CULTURE.label());
+        assertEquals("Operations Manager", Archetype.OPERATIONS_MANAGER.label());
+        assertEquals("Sales & Customer Relations", Archetype.SALES_CUSTOMER_RELATIONS.label());
     }
 
     @Test
     void universeExposesExpectedWireValues() {
         Set<String> wires = Set.of(Universe.MARVEL.wire(), Universe.STAR_WARS.wire(),
-                Universe.CYBERPUNK.wire(), Universe.THE_OFFICE.wire(),
-                Universe.INDIANA_JONES.wire(), Universe.LORD_OF_THE_RINGS.wire());
-        assertEquals(Set.of("marvel", "star-wars", "cyberpunk", "the-office",
-                "indiana-jones", "lord-of-the-rings"), wires);
+                Universe.RETRO_SYNTHWAVE.wire(), Universe.NINETIES_SITCOM.wire(),
+                Universe.SPY_THRILLER.wire(), Universe.GHOSTBUSTERS.wire());
+        assertEquals(Set.of("marvel", "star-wars", "retro-synthwave", "nineties-sitcom",
+                "spy-thriller", "ghostbusters"), wires);
     }
 
     @Test
@@ -91,14 +88,11 @@ class EnumsTest {
         for (Archetype a : Archetype.values()) {
             assertSame(a, Archetype.fromWire(a.wire()));
         }
-        assertEquals("Cloud Architect", Archetype.CLOUD_ARCHITECT.label());
-        // 026 (issue #62): three engineering Role labels expand to their
-        // full form; "Backend Dev" → "Backend Developer", "Frontend Dev"
-        // → "Frontend Developer", "Platform Eng." → "Platform Engineer".
-        assertEquals("Backend Developer", Archetype.BACKEND_DEV.label());
-        assertEquals("Frontend Developer", Archetype.FRONTEND_DEV.label());
-        assertEquals("Platform Engineer", Archetype.PLATFORM_ENG.label());
-        assertEquals("Data Engineer", Archetype.DATA_ENGINEER.label());
+        // 029 (verbund-rebrand): corporate role labels.
+        assertEquals("Software Developer", Archetype.SOFTWARE_DEVELOPER.label());
+        assertEquals("Project Manager", Archetype.PROJECT_MANAGER.label());
+        assertEquals("Operations Manager", Archetype.OPERATIONS_MANAGER.label());
+        assertEquals("Data Analyst", Archetype.DATA_ANALYST.label());
     }
 
     @Test
@@ -107,7 +101,7 @@ class EnumsTest {
             assertSame(u, Universe.fromWire(u.wire()));
         }
         assertEquals("Marvel", Universe.MARVEL.label());
-        assertEquals("Lord of the Rings", Universe.LORD_OF_THE_RINGS.label());
+        assertEquals("Ghostbusters", Universe.GHOSTBUSTERS.label());
     }
 
     @Test

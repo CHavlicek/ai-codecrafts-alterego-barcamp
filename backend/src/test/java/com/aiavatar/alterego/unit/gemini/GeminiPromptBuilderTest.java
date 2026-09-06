@@ -35,7 +35,7 @@ class GeminiPromptBuilderTest {
         // prompt. The supersedes-this test name kept for git-blame
         // continuity with the pre-017 contract.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null));
         assertNotNull(prompt);
         assertFalse(prompt.isBlank());
         assertFalse(prompt.contains("Paula"),
@@ -76,7 +76,7 @@ class GeminiPromptBuilderTest {
                 "pose axis header expected in prompt");
         assertTrue(prompt.contains("Art style:"),
                 "art-style axis header expected in prompt");
-        assertTrue(prompt.contains("Engineering role ("),
+        assertTrue(prompt.contains("Professional role ("),
                 "021: role axis header expected in prompt as a visual scene direction");
         assertFalse(prompt.contains("Name:"),
                 "017 (refined): firstName must NOT appear in image prompt");
@@ -95,8 +95,8 @@ class GeminiPromptBuilderTest {
                 "prompt MUST contain the strengthened negative-text instruction");
         assertTrue(lower.contains("banner") && lower.contains("scroll") && lower.contains("name plate"),
                 "prompt MUST enumerate banner / scroll / name plate as forbidden");
-        assertTrue(lower.contains("no transcribing the engineering-role label"),
-                "021: composition note MUST forbid transcribing the engineering-role label");
+        assertTrue(lower.contains("no transcribing the role label"),
+                "021: composition note MUST forbid transcribing the role label");
     }
 
     @Test
@@ -105,7 +105,7 @@ class GeminiPromptBuilderTest {
         // clause MUST appear in BOTH the SINGLE and GROUP composition
         // notes (the latter is exercised in groupPhotoModeUsesPluralWording).
         String prompt = builder.build(sampleRequestWithVibe(null));
-        assertTrue(prompt.contains("NO transcribing the engineering-role label"),
+        assertTrue(prompt.contains("NO transcribing the role label"),
                 "021: composition note MUST contain the role-label-transcribe forbid clause verbatim");
     }
 
@@ -116,7 +116,7 @@ class GeminiPromptBuilderTest {
         // prompt. Even with strong negative-text instructions, the AI
         // tends to render the name on banners if it sees it.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Lalo", null));
         assertFalse(prompt.contains("Lalo"),
                 "image prompt MUST NOT contain the user's first name");
@@ -130,12 +130,12 @@ class GeminiPromptBuilderTest {
         // "NOT as text" clarifier on the role line itself plus a
         // strengthened composition-note no-text rule.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Paula", null));
-        assertTrue(prompt.contains("Engineering role ("),
-                "021: image prompt MUST contain the Engineering role line header");
-        assertTrue(prompt.contains("Cloud Architect"),
-                "021: image prompt MUST contain the role's Prompt label (Cloud Architect)");
+        assertTrue(prompt.contains("Professional role ("),
+                "021: image prompt MUST contain the Professional role line header");
+        assertTrue(prompt.contains("Software Developer"),
+                "021: image prompt MUST contain the role's Prompt label (Software Developer)");
     }
 
     @Test
@@ -158,16 +158,16 @@ class GeminiPromptBuilderTest {
         // delta MUST therefore alter the prompt and each prompt MUST
         // contain its own Prompt label per data-model.md.
         String a = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.BACKEND_DEV, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
         String b = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.PROJECT_MANAGER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
         assertNotEquals(a, b,
                 "021: role-only delta MUST change the prompt");
-        assertTrue(a.contains("Backend Developer"),
-                "021: BACKEND_DEV prompt MUST contain 'Backend Developer' (Prompt label, not UI label)");
-        assertTrue(b.contains("Cloud Architect"),
-                "021: CLOUD_ARCHITECT prompt MUST contain 'Cloud Architect'");
-        assertFalse(a.contains("backend-dev"),
+        assertTrue(a.contains("Software Developer"),
+                "021: SOFTWARE_DEVELOPER prompt MUST contain 'Software Developer' (Prompt label, not UI label)");
+        assertTrue(b.contains("Project Manager"),
+                "021: PROJECT_MANAGER prompt MUST contain 'Project Manager'");
+        assertFalse(a.contains("software-developer"),
                 "wire values must not appear in the prompt (only Prompt labels)");
     }
 
@@ -176,16 +176,15 @@ class GeminiPromptBuilderTest {
         // 021 SC-2103 automatable half — pair-wise distinctness across
         // every Archetype value, plus per-archetype Prompt-label pinning.
         java.util.Map<Archetype, String> expectedLabels = java.util.Map.ofEntries(
-                java.util.Map.entry(Archetype.CLOUD_ARCHITECT,    "Cloud Architect"),
-                java.util.Map.entry(Archetype.BACKEND_DEV,        "Backend Developer"),
-                java.util.Map.entry(Archetype.FRONTEND_DEV,       "Frontend Developer"),
-                java.util.Map.entry(Archetype.AI_ENGINEER,        "AI Engineer"),
-                java.util.Map.entry(Archetype.PLATFORM_ENG,       "Platform Engineer"),
-                java.util.Map.entry(Archetype.DATA_ENGINEER,      "Data Engineer"),
-                // 022 (issue #50) — three non-engineering prefab options.
-                java.util.Map.entry(Archetype.HR,                 "Human Resources"),
-                java.util.Map.entry(Archetype.ADMINISTRATION,     "Administration / Operations"),
-                java.util.Map.entry(Archetype.CUSTOMER_RELATIONS, "Customer Relations / Support"));
+                java.util.Map.entry(Archetype.SOFTWARE_DEVELOPER,        "Software Developer"),
+                java.util.Map.entry(Archetype.PROJECT_MANAGER,          "Project Manager"),
+                java.util.Map.entry(Archetype.DATA_ANALYST,             "Data Analyst"),
+                java.util.Map.entry(Archetype.MARKETING_SPECIALIST,     "Marketing & Communications Specialist"),
+                java.util.Map.entry(Archetype.SALES_CUSTOMER_RELATIONS, "Sales & Customer Relations"),
+                java.util.Map.entry(Archetype.PEOPLE_CULTURE,           "People & Culture (HR)"),
+                java.util.Map.entry(Archetype.OPERATIONS_MANAGER,       "Operations Manager"),
+                java.util.Map.entry(Archetype.FINANCE_CONTROLLER,       "Finance & Controlling"),
+                java.util.Map.entry(Archetype.SUSTAINABILITY_LEAD,      "Sustainability & Energy-Transition Lead"));
         java.util.Set<String> seen = new HashSet<>();
         for (Archetype role : Archetype.values()) {
             String prompt = builder.build(new AlterEgoRequest(
@@ -208,38 +207,38 @@ class GeminiPromptBuilderTest {
         // category-line ordering documented in contracts/image-prompt-contract.md.
         String prompt = builder.build(sampleRequestWithVibe(null));
         int universeIdx = prompt.indexOf("- Fictional universe");
-        int roleIdx     = prompt.indexOf("- Engineering role (");
+        int roleIdx     = prompt.indexOf("- Professional role (");
         int artStyleIdx = prompt.indexOf("- Art style:");
         assertTrue(universeIdx >= 0, "universe line present");
         assertTrue(roleIdx >= 0,     "021: role line present");
         assertTrue(artStyleIdx >= 0, "art-style line present");
         assertTrue(universeIdx < roleIdx,
-                () -> "021: Universe line MUST precede Engineering role line; got universeIdx="
+                () -> "021: Universe line MUST precede Professional role line; got universeIdx="
                         + universeIdx + ", roleIdx=" + roleIdx);
         assertTrue(roleIdx < artStyleIdx,
-                () -> "021: Engineering role line MUST precede Art style line; got roleIdx="
+                () -> "021: Professional role line MUST precede Art style line; got roleIdx="
                         + roleIdx + ", artStyleIdx=" + artStyleIdx);
     }
 
     @Test
     void changingUniverseChangesPromptSubstring() {
         String a = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.CYBERPUNK, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.RETRO_SYNTHWAVE, null, ArtStyle.OIL_PAINTING, "Paula", null));
         String b = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.THE_OFFICE, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.NINETIES_SITCOM, null, ArtStyle.OIL_PAINTING, "Paula", null));
         assertFalse(a.equals(b), "universe change must alter the prompt");
-        assertTrue(a.contains("Cyberpunk"));
-        assertTrue(b.contains("The Office"));
-        assertFalse(a.contains("cyberpunk "), "lowercase wire value must not appear");
-        assertFalse(b.contains("the-office"));
+        assertTrue(a.contains("synthwave"));
+        assertTrue(b.contains("1990s sitcom"));
+        assertFalse(a.contains("retro-synthwave"), "lowercase wire value must not appear");
+        assertFalse(b.contains("nineties-sitcom"));
     }
 
     @Test
     void changingPoseChangesPromptSubstring() {
         String a = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
         String b = builder.build(new AlterEgoRequest(
-                Pose.SCHOLAR, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.SCHOLAR, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
         assertFalse(a.equals(b), "pose change must alter the prompt");
         assertTrue(a.contains("heroic"));
         assertTrue(b.contains("scholarly"));
@@ -248,9 +247,9 @@ class GeminiPromptBuilderTest {
     @Test
     void vibePresentVsAbsentProducesDifferentPrompts() {
         String withVibe = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null));
         String noVibe = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
         assertFalse(withVibe.equals(noVibe), "adding a vibe must alter the prompt");
         assertTrue(withVibe.contains("rebellious"), "vibe display label present when set");
         assertFalse(noVibe.contains("rebellious"), "vibe absent → its label must not leak in");
@@ -262,9 +261,9 @@ class GeminiPromptBuilderTest {
         // image prompt. Two requests that differ only in firstName now
         // produce identical prompts — the AI no longer sees the name.
         String paula = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
         String maria = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Maria", null));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Maria", null));
         assertEquals(paula, maria,
                 "017 (refined): firstName-only delta must NOT change the prompt");
         assertFalse(paula.contains("Paula"));
@@ -284,20 +283,20 @@ class GeminiPromptBuilderTest {
         }
         for (Universe u : Universe.values()) {
             String p = builder.build(new AlterEgoRequest(
-                    Pose.HEROIC, Archetype.CLOUD_ARCHITECT, u, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                    Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, u, null, ArtStyle.OIL_PAINTING, "Paula", null));
             assertFalse(p.contains(u.wire() + "\n"),
                     () -> "wire value " + u.wire() + " must not appear as the universe token");
         }
         for (Pose pose : Pose.values()) {
             String p = builder.build(new AlterEgoRequest(
-                    pose, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+                    pose, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
             // Pose labels share some substring with wire values (e.g. "heroic"
             // for HEROIC) — so just assert the prompt compiles and is distinct.
             assertFalse(p.isBlank());
         }
         for (Vibe v : Vibe.values()) {
             String p = builder.build(new AlterEgoRequest(
-                    Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, v, ArtStyle.OIL_PAINTING, "Paula", null));
+                    Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, v, ArtStyle.OIL_PAINTING, "Paula", null));
             assertFalse(p.isBlank());
         }
     }
@@ -311,7 +310,7 @@ class GeminiPromptBuilderTest {
     void artStylePromptLineAppearsForEveryValue() {
         for (ArtStyle style : ArtStyle.values()) {
             String prompt = builder.build(new AlterEgoRequest(
-                    Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                    Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                     null, style, "Paula", null));
             assertTrue(prompt.contains("- Art style: "),
                     () -> "prompt must contain an '- Art style:' line for " + style);
@@ -323,7 +322,7 @@ class GeminiPromptBuilderTest {
         Set<String> lines = new HashSet<>();
         for (ArtStyle style : ArtStyle.values()) {
             String prompt = builder.build(new AlterEgoRequest(
-                    Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                    Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                     null, style, "Paula", null));
             String line = extractLineStartingWith(prompt, "- Art style: ");
             assertNotNull(line, () -> "missing art-style line for " + style);
@@ -339,10 +338,10 @@ class GeminiPromptBuilderTest {
     @Test
     void changingArtStyleChangesPromptSubstring() {
         String a = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, ArtStyle.OIL_PAINTING, "Paula", null));
         String b = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, ArtStyle.JAPANESE_WOODBLOCK, "Paula", null));
         assertFalse(a.equals(b), "art style change must alter the prompt");
         assertTrue(a.contains("oil painting"));
@@ -355,7 +354,7 @@ class GeminiPromptBuilderTest {
         // sits immediately after universe and before pose. Locks the prompt
         // layout so downstream prompt-engineering work has a stable reference.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, ArtStyle.POP_ART, "Paula", null));
         int artIdx = prompt.indexOf("- Art style:");
         int poseIdx = prompt.indexOf("- Pose / stance:");
@@ -374,8 +373,8 @@ class GeminiPromptBuilderTest {
         // domain boundary, so an old-client request without the field
         // continues to produce today's baseline prompt.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
-        assertTrue(prompt.startsWith("Generate a cinematic portrait poster of the person in the reference photo."),
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null));
+        assertTrue(prompt.startsWith("Generate an uplifting, cinematic portrait poster of the person in the reference photo as an inspiring alter ego for a hopeful, innovation-driven future."),
                 () -> "null photoMode must produce the SINGLE baseline opening, got: " + prompt.substring(0, Math.min(200, prompt.length())));
     }
 
@@ -386,23 +385,24 @@ class GeminiPromptBuilderTest {
         // would break backwards-compatibility with downstream consumers and
         // trigger this assertion.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.SINGLE));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.SINGLE));
         String expected = """
-                Generate a cinematic portrait poster of the person in the reference photo.
+                Generate an uplifting, cinematic portrait poster of the person in the reference photo as an inspiring alter ego for a hopeful, innovation-driven future.
 
-                The subject's appearance (face, hair, skin tone, approximate age, general build) MUST closely match the reference photo. Render the subject as an "alter ego" with the following attributes:
+                The subject's appearance (face, hair, skin tone, approximate age, general build) MUST closely match the reference photo. Render the subject as an optimistic, forward-looking "alter ego" with the following attributes:
 
                 - Fictional universe / aesthetic: Star Wars
-                - Engineering role (render as visual cues — props, environment, attire, activity — NOT as text): Cloud Architect
+                - Professional role (render as uplifting visual cues — props, environment, attire, activity — NOT as text): Software Developer
                 - Art style: oil painting, visible brushstrokes and impasto texture
                 - Pose / stance: heroic, chest forward
                 - Vibe / tone: rebellious
 
                 Composition notes:
                 - Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subject.
-                - Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.
+                - Overall mood: hopeful, positive, energetic and forward-looking — the subject looks confident and inspired, like someone helping build a brighter, more sustainable tomorrow.
+                - Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones, with subtle hints of renewable-energy optimism (open sky, sunlight, greenery or clean-energy motifs) where they fit the scene naturally. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.
                 - Clear focus on the subject; the universe aesthetic is the setting, not the subject.
-                - ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the engineering-role label. The poster's text overlay is composited downstream — your job is the visual scene only.
+                - ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the role label. The poster's text overlay is composited downstream — your job is the visual scene only.
                 """;
         // 017 (refined 2026-05-08): Name + Engineering role lines were
         // removed from the image prompt because the AI was rendering them
@@ -420,11 +420,11 @@ class GeminiPromptBuilderTest {
     @Test
     void groupPhotoModeUsesPluralWording() {
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP));
         // 011 FR-1010 — GROUP variant instructs the model to render every
         // person visible, forbids inventing additional people, and uses the
         // "Group name:" label for the collective identifier.
-        assertTrue(prompt.startsWith("Generate a cinematic group portrait poster of the people in the reference photo."),
+        assertTrue(prompt.startsWith("Generate an uplifting, cinematic group portrait poster of the people in the reference photo as inspiring alter egos for a hopeful, innovation-driven future."),
                 () -> "GROUP opening line wrong, got: " + prompt.substring(0, Math.min(200, prompt.length())));
         assertTrue(prompt.contains("EVERY person visible"),
                 "GROUP variant must instruct the model to render every person");
@@ -448,10 +448,10 @@ class GeminiPromptBuilderTest {
         // as SINGLE: the role IS back in the image prompt and applies
         // uniformly to every person rendered (US2 / FR-2105).
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP));
-        assertTrue(prompt.contains("- Engineering role ("),
-                "021: GROUP prompt MUST contain the Engineering role line header");
-        assertTrue(prompt.contains("Cloud Architect"),
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP));
+        assertTrue(prompt.contains("- Professional role ("),
+                "021: GROUP prompt MUST contain the Professional role line header");
+        assertTrue(prompt.contains("Software Developer"),
                 "021: GROUP prompt MUST contain the role's Prompt label");
     }
 
@@ -459,9 +459,9 @@ class GeminiPromptBuilderTest {
     void groupPhotoModeRoleLineFollowsUniverseAndPrecedesArtStyle() {
         // 021: ordering pin mirrors the SINGLE variant — Universe < role < Art-style.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP));
         int universeIdx = prompt.indexOf("- Fictional universe");
-        int roleIdx     = prompt.indexOf("- Engineering role (");
+        int roleIdx     = prompt.indexOf("- Professional role (");
         int artStyleIdx = prompt.indexOf("- Art style:");
         assertTrue(universeIdx >= 0 && roleIdx >= 0 && artStyleIdx >= 0,
                 "GROUP prompt MUST contain Universe / role / Art-style lines");
@@ -475,8 +475,8 @@ class GeminiPromptBuilderTest {
         // 021: GROUP composition note must carry the same strengthened
         // no-rendered-text rule as SINGLE (FR-2105 + Edge Cases).
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP));
-        assertTrue(prompt.contains("NO transcribing the engineering-role label"),
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP));
+        assertTrue(prompt.contains("NO transcribing the role label"),
                 "021: GROUP composition note MUST contain the role-label-transcribe forbid clause");
     }
 
@@ -484,7 +484,7 @@ class GeminiPromptBuilderTest {
     void groupPhotoModeOmitsVibeLineWhenVibeIsNull() {
         // Same optional-vibe behaviour as the SINGLE variant.
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP));
         assertFalse(prompt.contains("Vibe"),
                 "GROUP variant must omit the Vibe line when vibe is null");
     }
@@ -492,7 +492,7 @@ class GeminiPromptBuilderTest {
     @Test
     void groupPhotoModeIncludesVibeLineWhenVibeIsSet() {
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.THINKER, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP));
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.THINKER, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP));
         assertTrue(prompt.contains("- Vibe / tone: thinker / strategist"),
                 "GROUP variant must include the Vibe line when vibe is non-null");
     }
@@ -500,9 +500,9 @@ class GeminiPromptBuilderTest {
     @Test
     void singleAndGroupPromptsDifferForOtherwiseIdenticalInputs() {
         AlterEgoRequest single = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.SINGLE);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.SINGLE);
         AlterEgoRequest group = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.GROUP);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.GROUP);
         String singlePrompt = builder.build(single);
         String groupPrompt = builder.build(group);
         assertFalse(singlePrompt.equals(groupPrompt),
@@ -526,31 +526,31 @@ class GeminiPromptBuilderTest {
         String prompt = builder.build(new AlterEgoRequest(
                 Pose.HEROIC, null, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Paula", null, "Tester"));
-        assertTrue(prompt.contains("Engineering role (render as visual cues"),
+        assertTrue(prompt.contains("Professional role (render as uplifting visual cues"),
                 "022: role line header must remain unchanged");
         assertTrue(prompt.contains(": Tester"),
                 "022: custom role 'Tester' MUST appear on the role line");
-        assertFalse(prompt.contains("Cloud Architect"),
+        assertFalse(prompt.contains("Software Developer"),
                 "022: archetype label MUST NOT leak when null + custom present");
     }
 
     @Test
     void customRoleTakesPrecedenceOverPrefabArchetype() {
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Paula", null, "Tester"));
         assertTrue(prompt.contains(": Tester"),
                 "022: customRole MUST win precedence over the prefab label");
-        assertFalse(prompt.contains("Cloud Architect"),
+        assertFalse(prompt.contains("Software Developer"),
                 "022: the prefab label MUST NOT appear when customRole supplies the role-of-record");
     }
 
     @Test
     void blankCustomRoleFallsBackToPrefabLabel() {
         String prompt = builder.build(new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Paula", null, "   "));
-        assertTrue(prompt.contains("Cloud Architect"),
+        assertTrue(prompt.contains("Software Developer"),
                 "022: whitespace-only customRole must NOT override the prefab label");
     }
 
@@ -583,12 +583,12 @@ class GeminiPromptBuilderTest {
                 Pose.HEROIC, null, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Paula", null, "Tester"));
         assertTrue(prompt.toLowerCase().contains("absolutely no rendered text"));
-        assertTrue(prompt.contains("NO transcribing the engineering-role label"),
+        assertTrue(prompt.contains("NO transcribing the role label"),
                 "022: composition-note role-label-transcribe forbid clause stays unchanged");
     }
 
     private static AlterEgoRequest sampleRequestWithVibe(Vibe vibe) {
         return new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, vibe, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, vibe, ArtStyle.OIL_PAINTING, "Paula", null);
     }
 }

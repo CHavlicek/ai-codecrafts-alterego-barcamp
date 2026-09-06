@@ -39,18 +39,18 @@ class RoleOfRecordPresentValidatorTest {
 
     @Test
     void selections_archetypeOnly_isValid() {
-        assertTrue(validator.isValid(selections(Archetype.CLOUD_ARCHITECT, null), ctx));
+        assertTrue(validator.isValid(selections(Archetype.SOFTWARE_DEVELOPER, null), ctx));
     }
 
     @Test
     void selections_archetypeWithBlankCustom_isValid() {
-        assertTrue(validator.isValid(selections(Archetype.HR, ""), ctx));
-        assertTrue(validator.isValid(selections(Archetype.HR, "   "), ctx));
+        assertTrue(validator.isValid(selections(Archetype.PEOPLE_CULTURE, ""), ctx));
+        assertTrue(validator.isValid(selections(Archetype.PEOPLE_CULTURE, "   "), ctx));
     }
 
     @Test
     void selections_archetypeWithCustom_isValid() {
-        assertTrue(validator.isValid(selections(Archetype.CLOUD_ARCHITECT, "Tester"), ctx));
+        assertTrue(validator.isValid(selections(Archetype.SOFTWARE_DEVELOPER, "Tester"), ctx));
     }
 
     @Test
@@ -69,7 +69,7 @@ class RoleOfRecordPresentValidatorTest {
 
     @Test
     void request_archetypeOnly_isValid() {
-        assertTrue(validator.isValid(request(Archetype.CLOUD_ARCHITECT, null), ctx));
+        assertTrue(validator.isValid(request(Archetype.SOFTWARE_DEVELOPER, null), ctx));
     }
 
     @Test
@@ -106,10 +106,10 @@ class RoleOfRecordPresentValidatorTest {
         // specs/022-role-options-custom/data-model.md.
         record Case(Archetype a, String c, boolean expected) {}
         Case[] cases = new Case[]{
-                new Case(Archetype.CLOUD_ARCHITECT, null, true),
-                new Case(Archetype.CLOUD_ARCHITECT, "", true),
-                new Case(Archetype.CLOUD_ARCHITECT, "  ", true),
-                new Case(Archetype.CLOUD_ARCHITECT, "Tester", true),
+                new Case(Archetype.SOFTWARE_DEVELOPER, null, true),
+                new Case(Archetype.SOFTWARE_DEVELOPER, "", true),
+                new Case(Archetype.SOFTWARE_DEVELOPER, "  ", true),
+                new Case(Archetype.SOFTWARE_DEVELOPER, "Tester", true),
                 new Case(null, "Tester", true),
                 new Case(null, "  Tester  ", true),
                 new Case(null, null, false),

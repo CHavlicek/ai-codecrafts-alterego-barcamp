@@ -134,7 +134,7 @@ class GeminiCharacterGeneratorTest {
         GeminiCharacterGenerator gen = new GeminiCharacterGenerator(client, promptBuilder, parser, configured);
 
         AlterEgoRequest withSpaces = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "  Paula  ", null);
 
         when(promptBuilder.build(any())).thenReturn("P");
@@ -180,7 +180,7 @@ class GeminiCharacterGeneratorTest {
 
     private static AlterEgoRequest sampleRequest() {
         return new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
     }
 

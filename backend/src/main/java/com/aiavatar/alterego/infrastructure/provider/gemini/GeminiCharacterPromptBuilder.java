@@ -2,6 +2,7 @@ package com.aiavatar.alterego.infrastructure.provider.gemini;
 
 import com.aiavatar.alterego.domain.model.AlterEgoRequest;
 import com.aiavatar.alterego.domain.prompt.RoleOfRecord;
+import com.aiavatar.alterego.domain.prompt.UniverseOfRecord;
 import com.aiavatar.alterego.domain.model.Archetype;
 import com.aiavatar.alterego.domain.model.ArtStyle;
 import com.aiavatar.alterego.domain.model.Pose;
@@ -52,24 +53,25 @@ public class GeminiCharacterPromptBuilder {
         POSE_LABELS.put(Pose.MYSTICAL, "mystical, ethereal");
         POSE_LABELS.put(Pose.SCHOLAR, "scholarly, thoughtful");
 
-        ROLE_LABELS.put(Archetype.CLOUD_ARCHITECT, "Cloud Architect");
-        ROLE_LABELS.put(Archetype.BACKEND_DEV, "Backend Developer");
-        ROLE_LABELS.put(Archetype.FRONTEND_DEV, "Frontend Developer");
-        ROLE_LABELS.put(Archetype.AI_ENGINEER, "AI Engineer");
-        ROLE_LABELS.put(Archetype.PLATFORM_ENG, "Platform Engineer");
-        ROLE_LABELS.put(Archetype.DATA_ENGINEER, "Data Engineer");
-        // 022 (issue #50) — non-engineering prefab options. Expanded labels
+        // 029 (verbund-rebrand): corporate role vocabulary. Expanded labels
         // keep the bio prompt and image prompt in sync (021 spec FR-2102).
-        ROLE_LABELS.put(Archetype.HR, "Human Resources");
-        ROLE_LABELS.put(Archetype.ADMINISTRATION, "Administration / Operations");
-        ROLE_LABELS.put(Archetype.CUSTOMER_RELATIONS, "Customer Relations / Support");
+        ROLE_LABELS.put(Archetype.SOFTWARE_DEVELOPER, "Software Developer");
+        ROLE_LABELS.put(Archetype.PROJECT_MANAGER, "Project Manager");
+        ROLE_LABELS.put(Archetype.DATA_ANALYST, "Data Analyst");
+        ROLE_LABELS.put(Archetype.MARKETING_SPECIALIST, "Marketing & Communications Specialist");
+        ROLE_LABELS.put(Archetype.SALES_CUSTOMER_RELATIONS, "Sales & Customer Relations");
+        ROLE_LABELS.put(Archetype.PEOPLE_CULTURE, "People & Culture (HR)");
+        ROLE_LABELS.put(Archetype.OPERATIONS_MANAGER, "Operations Manager");
+        ROLE_LABELS.put(Archetype.FINANCE_CONTROLLER, "Finance & Controlling");
+        ROLE_LABELS.put(Archetype.SUSTAINABILITY_LEAD, "Sustainability & Energy-Transition Lead");
 
+        // 029 — broadly recognisable 80s/90s/2000s pop-culture aesthetics.
         UNIVERSE_LABELS.put(Universe.MARVEL, "Marvel superhero universe");
         UNIVERSE_LABELS.put(Universe.STAR_WARS, "Star Wars");
-        UNIVERSE_LABELS.put(Universe.CYBERPUNK, "Cyberpunk neo-noir");
-        UNIVERSE_LABELS.put(Universe.THE_OFFICE, "The Office sitcom");
-        UNIVERSE_LABELS.put(Universe.INDIANA_JONES, "Indiana Jones adventure");
-        UNIVERSE_LABELS.put(Universe.LORD_OF_THE_RINGS, "Lord of the Rings");
+        UNIVERSE_LABELS.put(Universe.RETRO_SYNTHWAVE, "1980s retro synthwave");
+        UNIVERSE_LABELS.put(Universe.NINETIES_SITCOM, "1990s sitcom");
+        UNIVERSE_LABELS.put(Universe.SPY_THRILLER, "classic spy thriller");
+        UNIVERSE_LABELS.put(Universe.GHOSTBUSTERS, "Ghostbusters adventure");
 
         VIBE_LABELS.put(Vibe.BUILDER, "builder / tinkerer");
         VIBE_LABELS.put(Vibe.THINKER, "thinker / strategist");
@@ -101,10 +103,10 @@ public class GeminiCharacterPromptBuilder {
         sb.append("The poster is for one person. Their attributes:\n\n");
         sb.append("- First name (used for tone, NOT to repeat verbatim in line 2): ")
                 .append(request.firstName()).append('\n');
-        sb.append("- Engineering role: ")
+        sb.append("- Professional role: ")
                 .append(resolveRoleLabel(request)).append('\n');
         sb.append("- Fictional universe / aesthetic: ")
-                .append(label(UNIVERSE_LABELS, request.universe())).append('\n');
+                .append(resolveUniverseLabel(request)).append('\n');
         sb.append("- Pose / stance: ")
                 .append(label(POSE_LABELS, request.pose())).append('\n');
         sb.append("- Art style of the poster: ")
@@ -116,19 +118,21 @@ public class GeminiCharacterPromptBuilder {
 
         sb.append('\n');
         sb.append("Trait constraints (each MUST be satisfied):\n");
-        sb.append("- heroTitleLine2: a single short hero-style title line (e.g. \"The Cloud Guardrail\", ")
-                .append("\"The Pixel Diplomat\"). MUST start with \"The \". MUST NOT contain the first name. ")
+        sb.append("- heroTitleLine2: a single short hero-style title line (e.g. \"The Future Builder\", ")
+                .append("\"The Bright-Spark Visionary\"). MUST start with \"The \". MUST NOT contain the first name. ")
                 .append("Up to 100 characters, at least 1 character.\n");
         sb.append("- tagline: a single short punchy line, typically 4-8 words, often UPPERCASE. ")
                 .append("Up to 100 characters, at least 1 character.\n");
         sb.append("- superpowers: EXACTLY THREE short superpower descriptions, each one short ")
                 .append("sentence or noun phrase. Each entry up to 100 characters, at least 1 character.\n");
-        sb.append("- quote: a short dev-flavoured quote, ideally up to 12 words. ")
+        sb.append("- quote: a short uplifting, forward-looking quote, ideally up to 12 words. ")
                 .append("Up to 100 characters, at least 1 character.\n");
         sb.append('\n');
 
-        sb.append("Voice: dry, knowing, slightly self-deprecating engineering humour. ");
-        sb.append("Reference the chosen universe and vibe naturally — do not just name them.\n\n");
+        sb.append("Voice: warm, hopeful, inspiring and lightly witty — the energy of someone helping ");
+        sb.append("build a brighter, more sustainable future through innovation and clean energy. ");
+        sb.append("Upbeat and empowering, never cynical or overly technical. ");
+        sb.append("Reference the chosen universe and role naturally — do not just name them.\n\n");
         sb.append("Output: only the JSON object. No code fences, no commentary, no Markdown.\n");
 
         return sb.toString();
@@ -156,5 +160,20 @@ public class GeminiCharacterPromptBuilder {
         return request.archetype() != null
                 ? label(ROLE_LABELS, request.archetype())
                 : RoleOfRecord.from(request).value();
+    }
+
+    /**
+     * 029 — resolves the universe string for the bio prompt. Custom universe
+     * (trimmed, when non-blank) takes precedence over the prefab universe's
+     * label; otherwise the prompt-side label is used so bio + image prompts
+     * share the same universe vocabulary.
+     */
+    private static String resolveUniverseLabel(AlterEgoRequest request) {
+        if (request.customUniverse() != null && !request.customUniverse().isBlank()) {
+            return request.customUniverse().trim();
+        }
+        return request.universe() != null
+                ? label(UNIVERSE_LABELS, request.universe())
+                : UniverseOfRecord.from(request).value();
     }
 }

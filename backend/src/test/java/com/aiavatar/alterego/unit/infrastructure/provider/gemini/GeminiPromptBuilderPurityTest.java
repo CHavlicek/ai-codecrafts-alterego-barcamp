@@ -24,7 +24,7 @@ class GeminiPromptBuilderPurityTest {
     void buildIsDeterministicAndDoesNotRequireHttpClient() {
         GeminiPromptBuilder builder = new GeminiPromptBuilder();
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.BACKEND_DEV, Universe.STAR_WARS, Vibe.BUILDER,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.BUILDER,
                 ArtStyle.OIL_PAINTING, "Sam", PhotoMode.SINGLE, null);
         String a = builder.build(req);
         String b = builder.build(req);

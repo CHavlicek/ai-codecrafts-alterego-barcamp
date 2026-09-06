@@ -137,9 +137,9 @@ class GenerateAlterEgoGeminiInputCoverageIT {
         // therefore alter the outbound image prompt; pair-wise role
         // distinctness is SC-2103's automatable half.
         AlterEgoRequest a = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.BACKEND_DEV, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         AlterEgoRequest b = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.DATA_ANALYST, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         assertSingleAxisChangesPrompt(a, b, SamplePhotos.tinyJpeg(), SamplePhotos.tinyJpeg(),
                 "archetype");
     }
@@ -147,9 +147,9 @@ class GenerateAlterEgoGeminiInputCoverageIT {
     @Test
     void changingUniversePreservesAllOtherTokens() {
         AlterEgoRequest a = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.CYBERPUNK, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.RETRO_SYNTHWAVE, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         AlterEgoRequest b = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.THE_OFFICE, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.NINETIES_SITCOM, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         assertSingleAxisChangesPrompt(a, b, SamplePhotos.tinyJpeg(), SamplePhotos.tinyJpeg(),
                 "universe");
     }
@@ -166,9 +166,9 @@ class GenerateAlterEgoGeminiInputCoverageIT {
         // test per feature" gate for 006 and pins the end-to-end payload
         // round-trip for FR-305 / FR-307.
         AlterEgoRequest a = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         AlterEgoRequest b = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.JAPANESE_WOODBLOCK, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.JAPANESE_WOODBLOCK, "Paula", null);
         assertSingleAxisChangesPrompt(a, b, SamplePhotos.tinyJpeg(), SamplePhotos.tinyJpeg(),
                 "artStyle");
     }
@@ -185,9 +185,9 @@ class GenerateAlterEgoGeminiInputCoverageIT {
         // text by the AI. (firstName still drives the character text
         // generator and the in-image overlay; just not the image AI.)
         AlterEgoRequest a = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         AlterEgoRequest b = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Maria", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Maria", null);
         String bodyA = sendAndCaptureOutboundBody(a, SamplePhotos.tinyJpeg(), "image/jpeg");
         String bodyB = sendAndCaptureOutboundBody(b, SamplePhotos.tinyJpeg(), "image/jpeg");
         assertEquals(readPrompt(bodyA), readPrompt(bodyB),
@@ -200,7 +200,7 @@ class GenerateAlterEgoGeminiInputCoverageIT {
         // photos → different outbound base64 bytes. Visual face-anchoring
         // check remains manual per T054.
         AlterEgoRequest same = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
 
         String bodyA = sendAndCaptureOutboundBody(same, SamplePhotos.tinyJpeg(), "image/jpeg");
         String bodyB = sendAndCaptureOutboundBody(same, SamplePhotos.tinyPng(),  "image/png");

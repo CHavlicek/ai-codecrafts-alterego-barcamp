@@ -144,25 +144,25 @@ class GenerateAlterEgoFalAiInputAxisIT {
         // role-only delta MUST therefore alter the outbound prompt, and
         // each prompt MUST contain its own Prompt label (per
         // specs/021-engineer-role-prompt/data-model.md).
-        AlterEgoRequest a = req(Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+        AlterEgoRequest a = req(Archetype.DATA_ANALYST, Universe.STAR_WARS,
                 Pose.HEROIC, ArtStyle.OIL_PAINTING, null);
-        AlterEgoRequest b = req(Archetype.BACKEND_DEV, Universe.STAR_WARS,
+        AlterEgoRequest b = req(Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Pose.HEROIC, ArtStyle.OIL_PAINTING, null);
 
         String promptA = capturePrompt(a);
         wireMock.resetRequests();
         String promptB = capturePrompt(b);
 
-        assertThat(promptA).contains("Cloud Architect");
-        assertThat(promptB).contains("Backend Developer");
+        assertThat(promptA).contains("Data Analyst");
+        assertThat(promptB).contains("Software Developer");
         assertThat(promptA).isNotEqualTo(promptB);
     }
 
     @Test
     void universeAxisProducesDistinctPrompts() {
-        AlterEgoRequest a = req(Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+        AlterEgoRequest a = req(Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Pose.HEROIC, ArtStyle.OIL_PAINTING, null);
-        AlterEgoRequest b = req(Archetype.CLOUD_ARCHITECT, Universe.CYBERPUNK,
+        AlterEgoRequest b = req(Archetype.SOFTWARE_DEVELOPER, Universe.RETRO_SYNTHWAVE,
                 Pose.HEROIC, ArtStyle.OIL_PAINTING, null);
 
         String promptA = capturePrompt(a);
@@ -170,7 +170,7 @@ class GenerateAlterEgoFalAiInputAxisIT {
         String promptB = capturePrompt(b);
 
         assertThat(promptA).contains("Star Wars");
-        assertThat(promptB).contains("Cyberpunk");
+        assertThat(promptB).contains("synthwave");
         assertThat(promptA).isNotEqualTo(promptB);
     }
 
@@ -184,9 +184,9 @@ class GenerateAlterEgoFalAiInputAxisIT {
         // 019 (closes #49): retired PIXEL_ART; use JAPANESE_WOODBLOCK as the
         // contrasting axis value — it stays distinct from oil-painting on the
         // prompt-substring axis and is a surviving member of the trimmed enum.
-        AlterEgoRequest a = req(Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+        AlterEgoRequest a = req(Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Pose.HEROIC, ArtStyle.JAPANESE_WOODBLOCK, null);
-        AlterEgoRequest b = req(Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+        AlterEgoRequest b = req(Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Pose.HEROIC, ArtStyle.OIL_PAINTING, null);
 
         String promptA = capturePrompt(a);

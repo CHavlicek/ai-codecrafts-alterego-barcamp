@@ -20,7 +20,7 @@ describe('humanizeArchetype — round-trip every declared value', () => {
       expect(humanizeArchetype(opt.value)).toBe(opt.label)
     }
     // Explicit spot-check of the canonical "must not leak kebab" case.
-    expect(humanizeArchetype('cloud-architect')).toBe('Cloud Architect')
+    expect(humanizeArchetype('software-developer')).toBe('Software Developer')
   })
 })
 

@@ -33,13 +33,13 @@ class AlterEgoControllerErrorContractTest {
     @Autowired private MockMvc mockMvc;
 
     private static final String VALID_SELECTIONS_JSON =
-            "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+            "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                     + "\"universe\":\"star-wars\",\"artStyle\":\"oil-painting\","
                     + "\"firstName\":\"Paula\"}";
 
     @Test
     void blankFirstNameReturns400Problem() throws Exception {
-        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                 + "\"universe\":\"star-wars\",\"firstName\":\"\"}";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -50,7 +50,7 @@ class AlterEgoControllerErrorContractTest {
 
     @Test
     void unknownPoseReturns400Problem() throws Exception {
-        String invalid = "{\"pose\":\"crouching\",\"archetype\":\"cloud-architect\","
+        String invalid = "{\"pose\":\"crouching\",\"archetype\":\"software-developer\","
                 + "\"universe\":\"star-wars\",\"firstName\":\"Paula\"}";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -75,7 +75,7 @@ class AlterEgoControllerErrorContractTest {
     @Test
     void obsoleteUniverseReturns400Problem() throws Exception {
         // 001 had "harry-potter"; 002 drops it.
-        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                 + "\"universe\":\"harry-potter\",\"firstName\":\"Paula\"}";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -86,7 +86,7 @@ class AlterEgoControllerErrorContractTest {
 
     @Test
     void unknownVibeReturns400Problem() throws Exception {
-        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                 + "\"universe\":\"star-wars\",\"vibe\":\"chaotic\",\"firstName\":\"Paula\"}";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -99,7 +99,7 @@ class AlterEgoControllerErrorContractTest {
     void missingRequiredArtStyleReturns400Problem() throws Exception {
         // 006 FR-306: artStyle is required; a request omitting it MUST be
         // rejected with 400 Bad Request.
-        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                 + "\"universe\":\"star-wars\",\"firstName\":\"Paula\"}";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -111,7 +111,7 @@ class AlterEgoControllerErrorContractTest {
     @Test
     void unknownArtStyleReturns400Problem() throws Exception {
         // 006 FR-306 / FR-310: unknown artStyle wire value MUST be rejected.
-        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                 + "\"universe\":\"star-wars\",\"artStyle\":\"stick-figure\","
                 + "\"firstName\":\"Paula\"}";
 
@@ -129,7 +129,7 @@ class AlterEgoControllerErrorContractTest {
         // Request, no silent substitution, no special-case shim. A stale tab
         // loaded before the deploy and emitting one of these must be rejected
         // exactly like a typo.
-        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+        String invalid = "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                 + "\"universe\":\"star-wars\",\"artStyle\":\"" + retiredWire + "\","
                 + "\"firstName\":\"Paula\"}";
 
@@ -171,7 +171,7 @@ class AlterEgoControllerErrorContractTest {
         // FAIL_ON_UNKNOWN_PROPERTIES=false (Spring Boot default), so an old
         // client sending a "colour" field should be silently ignored, not 400.
         String withStrayColour = "{\"pose\":\"heroic\",\"colour\":\"purple\","
-                + "\"archetype\":\"cloud-architect\",\"universe\":\"star-wars\","
+                + "\"archetype\":\"software-developer\",\"universe\":\"star-wars\","
                 + "\"artStyle\":\"oil-painting\",\"firstName\":\"Paula\"}";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -257,7 +257,7 @@ class AlterEgoControllerErrorContractTest {
         // happy-path code path; the customRole field's presence on the wire
         // is what we exercise here.
         String onTheNose = "T".repeat(100);
-        String valid = "{\"archetype\":\"cloud-architect\",\"universe\":\"star-wars\","
+        String valid = "{\"archetype\":\"software-developer\",\"universe\":\"star-wars\","
                 + "\"artStyle\":\"oil-painting\",\"photoMode\":\"single\","
                 + "\"firstName\":\"Paula\",\"customRole\":\"" + onTheNose + "\"}";
 

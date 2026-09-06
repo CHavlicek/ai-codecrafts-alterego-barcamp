@@ -16,7 +16,7 @@ import type { SurpriseMePicks } from './randomSelections'
  */
 
 const FULL_ROLL: SurpriseMePicks = {
-  archetype: 'cloud-architect',
+  archetype: 'software-developer',
   universe: 'star-wars',
   artStyle: 'oil-painting',
 }
@@ -31,10 +31,10 @@ describe('mergeSurpriseWithExplicit', () => {
   test('(b) only archetype explicit → archetype passes through, universe + artStyle rolled', () => {
     const session: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      archetype: 'backend-dev',
+      archetype: 'software-developer',
     }
     const merged = mergeSurpriseWithExplicit(session, FULL_ROLL)
-    expect(merged.archetype).toBe('backend-dev')
+    expect(merged.archetype).toBe('software-developer')
     expect(merged.universe).toBe(FULL_ROLL.universe)
     expect(merged.artStyle).toBe(FULL_ROLL.artStyle)
   })
@@ -42,11 +42,11 @@ describe('mergeSurpriseWithExplicit', () => {
   test('(c) only universe explicit → universe passes through, archetype + artStyle rolled', () => {
     const session: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      universe: 'cyberpunk',
+      universe: 'retro-synthwave',
     }
     const merged = mergeSurpriseWithExplicit(session, FULL_ROLL)
     expect(merged.archetype).toBe(FULL_ROLL.archetype)
-    expect(merged.universe).toBe('cyberpunk')
+    expect(merged.universe).toBe('retro-synthwave')
     expect(merged.artStyle).toBe(FULL_ROLL.artStyle)
   })
 
@@ -82,13 +82,13 @@ describe('mergeSurpriseWithExplicit', () => {
   test('(f) all explicit → fullRoll is entirely overridden, no random substitution (US4)', () => {
     const session: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      archetype: 'ai-engineer',
+      archetype: 'data-analyst',
       universe: 'marvel',
       artStyle: 'pop-art',
     }
     const merged = mergeSurpriseWithExplicit(session, FULL_ROLL)
     expect(merged).toEqual({
-      archetype: 'ai-engineer',
+      archetype: 'data-analyst',
       universe: 'marvel',
       artStyle: 'pop-art',
     })
@@ -110,7 +110,7 @@ describe('mergeSurpriseWithExplicit', () => {
   test('(h) purity — inputs are not mutated', () => {
     const session: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      universe: 'lord-of-the-rings',
+      universe: 'ghostbusters',
     }
     const sessionSnapshot = JSON.parse(JSON.stringify(session))
     const rollSnapshot = JSON.parse(JSON.stringify(FULL_ROLL))

@@ -117,7 +117,7 @@ class LogRedactionGeminiTextIT {
         GeminiTextWireMockStubs.happyPath(wireMock, TEXT_MODEL_ID);
 
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, SENTINEL_FIRST_NAME, null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
@@ -170,7 +170,7 @@ class LogRedactionGeminiTextIT {
                         .withBody(GeminiTextWireMockStubs.envelopeWrappingText(malformedJson))));
 
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, SENTINEL_FIRST_NAME, null);
 
         restTemplate.exchange("/api/v1/alter-egos", HttpMethod.POST,

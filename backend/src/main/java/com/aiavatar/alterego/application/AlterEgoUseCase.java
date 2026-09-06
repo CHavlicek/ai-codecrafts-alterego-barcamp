@@ -88,7 +88,8 @@ public class AlterEgoUseCase {
                 userSelections.artStyle(),
                 userSelections.firstName(),
                 userSelections.photoMode(),
-                userSelections.customRole());
+                userSelections.customRole(),
+                userSelections.customUniverse());
         return generate(resolved, photo, correlationId);
     }
 

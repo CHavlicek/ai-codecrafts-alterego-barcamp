@@ -38,14 +38,17 @@ export function mergeSurpriseWithExplicit(
   const roleIsExplicitViaPrefab = session.archetype !== null
   const roleIsExplicitViaCustom = session.customRole.trim().length > 0
   const archetype = roleIsExplicitViaPrefab ? session.archetype! : fullRoll.archetype
+  // 029: Universe is a composite category (prefab OR custom), mirroring Role.
+  // When explicit via the custom string the prefab slot is don't-care for the
+  // downstream serialiser (which drops `universe` when `customUniverse` is
+  // present); we return fullRoll's value as a type-safe stand-in.
+  const universeIsExplicitViaCustom = session.customUniverse.trim().length > 0
   const universe = session.universe !== null ? session.universe : fullRoll.universe
   const artStyle = session.artStyle !== null ? session.artStyle : fullRoll.artStyle
-  // When Role is explicit via Custom Role, the prefab archetype slot is
-  // don't-care for the downstream serialiser; we still return fullRoll's
-  // value here so the returned shape is unambiguous and the helper's
-  // contract stays simple. The roleIsExplicitViaCustom variable is part
-  // of the spec contract but does not influence the return shape — its
-  // observable effect is in the Selections builder in `useGenerateAlterEgo`.
+  // The …ViaCustom variables are part of the spec contract but do not
+  // influence the return shape — their observable effect is in the
+  // Selections builder in `useGenerateAlterEgo`.
   void roleIsExplicitViaCustom
+  void universeIsExplicitViaCustom
   return { archetype, universe, artStyle }
 }

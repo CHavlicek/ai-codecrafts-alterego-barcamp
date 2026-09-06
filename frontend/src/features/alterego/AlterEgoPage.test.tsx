@@ -173,7 +173,7 @@ describe('AlterEgoPage', () => {
 
     await seedPhoto()
 
-    await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
+    await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
     await user.click(screen.getByRole('radio', { name: 'Star Wars' }))
     await user.click(screen.getByRole('radio', { name: 'Pop Art' }))
     await user.type(screen.getByLabelText('First name'), 'Paula')
@@ -201,7 +201,7 @@ describe('AlterEgoPage', () => {
     const img = posterView.querySelector('img.poster-view__image') as HTMLImageElement
     // 017 (refined 2026-05-08): alt now carries firstName + humanised
     // archetype only — hero title / tagline live only on the image.
-    expect(img.alt).toBe('Alter ego poster for Paula, Cloud Architect. quote.')
+    expect(img.alt).toBe('Alter ego poster for Paula, Software Developer. quote.')
     expect(generateAlterEgoMock).toHaveBeenCalledTimes(1)
 
     const startOver = screen.getByRole('button', { name: /start over/i })
@@ -218,7 +218,7 @@ describe('AlterEgoPage', () => {
     render(<AlterEgoPage />, { wrapper })
 
     await seedPhoto()
-    await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
+    await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
     await user.click(screen.getByRole('radio', { name: 'Star Wars' }))
     await user.click(screen.getByRole('radio', { name: 'Pop Art' }))
     await user.type(screen.getByLabelText('First name'), 'Paula')
@@ -239,7 +239,7 @@ describe('AlterEgoPage', () => {
 
     await seedPhoto()
     await user.click(screen.getByRole('switch', { name: /photo mode/i }))
-    await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
+    await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
     await user.click(screen.getByRole('radio', { name: 'Star Wars' }))
     await user.click(screen.getByRole('radio', { name: 'Pop Art' }))
     // 011: in group mode the input label switches to "Group name".
@@ -269,7 +269,7 @@ describe('AlterEgoPage', () => {
 
     await seedPhoto()
 
-    await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
+    await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
     await user.click(screen.getByRole('radio', { name: 'Star Wars' }))
     await user.click(screen.getByRole('radio', { name: 'Pop Art' }))
     await user.type(screen.getByLabelText('First name'), 'Paula')

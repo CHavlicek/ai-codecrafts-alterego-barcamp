@@ -19,27 +19,29 @@
  * shapes); the generated file is for verification only.
  */
 
+// 029 (verbund-rebrand): broad corporate role set for the "AI @ Verbund 2026"
+// audience. Wire values follow the kebab-case public-contract convention;
+// UI labels live in `options.ts → ARCHETYPE_OPTIONS`.
 export type Archetype =
-  | 'cloud-architect'
-  | 'backend-dev'
-  | 'frontend-dev'
-  | 'ai-engineer'
-  | 'platform-eng'
-  | 'data-engineer'
-  // 022 (issue #50): three non-engineering prefab options. Wire values
-  // follow the existing kebab-case public-contract convention; UI labels
-  // live in `options.ts → ARCHETYPE_OPTIONS`.
-  | 'hr'
-  | 'administration'
-  | 'customer-relations'
+  | 'software-developer'
+  | 'project-manager'
+  | 'data-analyst'
+  | 'marketing-specialist'
+  | 'sales-customer-relations'
+  | 'people-culture'
+  | 'operations-manager'
+  | 'finance-controller'
+  | 'sustainability-lead'
 
+// 029: broadly recognisable 80s/90s/2000s pop-culture aesthetics
+// (Marvel & Star Wars kept). A free-form `customUniverse` can override these.
 export type Universe =
   | 'marvel'
   | 'star-wars'
-  | 'cyberpunk'
-  | 'the-office'
-  | 'indiana-jones'
-  | 'lord-of-the-rings'
+  | 'retro-synthwave'
+  | 'nineties-sitcom'
+  | 'spy-thriller'
+  | 'ghostbusters'
 
 /**
  * 006 addition: rendering style for the generated poster. Required selection
@@ -122,7 +124,13 @@ export interface Selections {
    * Bean Validation constraint.
    */
   archetype: Archetype | null
-  universe: Universe
+  /**
+   * 029: nullable when the user supplied a custom universe
+   * (`customUniverse` non-blank takes precedence). The OR-invariant is
+   * enforced server-side by the class-level `@UniverseOfRecordPresent`
+   * Bean Validation constraint.
+   */
+  universe: Universe | null
   /** 006: required rendering style for the generated poster. */
   artStyle: ArtStyle
   /**
@@ -141,6 +149,14 @@ export interface Selections {
    * MUST omit this field entirely when blank (do not send `""`).
    */
   customRole?: string
+  /**
+   * 029: optional free-form universe string (≤ 100 chars after trim).
+   * When present and trimmed-non-empty, takes precedence over `universe`
+   * as the universe-of-record for the image prompt, the character bio
+   * prompt, and the poster. The frontend MUST omit this field entirely
+   * when blank (do not send `""`).
+   */
+  customUniverse?: string
 }
 
 export interface GeneratedCharacter {

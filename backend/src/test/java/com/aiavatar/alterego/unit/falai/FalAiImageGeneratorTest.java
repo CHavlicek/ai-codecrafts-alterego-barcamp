@@ -158,7 +158,7 @@ class FalAiImageGeneratorTest {
     }
 
     private static AlterEgoRequest sampleRequest() {
-        return new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        return new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
     }
 

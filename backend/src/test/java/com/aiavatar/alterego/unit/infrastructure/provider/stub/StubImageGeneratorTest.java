@@ -40,7 +40,7 @@ class StubImageGeneratorTest {
     void generateAlwaysThrowsGenerationFailureWithNotConfigured() {
         StubImageGenerator gen = new StubImageGenerator();
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.BACKEND_DEV, Universe.STAR_WARS, null,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Sam", PhotoMode.SINGLE, null);
         GeneratedCharacter character = new GeneratedCharacter("SAM", "x", "y", List.of("a", "b", "c"), "q");
         PhotoPayload photo = new PhotoPayload(new byte[]{1}, "image/jpeg");

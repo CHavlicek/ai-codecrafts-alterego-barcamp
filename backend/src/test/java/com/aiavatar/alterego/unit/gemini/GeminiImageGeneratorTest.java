@@ -165,7 +165,7 @@ class GeminiImageGeneratorTest {
 
     private static AlterEgoRequest sampleRequest() {
         return new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
     }
 
     private static PhotoPayload samplePhoto() {

@@ -64,7 +64,7 @@ class GeminiCharacterPromptBuilderTest {
     @Test
     void promptIncludesFirstNameVerbatim() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
         assertTrue(prompt.contains("Paula"),
@@ -78,7 +78,7 @@ class GeminiCharacterPromptBuilderTest {
         // 011 ValidFirstName allows letters / spaces / hyphens / apostrophes; verify
         // an apostrophe is interpolated verbatim, not escaped to \' or wrapped.
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, ArtStyle.OIL_PAINTING, "O'Brien", null);
         String prompt = builder.build(req);
         assertTrue(prompt.contains("O'Brien"),
@@ -90,7 +90,7 @@ class GeminiCharacterPromptBuilderTest {
     @Test
     void absentVibeOmitsVibeFieldLine() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
         // The Setup-fields block uses "- " bullet lines. A null vibe MUST
@@ -106,7 +106,7 @@ class GeminiCharacterPromptBuilderTest {
     @Test
     void presentVibeIncludesVibeFieldLine() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
         boolean hasVibeFieldLine = prompt.lines()
@@ -119,7 +119,7 @@ class GeminiCharacterPromptBuilderTest {
     @EnumSource(Pose.class)
     void everyPoseLabelAppearsInPrompt(Pose pose) {
         AlterEgoRequest req = new AlterEgoRequest(
-                pose, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                pose, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
         // The display label for each pose contains a distinct substring;
@@ -150,11 +150,22 @@ class GeminiCharacterPromptBuilderTest {
     @EnumSource(Universe.class)
     void everyUniverseContributesADistinctLabel(Universe universe) {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, universe,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, universe,
                 null, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
-        String firstWord = universe.wire().split("-")[0];
-        assertTrue(prompt.toLowerCase().contains(firstWord),
+        // 029 (verbund-rebrand): the character builder's universe labels no
+        // longer derive from the wire value (e.g. NINETIES_SITCOM →
+        // "1990s sitcom", not "nineties"). Pin each to a distinctive token
+        // from its GeminiCharacterPromptBuilder.UNIVERSE_LABELS entry.
+        String expectedToken = switch (universe) {
+            case MARVEL -> "marvel";
+            case STAR_WARS -> "star wars";
+            case RETRO_SYNTHWAVE -> "synthwave";
+            case NINETIES_SITCOM -> "1990s sitcom";
+            case SPY_THRILLER -> "spy thriller";
+            case GHOSTBUSTERS -> "ghostbusters";
+        };
+        assertTrue(prompt.toLowerCase().contains(expectedToken),
                 "prompt MUST mention universe " + universe + "; got:\n" + prompt);
     }
 
@@ -162,7 +173,7 @@ class GeminiCharacterPromptBuilderTest {
     @EnumSource(ArtStyle.class)
     void everyArtStyleContributesADistinctLabel(ArtStyle artStyle) {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, artStyle, "Paula", null);
         String prompt = builder.build(req);
         String firstWord = artStyle.wire().split("-")[0];
@@ -193,35 +204,35 @@ class GeminiCharacterPromptBuilderTest {
         String prompt = builder.build(req);
         assertTrue(prompt.contains("Tester"),
                 "022: bio prompt MUST contain the trimmed customRole verbatim");
-        assertFalse(prompt.contains("Cloud Architect"),
+        assertFalse(prompt.contains("Software Developer"),
                 "022: archetype label MUST NOT leak when null + custom present");
     }
 
     @Test
     void customRoleTakesPrecedenceOverPrefabInBioPrompt() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null, "Tester");
         String prompt = builder.build(req);
         assertTrue(prompt.contains("Tester"),
                 "022: customRole takes precedence in the bio prompt");
-        assertFalse(prompt.contains("Cloud Architect"),
+        assertFalse(prompt.contains("Software Developer"),
                 "022: prefab label is replaced when customRole is present");
     }
 
     @Test
     void blankCustomRoleFallsBackToPrefabBioLabel() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null, "   ");
         String prompt = builder.build(req);
-        assertTrue(prompt.contains("Cloud Architect"),
+        assertTrue(prompt.contains("Software Developer"),
                 "022: whitespace-only customRole does NOT override prefab in bio prompt");
     }
 
     private static AlterEgoRequest sample() {
         return new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
     }
 }

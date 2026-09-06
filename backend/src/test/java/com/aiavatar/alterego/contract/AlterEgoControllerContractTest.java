@@ -63,7 +63,7 @@ class AlterEgoControllerContractTest {
     void happyPathReturns200WithFullyPopulatedSuccessResponse() throws Exception {
         byte[] photoBytes = SamplePhotos.tinyJpeg();
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         String selectionsJson = objectMapper.writeValueAsString(selections);
 
         MvcResult result = mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -110,7 +110,7 @@ class AlterEgoControllerContractTest {
         // successfully through the pipeline.
         byte[] photoBytes = SamplePhotos.tinyJpeg();
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP);
         String selectionsJson = objectMapper.writeValueAsString(selections);
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -128,7 +128,7 @@ class AlterEgoControllerContractTest {
         // MUST continue to work. The JSON body intentionally omits photoMode.
         byte[] photoBytes = SamplePhotos.tinyJpeg();
         String selectionsJson = """
-                {"pose":"heroic","archetype":"cloud-architect","universe":"star-wars",\
+                {"pose":"heroic","archetype":"software-developer","universe":"star-wars",\
                 "vibe":"rebel","artStyle":"oil-painting","firstName":"Paula"}""";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -146,7 +146,7 @@ class AlterEgoControllerContractTest {
         // same contract as any other enum.
         byte[] photoBytes = SamplePhotos.tinyJpeg();
         String selectionsJson = """
-                {"pose":"heroic","archetype":"cloud-architect","universe":"star-wars",\
+                {"pose":"heroic","archetype":"software-developer","universe":"star-wars",\
                 "vibe":"rebel","artStyle":"oil-painting","firstName":"Paula","photoMode":"team"}""";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -163,7 +163,7 @@ class AlterEgoControllerContractTest {
         // server rolls pose / vibe internally per request.
         byte[] photoBytes = SamplePhotos.tinyJpeg();
         String selectionsJson = """
-                {"archetype":"cloud-architect","universe":"star-wars",\
+                {"archetype":"software-developer","universe":"star-wars",\
                 "artStyle":"oil-painting","firstName":"Paula"}""";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -186,7 +186,7 @@ class AlterEgoControllerContractTest {
         // the keys silently and the server rolls fresh.
         byte[] photoBytes = SamplePhotos.tinyJpeg();
         String withClientPoseVibe = """
-                {"pose":"heroic","vibe":"rebel","archetype":"cloud-architect",\
+                {"pose":"heroic","vibe":"rebel","archetype":"software-developer",\
                 "universe":"star-wars","artStyle":"oil-painting","firstName":"Paula"}""";
 
         mockMvc.perform(multipart("/api/v1/alter-egos")
@@ -221,7 +221,7 @@ class AlterEgoControllerContractTest {
         // Spot-check each of the three 022 prefab additions. Default profile
         // routes through the fallback path; the assert is purely contract-
         // level (HTTP 200 + recognised body shape).
-        for (String wire : new String[]{"hr", "administration", "customer-relations"}) {
+        for (String wire : new String[]{"people-culture", "operations-manager", "sales-customer-relations"}) {
             String selectionsJson = "{\"archetype\":\"" + wire + "\",\"universe\":\"star-wars\","
                     + "\"artStyle\":\"oil-painting\",\"photoMode\":\"single\","
                     + "\"firstName\":\"Paula\"}";
@@ -238,7 +238,7 @@ class AlterEgoControllerContractTest {
     void pngPhotosAreAcceptedJustLikeJpegs() throws Exception {
         byte[] photoBytes = SamplePhotos.tinyPng();
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.STEALTHY, Archetype.AI_ENGINEER, Universe.CYBERPUNK, null, ArtStyle.CEL_SHADED, "Maria", null);
+                Pose.STEALTHY, Archetype.DATA_ANALYST, Universe.RETRO_SYNTHWAVE, null, ArtStyle.CEL_SHADED, "Maria", null);
         String selectionsJson = objectMapper.writeValueAsString(selections);
 
         mockMvc.perform(multipart("/api/v1/alter-egos")

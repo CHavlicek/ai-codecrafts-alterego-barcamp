@@ -75,7 +75,7 @@ class RedactionCoverageIT {
         byte[] photo = SamplePhotos.tinyJpeg();
         String photoSha256 = sha256Hex(photo);
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.BACKEND_DEV, Universe.STAR_WARS, null,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null,
                 ArtStyle.OIL_PAINTING, "Sam", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(

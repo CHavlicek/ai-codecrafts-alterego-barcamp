@@ -15,7 +15,7 @@ function fullSession(): AlterEgoSession {
   // them per request. Closes issue #51.
   return session({
     photoBlob: new Blob([new Uint8Array([1])], { type: 'image/jpeg' }),
-    archetype: 'cloud-architect',
+    archetype: 'software-developer',
     universe: 'star-wars',
     artStyle: 'oil-painting',
     firstName: 'Paula',

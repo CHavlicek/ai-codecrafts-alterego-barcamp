@@ -33,6 +33,18 @@ class FalAiPromptBuilderTest {
 
     private final FalAiPromptBuilder builder = new FalAiPromptBuilder();
 
+    /** 029 — the FalAi builder's per-Archetype Prompt labels (see FalAiPromptBuilder.ROLE_LABELS). */
+    private static final java.util.Map<Archetype, String> ROLE_PROMPT_LABELS = java.util.Map.ofEntries(
+            java.util.Map.entry(Archetype.SOFTWARE_DEVELOPER,       "Software Developer"),
+            java.util.Map.entry(Archetype.PROJECT_MANAGER,         "Project Manager"),
+            java.util.Map.entry(Archetype.DATA_ANALYST,            "Data Analyst"),
+            java.util.Map.entry(Archetype.MARKETING_SPECIALIST,    "Marketing & Communications Specialist"),
+            java.util.Map.entry(Archetype.SALES_CUSTOMER_RELATIONS,"Sales & Customer Relations"),
+            java.util.Map.entry(Archetype.PEOPLE_CULTURE,          "People & Culture (HR)"),
+            java.util.Map.entry(Archetype.OPERATIONS_MANAGER,      "Operations Manager"),
+            java.util.Map.entry(Archetype.FINANCE_CONTROLLER,      "Finance & Controlling"),
+            java.util.Map.entry(Archetype.SUSTAINABILITY_LEAD,     "Sustainability & Energy-Transition Lead"));
+
     @Test
     void opensWithEditVerb() {
         // R3 / R11 — fal.ai's nano-banana-pro/edit is image-edit-conditioned;
@@ -61,24 +73,14 @@ class FalAiPromptBuilderTest {
         // in the image prompt as a visual scene direction. Each
         // Archetype's Prompt label (per data-model.md) MUST appear, and
         // the role-line header MUST be present.
-        java.util.Map<Archetype, String> expectedLabels = java.util.Map.ofEntries(
-                java.util.Map.entry(Archetype.CLOUD_ARCHITECT,    "Cloud Architect"),
-                java.util.Map.entry(Archetype.BACKEND_DEV,        "Backend Developer"),
-                java.util.Map.entry(Archetype.FRONTEND_DEV,       "Frontend Developer"),
-                java.util.Map.entry(Archetype.AI_ENGINEER,        "AI Engineer"),
-                java.util.Map.entry(Archetype.PLATFORM_ENG,       "Platform Engineer"),
-                java.util.Map.entry(Archetype.DATA_ENGINEER,      "Data Engineer"),
-                // 022 (issue #50) — three non-engineering prefab options.
-                java.util.Map.entry(Archetype.HR,                 "Human Resources"),
-                java.util.Map.entry(Archetype.ADMINISTRATION,     "Administration / Operations"),
-                java.util.Map.entry(Archetype.CUSTOMER_RELATIONS, "Customer Relations / Support"));
+        java.util.Map<Archetype, String> expectedLabels = ROLE_PROMPT_LABELS;
         for (Archetype a : Archetype.values()) {
             AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, a, Universe.STAR_WARS,
                     null, ArtStyle.OIL_PAINTING, "Paula", null);
             String prompt = builder.build(req);
             String expected = expectedLabels.get(a);
-            assertTrue(prompt.contains("Engineering role ("),
-                    "021: image prompt MUST contain the Engineering role line header for " + a);
+            assertTrue(prompt.contains("Professional role ("),
+                    "021: image prompt MUST contain the Professional role line header for " + a);
             assertTrue(prompt.contains(expected),
                     () -> "021: image prompt MUST contain Prompt label '" + expected + "' for " + a);
         }
@@ -88,9 +90,9 @@ class FalAiPromptBuilderTest {
     void changingRoleChangesPromptSubstring() {
         // 021 SC-2103 automatable half — a role-only delta MUST alter
         // the prompt now that the role is back in the image prompt.
-        AlterEgoRequest a = new AlterEgoRequest(Pose.HEROIC, Archetype.BACKEND_DEV,
+        AlterEgoRequest a = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
-        AlterEgoRequest b = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest b = new AlterEgoRequest(Pose.HEROIC, Archetype.DATA_ANALYST,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
         assertNotEquals(builder.build(a), builder.build(b),
                 "021: role-only delta MUST change the prompt");
@@ -102,16 +104,16 @@ class FalAiPromptBuilderTest {
         // the Art-style line — mirrors the Gemini-side ordering pin.
         String prompt = builder.build(sampleRequest("Paula", null));
         int universeIdx = prompt.indexOf("- Fictional universe");
-        int roleIdx     = prompt.indexOf("- Engineering role (");
+        int roleIdx     = prompt.indexOf("- Professional role (");
         int artStyleIdx = prompt.indexOf("- Art style:");
         assertTrue(universeIdx >= 0, "universe line present");
         assertTrue(roleIdx >= 0,     "021: role line present");
         assertTrue(artStyleIdx >= 0, "art-style line present");
         assertTrue(universeIdx < roleIdx,
-                () -> "021: Universe line MUST precede Engineering role line; got universeIdx="
+                () -> "021: Universe line MUST precede Professional role line; got universeIdx="
                         + universeIdx + ", roleIdx=" + roleIdx);
         assertTrue(roleIdx < artStyleIdx,
-                () -> "021: Engineering role line MUST precede Art style line; got roleIdx="
+                () -> "021: Professional role line MUST precede Art style line; got roleIdx="
                         + roleIdx + ", artStyleIdx=" + artStyleIdx);
     }
 
@@ -121,7 +123,7 @@ class FalAiPromptBuilderTest {
         // forbids transcribing the engineering-role label as decorative
         // banner text inside the image.
         String prompt = builder.build(sampleRequest());
-        assertTrue(prompt.toLowerCase().contains("no transcribing the engineering-role label"),
+        assertTrue(prompt.toLowerCase().contains("no transcribing the role label"),
                 "021: composition note MUST contain the role-label-transcribe forbid clause");
     }
 
@@ -132,9 +134,9 @@ class FalAiPromptBuilderTest {
         ArtStyle[] styles = ArtStyle.values();
         for (int i = 0; i < styles.length; i++) {
             for (int j = i + 1; j < styles.length; j++) {
-                AlterEgoRequest a = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+                AlterEgoRequest a = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                         Universe.STAR_WARS, null, styles[i], "Paula", null);
-                AlterEgoRequest b = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+                AlterEgoRequest b = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                         Universe.STAR_WARS, null, styles[j], "Paula", null);
                 assertNotEquals(builder.build(a), builder.build(b),
                         "Art-style pair " + styles[i] + " vs " + styles[j]
@@ -162,7 +164,7 @@ class FalAiPromptBuilderTest {
     @ParameterizedTest
     @EnumSource(Pose.class)
     void everyPoseContributesDistinctToken(Pose pose) {
-        AlterEgoRequest req = new AlterEgoRequest(pose, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(pose, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
         assertTrue(prompt.contains("Pose / stance:"),
@@ -172,7 +174,7 @@ class FalAiPromptBuilderTest {
     @ParameterizedTest
     @EnumSource(Universe.class)
     void everyUniverseContributesDistinctToken(Universe universe) {
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 universe, null, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
         assertTrue(prompt.contains("Fictional universe / aesthetic:"),
@@ -184,24 +186,14 @@ class FalAiPromptBuilderTest {
         // 021 (issue #54) US2 / FR-2105 — GROUP variant must carry the
         // role line for every Archetype value, with each archetype's
         // Prompt label appearing in the outbound prompt.
-        java.util.Map<Archetype, String> expectedLabels = java.util.Map.ofEntries(
-                java.util.Map.entry(Archetype.CLOUD_ARCHITECT,    "Cloud Architect"),
-                java.util.Map.entry(Archetype.BACKEND_DEV,        "Backend Developer"),
-                java.util.Map.entry(Archetype.FRONTEND_DEV,       "Frontend Developer"),
-                java.util.Map.entry(Archetype.AI_ENGINEER,        "AI Engineer"),
-                java.util.Map.entry(Archetype.PLATFORM_ENG,       "Platform Engineer"),
-                java.util.Map.entry(Archetype.DATA_ENGINEER,      "Data Engineer"),
-                // 022 (issue #50) — three non-engineering prefab options.
-                java.util.Map.entry(Archetype.HR,                 "Human Resources"),
-                java.util.Map.entry(Archetype.ADMINISTRATION,     "Administration / Operations"),
-                java.util.Map.entry(Archetype.CUSTOMER_RELATIONS, "Customer Relations / Support"));
+        java.util.Map<Archetype, String> expectedLabels = ROLE_PROMPT_LABELS;
         for (Archetype a : Archetype.values()) {
             AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, a, Universe.STAR_WARS,
                     null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP);
             String prompt = builder.build(req);
             String expected = expectedLabels.get(a);
-            assertTrue(prompt.contains("- Engineering role ("),
-                    "021: GROUP prompt MUST contain the Engineering role line header for " + a);
+            assertTrue(prompt.contains("- Professional role ("),
+                    "021: GROUP prompt MUST contain the Professional role line header for " + a);
             assertTrue(prompt.contains(expected),
                     () -> "021: GROUP prompt MUST contain Prompt label '" + expected + "' for " + a);
         }
@@ -210,11 +202,11 @@ class FalAiPromptBuilderTest {
     @Test
     void groupModeRoleLineFollowsUniverseAndPrecedesArtStyle() {
         // 021: GROUP-variant ordering mirrors SINGLE — Universe < role < Art-style.
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP);
         String prompt = builder.build(req);
         int universeIdx = prompt.indexOf("- Fictional universe");
-        int roleIdx     = prompt.indexOf("- Engineering role (");
+        int roleIdx     = prompt.indexOf("- Professional role (");
         int artStyleIdx = prompt.indexOf("- Art style:");
         assertTrue(universeIdx >= 0 && roleIdx >= 0 && artStyleIdx >= 0,
                 "GROUP prompt MUST contain Universe / role / Art-style lines");
@@ -227,16 +219,16 @@ class FalAiPromptBuilderTest {
     void groupModeCompositionNoteForbidsTranscribingTheRoleLabel() {
         // 021: GROUP composition note must carry the same strengthened
         // no-rendered-text rule as SINGLE (FR-2105 + Edge Cases).
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP);
         String prompt = builder.build(req);
-        assertTrue(prompt.toLowerCase().contains("no transcribing the engineering-role label"),
+        assertTrue(prompt.toLowerCase().contains("no transcribing the role label"),
                 "021: GROUP composition note MUST contain the role-label-transcribe forbid clause");
     }
 
     @Test
     void groupModeUsesPluralWordingAndForbidsInvention() {
-        AlterEgoRequest groupReq = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest groupReq = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP);
         String prompt = builder.build(groupReq);
         assertTrue(prompt.contains("EVERY person visible"),
@@ -264,8 +256,8 @@ class FalAiPromptBuilderTest {
         String lower = prompt.toLowerCase();
         assertTrue(lower.contains("absolutely no rendered text"));
         assertTrue(lower.contains("banner") && lower.contains("scroll") && lower.contains("name plate"));
-        assertTrue(lower.contains("no transcribing the engineering-role label"),
-                "021: composition note MUST forbid transcribing the engineering-role label");
+        assertTrue(lower.contains("no transcribing the role label"),
+                "021: composition note MUST forbid transcribing the role label");
     }
 
     // 022 (issue #50) — custom role substitution. When the request carries
@@ -279,31 +271,31 @@ class FalAiPromptBuilderTest {
         AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, null,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null, "Tester");
         String prompt = builder.build(req);
-        assertTrue(prompt.contains("Engineering role (render as visual cues"),
+        assertTrue(prompt.contains("Professional role (render as uplifting visual cues"),
                 "022: role line header must remain unchanged");
         assertTrue(prompt.contains(": Tester"),
                 () -> "022: custom role 'Tester' MUST appear on the role line; got: " + prompt);
-        assertFalse(prompt.contains("Cloud Architect"),
+        assertFalse(prompt.contains("Software Developer"),
                 "022: when archetype is null + custom is present, no prefab label leaks");
     }
 
     @Test
     void customRoleTakesPrecedenceOverPrefabArchetype() {
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null, "Tester");
         String prompt = builder.build(req);
         assertTrue(prompt.contains(": Tester"),
                 "022: customRole MUST win the precedence rule when both fields are set");
-        assertFalse(prompt.contains("Cloud Architect"),
+        assertFalse(prompt.contains("Software Developer"),
                 "022: the prefab label MUST NOT appear when customRole supplies the role-of-record");
     }
 
     @Test
     void blankCustomRoleFallsBackToArchetypeLabel() {
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null, "   ");
         String prompt = builder.build(req);
-        assertTrue(prompt.contains("Cloud Architect"),
+        assertTrue(prompt.contains("Software Developer"),
                 "022: whitespace-only customRole must NOT override the prefab label");
     }
 
@@ -332,7 +324,7 @@ class FalAiPromptBuilderTest {
     }
 
     private static AlterEgoRequest sampleRequest(String firstName, Vibe vibe) {
-        return new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        return new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, vibe, ArtStyle.OIL_PAINTING, firstName, null);
     }
 }

@@ -61,7 +61,7 @@ class AlterEgoControllerInputValidationIT {
     @Autowired private MockMvc mockMvc;
 
     private static final String VALID_TEMPLATE =
-            "{\"pose\":\"heroic\",\"archetype\":\"cloud-architect\","
+            "{\"pose\":\"heroic\",\"archetype\":\"software-developer\","
                     + "\"universe\":\"star-wars\",\"artStyle\":\"oil-painting\","
                     + "\"firstName\":%s}";
 

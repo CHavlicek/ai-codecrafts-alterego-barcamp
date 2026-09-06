@@ -15,7 +15,7 @@ import type { AlterEgoResponse, Selections } from '../types'
  */
 
 const sampleSelections: Selections = {
-  archetype: 'cloud-architect',
+  archetype: 'software-developer',
   universe: 'star-wars',
   artStyle: 'oil-painting',
   photoMode: 'single',
@@ -257,7 +257,7 @@ describe('alterEgoClient.generateAlterEgo', () => {
         })
         const json = cap.strings[cap.strings.length - 1]!
         expect(json).not.toContain('customRole')
-        expect(json).toContain('"archetype":"cloud-architect"')
+        expect(json).toContain('"archetype":"software-developer"')
       } finally {
         cap.restore()
       }
@@ -274,7 +274,7 @@ describe('alterEgoClient.generateAlterEgo', () => {
         })
         const json = cap.strings[cap.strings.length - 1]!
         expect(json).not.toContain('customRole')
-        expect(json).toContain('"archetype":"cloud-architect"')
+        expect(json).toContain('"archetype":"software-developer"')
       } finally {
         cap.restore()
       }
@@ -308,7 +308,7 @@ describe('alterEgoClient.generateAlterEgo', () => {
         })
         const json = cap.strings[cap.strings.length - 1]!
         expect(json).toContain('"customRole":"Tester"')
-        expect(json).toContain('"archetype":"cloud-architect"')
+        expect(json).toContain('"archetype":"software-developer"')
       } finally {
         cap.restore()
       }

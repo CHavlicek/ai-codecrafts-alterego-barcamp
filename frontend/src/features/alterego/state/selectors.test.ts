@@ -25,7 +25,7 @@ import {
 const fullState = () => ({
   ...initialAlterEgoSession(),
   photoBlob: new Blob([new Uint8Array([1])], { type: 'image/jpeg' }),
-  archetype: 'cloud-architect' as const,
+  archetype: 'software-developer' as const,
   universe: 'star-wars' as const,
   artStyle: 'oil-painting' as const,
   firstName: 'Paula',
@@ -426,10 +426,10 @@ describe('isReadyToSurprise / missingInputsForSurprise (009)', () => {
     // Generate, so both go to false together.
     const samples: AlterEgoSession[] = [
       withPhoto({ firstName: 'Paula' }),
-      withPhoto({ firstName: 'Paula', archetype: 'cloud-architect' }),
+      withPhoto({ firstName: 'Paula', archetype: 'software-developer' }),
       withPhoto({
         firstName: 'Paula',
-        archetype: 'cloud-architect',
+        archetype: 'software-developer',
         universe: 'star-wars',
         artStyle: 'oil-painting',
       }),

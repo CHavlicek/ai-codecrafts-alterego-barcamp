@@ -51,7 +51,7 @@ class PosterFrameOverlayFallbackIT {
     @Test
     void fallbackPosterCarriesFrameChromeAndIsTwoToThree() throws Exception {
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 null, ArtStyle.OIL_PAINTING, "Paula", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(

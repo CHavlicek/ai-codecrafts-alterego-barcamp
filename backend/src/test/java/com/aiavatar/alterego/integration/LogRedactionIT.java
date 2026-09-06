@@ -53,7 +53,7 @@ class LogRedactionIT {
     @Test
     void successfulRequestEmitsNoPhotoBytesIntoLogs(CapturedOutput output) {
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
                 "/api/v1/alter-egos",
@@ -85,7 +85,7 @@ class LogRedactionIT {
         // provider=stub, reason=not_configured. The structured log line
         // also carries provider and attemptedProvider keys (FR-1613).
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.CEL_SHADED, "Maria", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.CEL_SHADED, "Maria", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
                 "/api/v1/alter-egos",
@@ -208,7 +208,7 @@ class LogRedactionIT {
                             .withBody(jpeg)));
 
             AlterEgoRequest selections = new AlterEgoRequest(
-                    Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                    Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                     null, ArtStyle.OIL_PAINTING, "Paula", null);
 
             org.springframework.http.ResponseEntity<AlterEgoResponse> response = falaiRestTemplate.exchange(

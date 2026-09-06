@@ -6,33 +6,26 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 
 /**
- * Engineering role. Re-themed by 002-sleek-tabbed-ui from the 001 developer
- * archetypes ("Bug Hunter", "Cloud Wizard", …) to the six roles shown in the
- * mockup. Drives the generated character's title + tagline tone.
+ * Corporate role. Re-themed by 029-verbund-rebrand from the developer-heavy
+ * 002/022 archetypes to a broad corporate mix that fits the "AI @ Verbund
+ * 2026" audience (energy-transition event). "Software Developer" survives as
+ * one option among many; the rest span the departments a large utility runs.
+ * Drives the generated character's title + tagline tone.
  *
  * <p>Visible label in the UI is "Role" (see spec FR-116). The field name on
  * the wire remains {@code archetype} to keep a single Java identifier across
  * the backend; only the enum values + labels have changed.
  */
 public enum Archetype {
-    CLOUD_ARCHITECT("cloud-architect", "Cloud Architect"),
-    BACKEND_DEV("backend-dev", "Backend Developer"),
-    FRONTEND_DEV("frontend-dev", "Frontend Developer"),
-    AI_ENGINEER("ai-engineer", "AI Engineer"),
-    PLATFORM_ENG("platform-eng", "Platform Engineer"),
-    DATA_ENGINEER("data-engineer", "Data Engineer"),
-    // 022 (issue #50) — three non-engineering prefab options. Wire values
-    // follow the existing kebab-case public-contract convention. UI labels
-    // mirror the spec exactly; prompt-side display labels (longer / more
-    // grounded for the model) live in each prompt builder's ROLE_LABELS map.
-    // 026 (issue #62) — engineering-role labels widened to their full form
-    // ("Backend Developer" / "Frontend Developer" / "Platform Engineer") and
-    // HR's guest-facing label widened to "People Operations". Wire values
-    // and enum constants are unchanged; provider-side ROLE_LABELS likewise
-    // unchanged (see specs/026-role-label-wording/research.md §R2).
-    HR("hr", "People Operations"),
-    ADMINISTRATION("administration", "Administration"),
-    CUSTOMER_RELATIONS("customer-relations", "Customer Relations");
+    SOFTWARE_DEVELOPER("software-developer", "Software Developer"),
+    PROJECT_MANAGER("project-manager", "Project Manager"),
+    DATA_ANALYST("data-analyst", "Data Analyst"),
+    MARKETING_SPECIALIST("marketing-specialist", "Marketing Specialist"),
+    SALES_CUSTOMER_RELATIONS("sales-customer-relations", "Sales & Customer Relations"),
+    PEOPLE_CULTURE("people-culture", "People & Culture"),
+    OPERATIONS_MANAGER("operations-manager", "Operations Manager"),
+    FINANCE_CONTROLLER("finance-controller", "Finance Controller"),
+    SUSTAINABILITY_LEAD("sustainability-lead", "Sustainability Lead");
 
     private final String wire;
     private final String label;

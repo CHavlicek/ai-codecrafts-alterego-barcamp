@@ -1,380 +1,380 @@
 {
-  "cloud-architect": [
+  "software-developer": [
     {
-      "heroTitleLine2": "The Cloud Guardrail",
-      "tagline": "STILL SHIPS ON FRIDAYS.",
+      "heroTitleLine2": "The Future Builder",
+      "tagline": "TURNS IDEAS INTO IMPACT.",
       "superpowers": [
-        "Rolls back with a single keystroke",
-        "Hears pager alerts before they fire",
-        "Speaks fluent YAML in all dialects"
+        "Codes tools that brighten every workday",
+        "Turns big challenges into small commits",
+        "Builds tomorrow one feature at a time"
       ],
-      "quote": "It's always DNS. Always."
+      "quote": "Every line of code can move the world forward."
     },
     {
-      "heroTitleLine2": "The Multi-Region Mediator",
-      "tagline": "KEEPS THE LATENCY HONEST.",
+      "heroTitleLine2": "The Bright-Spark Engineer",
+      "tagline": "SHIPS HOPE, ONE RELEASE AT A TIME.",
       "superpowers": [
-        "Diagrams availability zones in her sleep",
-        "Refactors IAM policies into poetry",
-        "Negotiates SLAs across three clouds"
+        "Automates the boring so people can create",
+        "Debugs with patience and optimism",
+        "Leaves every codebase kinder than she found it"
       ],
-      "quote": "Uptime is a team sport."
+      "quote": "Good software quietly makes life better."
     },
     {
-      "heroTitleLine2": "The Terraform Tactician",
-      "tagline": "PLANS TWICE. APPLIES ONCE.",
+      "heroTitleLine2": "The Possibility Architect",
+      "tagline": "DREAMS IT, THEN BUILDS IT.",
       "superpowers": [
-        "Writes modules other people actually reuse",
-        "Predicts state-file conflicts on sight",
-        "Turns infrastructure into line-edited prose"
+        "Prototypes the future before lunch",
+        "Turns 'what if' into 'it works'",
+        "Mentors the next wave of makers"
       ],
-      "quote": "The diff is the design."
+      "quote": "The best way to predict the future is to build it."
     },
     {
-      "heroTitleLine2": "The Cost-Optimised Pragmatist",
-      "tagline": "SHAVES CENTS UNTIL THEY ADD UP.",
+      "heroTitleLine2": "The Clean-Energy Coder",
+      "tagline": "POWERS PROGRESS WITH PURPOSE.",
       "superpowers": [
-        "Reads billing dashboards like tarot",
-        "Turns spot interrupts into features",
-        "Right-sizes before anyone asks"
+        "Optimises systems that save real energy",
+        "Writes code that scales sustainably",
+        "Believes every watt and every byte counts"
       ],
-      "quote": "Every byte has a balance sheet."
+      "quote": "Efficient code is a small act of stewardship."
     }
   ],
-  "backend-dev": [
+  "project-manager": [
     {
-      "heroTitleLine2": "The Request-Path Engineer",
-      "tagline": "UNBREAKS MAIN BEFORE STANDUP.",
+      "heroTitleLine2": "The Momentum Maker",
+      "tagline": "TURNS PLANS INTO PROGRESS.",
       "superpowers": [
-        "Reads stack traces in fifty shades of gray",
-        "Writes migrations that actually migrate",
-        "Deletes code for fun and profit"
+        "Keeps every teammate moving and smiling",
+        "Sees the finish line from day one",
+        "Clears roadblocks before they appear"
       ],
-      "quote": "Ship it. I'll watch the graphs."
+      "quote": "Great things happen when good people align."
     },
     {
-      "heroTitleLine2": "The Zero-Downtime Surgeon",
-      "tagline": "CUTS OVER WITHOUT A PAUSE.",
+      "heroTitleLine2": "The Calm Conductor",
+      "tagline": "STEADY HANDS, BRIGHT HORIZON.",
       "superpowers": [
-        "Feature-flags in both directions",
-        "Dual-writes like a conductor",
-        "Rolls forward when others roll back"
+        "Brings order to happy chaos",
+        "Celebrates every small win loudly",
+        "Turns deadlines into shared victories"
       ],
-      "quote": "The best deploy is the one nobody noticed."
+      "quote": "A team that trusts each other moves mountains."
     },
     {
-      "heroTitleLine2": "The Query-Plan Whisperer",
-      "tagline": "INDEXES WHAT THE APP ACTUALLY ASKS.",
+      "heroTitleLine2": "The Vision Keeper",
+      "tagline": "HOLDS THE 'WHY' FOR EVERYONE.",
       "superpowers": [
-        "Spots N+1s from the commit message alone",
-        "Measures before optimising",
-        "Speaks EXPLAIN ANALYZE fluently"
+        "Connects daily work to a bigger purpose",
+        "Listens twice, decides once",
+        "Makes ambitious goals feel reachable"
       ],
-      "quote": "The database knows. Ask it."
+      "quote": "Purpose turns effort into momentum."
     },
     {
-      "heroTitleLine2": "The API Contract Custodian",
-      "tagline": "GUARDS THE VERSION HEADERS.",
+      "heroTitleLine2": "The Bridge Builder",
+      "tagline": "CONNECTS PEOPLE AND POSSIBILITIES.",
       "superpowers": [
-        "Deprecates with dignity",
-        "Writes changelogs people read",
-        "Closes 400s that were 500s yesterday"
+        "Speaks fluent engineering and business",
+        "Finds the win-win others missed",
+        "Keeps promises and keeps morale high"
       ],
-      "quote": "Backwards-compatible until it's not."
+      "quote": "Progress is a team sport."
     }
   ],
-  "frontend-dev": [
+  "data-analyst": [
     {
-      "heroTitleLine2": "The Pixel Diplomat",
-      "tagline": "NEGOTIATES WITH DESIGN DAILY.",
+      "heroTitleLine2": "The Insight Illuminator",
+      "tagline": "FINDS THE SIGNAL IN THE FUTURE.",
       "superpowers": [
-        "Turns Figma frames into React in one sitting",
-        "Speaks both CSS cascade and designer",
-        "Ships accessible components on the first review"
+        "Turns raw numbers into clear direction",
+        "Spots opportunity where others see noise",
+        "Makes data tell a hopeful story"
       ],
-      "quote": "The user is the spec."
+      "quote": "The right insight lights the whole path."
     },
     {
-      "heroTitleLine2": "The Bundle-Size Custodian",
-      "tagline": "KEEPS THE WIRE UNDER A HUNDRED K.",
+      "heroTitleLine2": "The Pattern Pioneer",
+      "tagline": "SEES TOMORROW IN TODAY'S DATA.",
       "superpowers": [
-        "Tree-shakes what shouldn't even be a branch",
-        "Dynamically imports the thirtieth chart library",
-        "Reads source maps for sport"
+        "Forecasts trends with a curious mind",
+        "Turns dashboards into decisions",
+        "Measures what truly matters"
       ],
-      "quote": "Every kilobyte is a user's patience."
+      "quote": "Every dataset holds a brighter possibility."
     },
     {
-      "heroTitleLine2": "The Interaction Alchemist",
-      "tagline": "MAKES CLICKS FEEL INEVITABLE.",
+      "heroTitleLine2": "The Clarity Champion",
+      "tagline": "MAKES THE COMPLEX FEEL SIMPLE.",
       "superpowers": [
-        "Times transitions to human anticipation",
-        "Traps focus the moment you need it",
-        "Announces state changes to every reader"
+        "Explains hard truths with warmth",
+        "Charts a course everyone understands",
+        "Trusts evidence and keeps an open mind"
       ],
-      "quote": "Accessibility is not a feature, it is the feature."
+      "quote": "Good data invites better questions."
     },
     {
-      "heroTitleLine2": "The Edge-Case Cartographer",
-      "tagline": "MAPS WHAT USERS ACTUALLY DO.",
+      "heroTitleLine2": "The Green-Metrics Guide",
+      "tagline": "COUNTS WHAT KEEPS THE PLANET GOING.",
       "superpowers": [
-        "Tests the empty state, the loading state, and the 3:59am state",
-        "Reads the analytics funnel upside down",
-        "Surfaces the long tail into the UI"
+        "Tracks the impact of every clean-energy choice",
+        "Turns sustainability goals into numbers",
+        "Celebrates progress, one metric at a time"
       ],
-      "quote": "If it isn't in the design, it's still a state."
+      "quote": "What we measure with care, we can improve."
     }
   ],
-  "ai-engineer": [
+  "marketing-specialist": [
     {
-      "heroTitleLine2": "The Prompt Negotiator",
-      "tagline": "MAKES THE MODEL EARN ITS PAY.",
+      "heroTitleLine2": "The Story Spark",
+      "tagline": "MAKES GOOD IDEAS UNMISSABLE.",
       "superpowers": [
-        "Writes prompts that stay prompts",
-        "Evals every change against a golden set",
-        "Knows when a bigger model is the wrong answer"
+        "Turns purpose into a message people love",
+        "Finds the human heart of every launch",
+        "Spreads optimism at scale"
       ],
-      "quote": "Measure the loss. Then measure the user."
+      "quote": "A great story can start a movement."
     },
     {
-      "heroTitleLine2": "The Retrieval Curator",
-      "tagline": "FINDS THE RIGHT SENTENCE.",
+      "heroTitleLine2": "The Hope Broadcaster",
+      "tagline": "AMPLIFIES WHAT MATTERS MOST.",
       "superpowers": [
-        "Chunks a corpus like a sommelier",
-        "Reranks with context in mind",
-        "Knows when to stop at keyword search"
+        "Rallies communities around a bright future",
+        "Makes complex change feel exciting",
+        "Listens to audiences like friends"
       ],
-      "quote": "The model is a stranger; the index is the invitation."
+      "quote": "People rally behind a future they can picture."
     },
     {
-      "heroTitleLine2": "The Latency Tamer",
-      "tagline": "STREAMS TOKENS YOU CAN READ.",
+      "heroTitleLine2": "The Signal Booster",
+      "tagline": "TURNS ATTENTION INTO ACTION.",
       "superpowers": [
-        "Caches what's safe, regenerates what isn't",
-        "Parallelises tool calls without the mess",
-        "Measures cost in seconds, not cents"
+        "Crafts campaigns with heart and clarity",
+        "Turns fans into advocates",
+        "Celebrates every voice in the room"
       ],
-      "quote": "Waiting is a feature when the answer arrives well."
+      "quote": "Marketing done right is just genuine enthusiasm shared."
     },
     {
-      "heroTitleLine2": "The Eval Harness Mechanic",
-      "tagline": "SHIPS ONLY WHEN THE METRIC MOVES.",
+      "heroTitleLine2": "The Bright-Future Herald",
+      "tagline": "PROMOTES PROGRESS WITH PURPOSE.",
       "superpowers": [
-        "Writes evals before fixtures",
-        "Separates rubric from sample",
-        "Catches regressions the humans missed"
+        "Champions clean-energy stories worth telling",
+        "Turns milestones into shared celebrations",
+        "Keeps the message honest and hopeful"
       ],
-      "quote": "A prompt with no eval is a wish."
+      "quote": "The best campaigns make people believe in what's next."
     }
   ],
-  "platform-eng": [
+  "sales-customer-relations": [
     {
-      "heroTitleLine2": "The Paved-Path Paver",
-      "tagline": "MAKES THE RIGHT THING THE EASY THING.",
+      "heroTitleLine2": "The Trust Builder",
+      "tagline": "TURNS CONVERSATIONS INTO PARTNERSHIPS.",
       "superpowers": [
-        "Templatises the tedious third of every service",
-        "Answers every 'how do I' with a manifest",
-        "Deletes boilerplate faster than it accretes"
+        "Listens first, solves second",
+        "Turns every customer into a friend",
+        "Keeps promises long after the handshake"
       ],
-      "quote": "The platform is for humans first."
+      "quote": "People remember how you made them feel."
     },
     {
-      "heroTitleLine2": "The Pipeline Plumber",
-      "tagline": "TURNS YAML INTO PROMOTIONS.",
+      "heroTitleLine2": "The Relationship Champion",
+      "tagline": "HERE FOR THE LONG RUN.",
       "superpowers": [
-        "Keeps CI green without ignoring tests",
-        "Caches what's safe, rebuilds what isn't",
-        "Promotes artifacts with a single click"
+        "Finds the yes hiding inside a maybe",
+        "Turns problems into loyalty",
+        "Brings a smile to every call"
       ],
-      "quote": "Fast feedback beats clever plans."
+      "quote": "The best deal is the one everyone celebrates."
     },
     {
-      "heroTitleLine2": "The Observability Architect",
-      "tagline": "NAMES THE METRIC THAT MATTERS.",
+      "heroTitleLine2": "The Bright-Side Connector",
+      "tagline": "OPENS DOORS WITH GENUINE CARE.",
       "superpowers": [
-        "Writes alerts that page only for pages",
-        "Joins logs and traces in one query",
-        "Makes SLOs the team actually defends"
+        "Matches people to what they truly need",
+        "Turns first contact into lasting trust",
+        "Makes every customer feel heard"
       ],
-      "quote": "If no one is paging, nothing is watching."
+      "quote": "Kindness scales better than any pitch."
     },
     {
-      "heroTitleLine2": "The Golden-Path Gardener",
-      "tagline": "PRUNES THE SHORTCUTS YOU DON'T NEED.",
+      "heroTitleLine2": "The Future-Partner Guide",
+      "tagline": "GROWS TOGETHER, NOT ALONE.",
       "superpowers": [
-        "Deprecates with a migration path",
-        "Writes docs that reduce Slack volume",
-        "Turns tribal knowledge into READMEs"
+        "Helps clients power a cleaner tomorrow",
+        "Turns feedback into better service",
+        "Believes every relationship can flourish"
       ],
-      "quote": "A platform is a library with manners."
+      "quote": "We rise by lifting our customers."
     }
   ],
-  "data-engineer": [
+  "people-culture": [
     {
-      "heroTitleLine2": "The Pipeline Sculptor",
-      "tagline": "LANDS DATA BEFORE BREAKFAST.",
+      "heroTitleLine2": "The People Champion",
+      "tagline": "HELPS EVERYONE SHINE.",
       "superpowers": [
-        "Backfills eight years overnight",
-        "Writes DAGs that read like a recipe",
-        "Catches schema drift at the boundary"
+        "Turns workplaces into welcoming places",
+        "Spots potential before it's obvious",
+        "Celebrates every person's growth"
       ],
-      "quote": "The freshest data is already old."
+      "quote": "When people flourish, everything else follows."
     },
     {
-      "heroTitleLine2": "The Schema Arbiter",
-      "tagline": "KEEPS THE CONTRACTS HONEST.",
+      "heroTitleLine2": "The Culture Cultivator",
+      "tagline": "GROWS TEAMS THAT CARE.",
       "superpowers": [
-        "Evolves columns without downstream tears",
-        "Documents types in the table, not the wiki",
-        "Knows when a new field is a new system"
+        "Builds trust one conversation at a time",
+        "Turns diversity into strength",
+        "Makes onboarding feel like a warm welcome"
       ],
-      "quote": "Column names are API."
+      "quote": "Great culture is built on small daily kindnesses."
     },
     {
-      "heroTitleLine2": "The Warehouse Whisperer",
-      "tagline": "CUTS A QUERY THAT RUNS IN SECONDS.",
+      "heroTitleLine2": "The Talent Gardener",
+      "tagline": "PLANTS GROWTH, HARVESTS JOY.",
       "superpowers": [
-        "Partitions for the actual question",
-        "Reads query plans like weather maps",
-        "Knows which materialisation pays for itself"
+        "Coaches careers with genuine care",
+        "Turns feedback into confidence",
+        "Champions balance and wellbeing"
       ],
-      "quote": "Scan less. Compute later."
+      "quote": "People are not resources — they're the whole point."
     },
     {
-      "heroTitleLine2": "The Lineage Librarian",
-      "tagline": "TRACES EVERY NUMBER HOME.",
+      "heroTitleLine2": "The Belonging Builder",
+      "tagline": "EVERYONE HAS A SEAT AT THE TABLE.",
       "superpowers": [
-        "Names the source of every dashboard figure",
-        "Flags the silent-renamer PRs before merge",
-        "Explains 'why did the KPI move' in one paragraph"
+        "Makes every voice feel valued",
+        "Turns new hires into lifelong colleagues",
+        "Leads with empathy and optimism"
       ],
-      "quote": "A metric without lineage is a rumour."
+      "quote": "Belonging is the spark behind every great team."
     }
   ],
-  "hr": [
+  "operations-manager": [
     {
-      "heroTitleLine2": "The Culture Architect",
-      "tagline": "HIRES FOR THE LONG GAME.",
+      "heroTitleLine2": "The Flow Keeper",
+      "tagline": "MAKES EVERYTHING RUN BRIGHTER.",
       "superpowers": [
-        "Reads the room and the résumé",
-        "Turns awkward meetings into next steps",
-        "Knows when to push back"
+        "Turns chaos into calm, reliable rhythm",
+        "Spots the fix before it's needed",
+        "Keeps the whole engine humming"
       ],
-      "quote": "People scale or they don't — your call."
+      "quote": "Smooth operations give great ideas room to grow."
     },
     {
-      "heroTitleLine2": "The Talent Whisperer",
-      "tagline": "FINDS THE SIGNAL IN THE STACK.",
+      "heroTitleLine2": "The Steady Optimiser",
+      "tagline": "BETTER EVERY SINGLE DAY.",
       "superpowers": [
-        "Spots intent under the bullet points",
-        "Asks the question the CV didn't answer",
-        "Closes the loop before it frays"
+        "Trims waste with a gentle hand",
+        "Turns bottlenecks into breakthroughs",
+        "Makes efficiency feel effortless"
       ],
-      "quote": "Hiring is the most expensive bug to introduce."
+      "quote": "Small improvements, repeated, change everything."
     },
     {
-      "heroTitleLine2": "The Conflict Translator",
-      "tagline": "TURNS HEAT INTO HEADWAY.",
+      "heroTitleLine2": "The Reliability Guardian",
+      "tagline": "KEEPS THE LIGHTS ON, LITERALLY.",
       "superpowers": [
-        "Listens longer than the meeting allows",
-        "Renders feelings into action items",
-        "Keeps confidences and momentum"
+        "Plans for the good days and the hard ones",
+        "Keeps promises to customers and colleagues",
+        "Turns pressure into steady progress"
       ],
-      "quote": "Most fires were a question someone didn't ask."
+      "quote": "Dependability is a quiet superpower."
     },
     {
-      "heroTitleLine2": "The Onboarding Engineer",
-      "tagline": "BUILDS A FIRST WEEK WORTH STAYING FOR.",
+      "heroTitleLine2": "The Green-Efficiency Lead",
+      "tagline": "DOES MORE WITH LESS, FOR THE PLANET.",
       "superpowers": [
-        "Writes the handbook the docs forgot",
-        "Makes day-one productive without burning out day-thirty",
-        "Connects new hires to the right room"
+        "Cuts waste and carbon in one move",
+        "Turns sustainable choices into daily habits",
+        "Makes the responsible path the easy path"
       ],
-      "quote": "First week is a forever-promise; pay it."
+      "quote": "Every efficiency is a gift to the future."
     }
   ],
-  "administration": [
+  "finance-controller": [
     {
-      "heroTitleLine2": "The Operations Cartographer",
-      "tagline": "MAPS THE PATH SO NO ONE GETS LOST.",
+      "heroTitleLine2": "The Bright-Balance Steward",
+      "tagline": "INVESTS TODAY IN A BETTER TOMORROW.",
       "superpowers": [
-        "Turns chaos into a checklist",
-        "Closes loops the calendar missed",
-        "Knows every supplier's first name"
+        "Turns numbers into confident decisions",
+        "Funds the ideas that move us forward",
+        "Keeps optimism grounded in the facts"
       ],
-      "quote": "If it isn't written down, it's a rumour."
+      "quote": "Wise investment is hope with a spreadsheet."
     },
     {
-      "heroTitleLine2": "The Vendor Diplomat",
-      "tagline": "NEGOTIATES THE LINE-ITEMS NOBODY READS.",
+      "heroTitleLine2": "The Future-Fund Guardian",
+      "tagline": "STEWARDS RESOURCES WITH CARE.",
       "superpowers": [
-        "Finds the clause that bites you in year three",
-        "Returns the call that nobody wants",
-        "Keeps the lights on under budget"
+        "Balances ambition with responsibility",
+        "Finds the budget for what truly matters",
+        "Turns constraints into creative solutions"
       ],
-      "quote": "A good contract is the smallest possible promise."
+      "quote": "Good stewardship makes big dreams affordable."
     },
     {
-      "heroTitleLine2": "The Process Tuner",
-      "tagline": "OPTIMISES THE THINGS NOBODY NOTICES.",
+      "heroTitleLine2": "The Clarity Accountant",
+      "tagline": "MAKES THE NUMBERS TELL THE TRUTH.",
       "superpowers": [
-        "Removes the form that does nothing",
-        "Adds the one that prevents the fire",
-        "Keeps audit dates from sneaking up"
+        "Explains finance so everyone gets it",
+        "Turns risk into a manageable plan",
+        "Keeps the whole ship financially healthy"
       ],
-      "quote": "Good ops is invisible until it isn't."
+      "quote": "Transparency is the best kind of confidence."
     },
     {
-      "heroTitleLine2": "The Calm Coordinator",
-      "tagline": "RUNS THE ROOM WITHOUT RUNNING IT OVER.",
+      "heroTitleLine2": "The Green-Investment Guide",
+      "tagline": "PUTS CAPITAL BEHIND THE CLIMATE.",
       "superpowers": [
-        "Reschedules without breaking trust",
-        "Files what others forget",
-        "Owns the inbox that holds the company together"
+        "Backs projects that power a cleaner future",
+        "Measures return in impact and euros",
+        "Believes doing good and doing well align"
       ],
-      "quote": "Logistics is leadership without the speech."
+      "quote": "The smartest investment is a livable future."
     }
   ],
-  "customer-relations": [
+  "sustainability-lead": [
     {
-      "heroTitleLine2": "The Empathy Engineer",
-      "tagline": "TURNS COMPLAINTS INTO COMMITMENTS.",
+      "heroTitleLine2": "The Planet's Ally",
+      "tagline": "POWERS A CLEANER TOMORROW.",
       "superpowers": [
-        "Hears the question under the complaint",
-        "Owns the apology and the next ship date",
-        "Translates feature requests into priorities"
+        "Turns bold climate goals into action",
+        "Finds the greener path every time",
+        "Inspires whole teams to care"
       ],
-      "quote": "Every angry user is a free user-research session."
+      "quote": "The future is renewable — and it starts today."
     },
     {
-      "heroTitleLine2": "The Renewal Whisperer",
-      "tagline": "MAKES YEAR TWO WORTH MORE THAN YEAR ONE.",
+      "heroTitleLine2": "The Energy-Transition Champion",
+      "tagline": "LEADS THE CHARGE TO CLEAN POWER.",
       "superpowers": [
-        "Reads the usage graph like a poem",
-        "Calls before the contract does",
-        "Turns lukewarm into loyal"
+        "Turns sunlight and wind into progress",
+        "Cuts carbon without cutting hope",
+        "Makes sustainability everyone's job"
       ],
-      "quote": "Churn is rarely sudden; it just looks that way."
+      "quote": "Every clean kilowatt is a promise kept."
     },
     {
-      "heroTitleLine2": "The Escalation Anchor",
-      "tagline": "HOLDS THE LINE WHEN THE LINE IS HOT.",
+      "heroTitleLine2": "The Green Visionary",
+      "tagline": "IMAGINES IT GREENER, THEN MAKES IT SO.",
       "superpowers": [
-        "De-escalates in the first sentence",
-        "Brings engineers the right context, not the loudest one",
-        "Closes incidents and feelings"
+        "Designs a future worth living in",
+        "Turns 'someday' into 'this year'",
+        "Balances people, planet, and progress"
       ],
-      "quote": "The customer remembers the recovery, not the outage."
+      "quote": "Optimism is a strategy, and it's working."
     },
     {
-      "heroTitleLine2": "The Voice of the Customer",
-      "tagline": "MAKES THE ROADMAP HEAR ITS OWN USERS.",
+      "heroTitleLine2": "The Renewable Rally-Leader",
+      "tagline": "BRINGS EVERYONE ALONG FOR THE CHANGE.",
       "superpowers": [
-        "Quotes verbatim in the right meeting",
-        "Counts pain by frequency, not volume",
-        "Knows when to say not yet"
+        "Turns climate anxiety into climate action",
+        "Celebrates every step toward net zero",
+        "Believes the best future is a shared one"
       ],
-      "quote": "Listen until the user stops correcting you."
+      "quote": "Together, we power the transition."
     }
   ]
 }

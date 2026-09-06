@@ -26,22 +26,22 @@ class RoleOfRecordTest {
 
     @Test
     void customRolePrecedesArchetypeWhenNonBlank() {
-        assertEquals("Quantum Physicist", req(Archetype.BACKEND_DEV, "Quantum Physicist").roleLabel());
+        assertEquals("Quantum Physicist", req(Archetype.SOFTWARE_DEVELOPER, "Quantum Physicist").roleLabel());
     }
 
     @Test
     void customRoleIsTrimmed() {
-        assertEquals("Quantum Physicist", req(Archetype.BACKEND_DEV, "  Quantum Physicist  ").roleLabel());
+        assertEquals("Quantum Physicist", req(Archetype.SOFTWARE_DEVELOPER, "  Quantum Physicist  ").roleLabel());
     }
 
     @Test
     void blankCustomRoleFallsBackToArchetypeLabel() {
-        assertEquals(Archetype.BACKEND_DEV.label(), req(Archetype.BACKEND_DEV, "").roleLabel());
-        assertEquals(Archetype.BACKEND_DEV.label(), req(Archetype.BACKEND_DEV, "   ").roleLabel());
+        assertEquals(Archetype.SOFTWARE_DEVELOPER.label(), req(Archetype.SOFTWARE_DEVELOPER, "").roleLabel());
+        assertEquals(Archetype.SOFTWARE_DEVELOPER.label(), req(Archetype.SOFTWARE_DEVELOPER, "   ").roleLabel());
     }
 
     @Test
     void nullCustomRoleFallsBackToArchetypeLabel() {
-        assertEquals(Archetype.BACKEND_DEV.label(), req(Archetype.BACKEND_DEV, null).roleLabel());
+        assertEquals(Archetype.SOFTWARE_DEVELOPER.label(), req(Archetype.SOFTWARE_DEVELOPER, null).roleLabel());
     }
 }

@@ -94,7 +94,7 @@ describe('PhotoModeSelected (011)', () => {
       ...initialAlterEgoSession(),
       photoBlob: sampleBlob,
       photoPreviewUrl: sampleUrl,
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
       universe: 'star-wars',
       artStyle: 'oil-painting',
       firstName: 'Paula',
@@ -107,7 +107,7 @@ describe('PhotoModeSelected (011)', () => {
     expect(next.phase).toBe('picking')
     expect(next.photoBlob).toBe(sampleBlob)
     expect(next.photoPreviewUrl).toBe(sampleUrl)
-    expect(next.archetype).toBe('cloud-architect')
+    expect(next.archetype).toBe('software-developer')
     expect(next.universe).toBe('star-wars')
     expect(next.artStyle).toBe('oil-painting')
     expect(next.firstName).toBe('Paula')
@@ -235,9 +235,9 @@ describe('selection actions transition to picking', () => {
 
   test('ArchetypeSelected, UniverseSelected each set their field', () => {
     let s = initialAlterEgoSession()
-    s = reduce(s, { type: 'ArchetypeSelected', archetype: 'cloud-architect' })
+    s = reduce(s, { type: 'ArchetypeSelected', archetype: 'software-developer' })
     s = reduce(s, { type: 'UniverseSelected', universe: 'star-wars' })
-    expect(s.archetype).toBe('cloud-architect')
+    expect(s.archetype).toBe('software-developer')
     expect(s.universe).toBe('star-wars')
     expect(s.phase).toBe('picking')
   })
@@ -295,15 +295,15 @@ describe('generation lifecycle', () => {
 
 describe('SurpriseMePicked (009 / 020)', () => {
   const picks = {
-    archetype: 'ai-engineer' as const,
-    universe: 'cyberpunk' as const,
+    archetype: 'data-analyst' as const,
+    universe: 'retro-synthwave' as const,
     artStyle: 'pop-art' as const,
   }
 
   test('assigns the three visible category fields from the payload and transitions phase to picking', () => {
     const next = reduce(initialAlterEgoSession(), { type: 'SurpriseMePicked', picks })
-    expect(next.archetype).toBe('ai-engineer')
-    expect(next.universe).toBe('cyberpunk')
+    expect(next.archetype).toBe('data-analyst')
+    expect(next.universe).toBe('retro-synthwave')
     expect(next.artStyle).toBe('pop-art')
     expect(next.phase).toBe('picking')
   })
@@ -316,11 +316,11 @@ describe('SurpriseMePicked (009 / 020)', () => {
   test('overwrites prior user selections in the same session (FR-905)', () => {
     const seeded = reduce(initialAlterEgoSession(), {
       type: 'ArchetypeSelected',
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
     })
-    expect(seeded.archetype).toBe('cloud-architect')
+    expect(seeded.archetype).toBe('software-developer')
     const next = reduce(seeded, { type: 'SurpriseMePicked', picks })
-    expect(next.archetype).toBe('ai-engineer')
+    expect(next.archetype).toBe('data-analyst')
   })
 
   test('does NOT mutate firstName, photoBlob, photoPreviewUrl, activeTab, generateAutoSwitchNonce, errorMessage, or result', () => {
@@ -351,8 +351,8 @@ describe('SurpriseMePicked (009 / 020)', () => {
       photoBlob: sampleBlob,
       photoPreviewUrl: sampleUrl,
     })
-    expect(afterPhoto.archetype).toBe('ai-engineer')
-    expect(afterPhoto.universe).toBe('cyberpunk')
+    expect(afterPhoto.archetype).toBe('data-analyst')
+    expect(afterPhoto.universe).toBe('retro-synthwave')
     expect(afterPhoto.artStyle).toBe('pop-art')
   })
 
@@ -369,7 +369,7 @@ describe('SurpriseMePicked (009 / 020)', () => {
     const explicitMergedPicks = { ...picks, universe: 'star-wars' as const }
     const next = reduce(seeded, { type: 'SurpriseMePicked', picks: explicitMergedPicks })
     expect(next.universe).toBe('star-wars')
-    expect(next.archetype).toBe('ai-engineer')
+    expect(next.archetype).toBe('data-analyst')
     expect(next.artStyle).toBe('pop-art')
     expect(next.phase).toBe('picking')
   })
@@ -379,16 +379,16 @@ describe('SurpriseMePicked (009 / 020)', () => {
     // returns fullRoll verbatim", the reducer commits the full roll
     // unchanged. This is the 009 baseline behavior preserved through 028.
     const next = reduce(initialAlterEgoSession(), { type: 'SurpriseMePicked', picks })
-    expect(next.archetype).toBe('ai-engineer')
-    expect(next.universe).toBe('cyberpunk')
+    expect(next.archetype).toBe('data-analyst')
+    expect(next.universe).toBe('retro-synthwave')
     expect(next.artStyle).toBe('pop-art')
   })
 
   test('FR-913 — FirstNameChanged after SurpriseMePicked leaves the seeded categories intact', () => {
     const afterPicks = reduce(initialAlterEgoSession(), { type: 'SurpriseMePicked', picks })
     const afterName = reduce(afterPicks, { type: 'FirstNameChanged', firstName: 'Paula' })
-    expect(afterName.archetype).toBe('ai-engineer')
-    expect(afterName.universe).toBe('cyberpunk')
+    expect(afterName.archetype).toBe('data-analyst')
+    expect(afterName.universe).toBe('retro-synthwave')
     expect(afterName.artStyle).toBe('pop-art')
   })
 
@@ -400,8 +400,8 @@ describe('SurpriseMePicked (009 / 020)', () => {
       reason: 'generate',
     })
     const afterSubmit = reduce(afterTabSwitch, { type: 'GenerateSubmitted' })
-    expect(afterSubmit.archetype).toBe('ai-engineer')
-    expect(afterSubmit.universe).toBe('cyberpunk')
+    expect(afterSubmit.archetype).toBe('data-analyst')
+    expect(afterSubmit.universe).toBe('retro-synthwave')
     expect(afterSubmit.artStyle).toBe('pop-art')
     expect(afterSubmit.phase).toBe('generating')
     expect(afterSubmit.activeTab).toBe('alter-ego')
@@ -416,8 +416,9 @@ describe('StartOverRequested', () => {
       generateAutoSwitchNonce: 5,
       photoBlob: sampleBlob,
       photoPreviewUrl: sampleUrl,
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
       universe: 'star-wars',
+      customUniverse: '',
       artStyle: 'oil-painting',
       photoMode: 'group',
       firstName: 'Paula',
@@ -451,7 +452,7 @@ describe('CustomRoleChanged (022)', () => {
   test('non-blank trimmed payload sets customRole and silently clears any prefab archetype (FR-2207)', () => {
     const seeded: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
     }
     const next = reduce(seeded, { type: 'CustomRoleChanged', customRole: 'Tester' })
     expect(next.customRole).toBe('Tester')
@@ -462,27 +463,27 @@ describe('CustomRoleChanged (022)', () => {
   test('whitespace-only payload preserves the prefab archetype (precedence rule waits for real input)', () => {
     const seeded: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
     }
     const next = reduce(seeded, { type: 'CustomRoleChanged', customRole: '   \t' })
     expect(next.customRole).toBe('   \t')
-    expect(next.archetype).toBe('cloud-architect')
+    expect(next.archetype).toBe('software-developer')
   })
 
   test('empty payload (after typing then deleting) preserves the prefab archetype', () => {
     const seeded: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
     }
     const next = reduce(seeded, { type: 'CustomRoleChanged', customRole: '' })
     expect(next.customRole).toBe('')
-    expect(next.archetype).toBe('cloud-architect')
+    expect(next.archetype).toBe('software-developer')
   })
 
   test('payload with surrounding whitespace AND content still triggers precedence', () => {
     const seeded: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
     }
     const next = reduce(seeded, { type: 'CustomRoleChanged', customRole: '   Tester  ' })
     expect(next.customRole).toBe('   Tester  ') // raw value preserved
@@ -549,7 +550,7 @@ describe('EmailChanged (023)', () => {
       ...initialAlterEgoSession(),
       photoBlob: sampleBlob,
       photoPreviewUrl: sampleUrl,
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
       universe: 'star-wars',
       artStyle: 'oil-painting',
       firstName: 'Paula',
@@ -561,7 +562,7 @@ describe('EmailChanged (023)', () => {
     expect(next.email).toBe('a@b.c')
     expect(next.photoBlob).toBe(sampleBlob)
     expect(next.photoPreviewUrl).toBe(sampleUrl)
-    expect(next.archetype).toBe('cloud-architect')
+    expect(next.archetype).toBe('software-developer')
     expect(next.universe).toBe('star-wars')
     expect(next.artStyle).toBe('oil-painting')
     expect(next.firstName).toBe('Paula')
@@ -586,8 +587,8 @@ describe('Email retention across StartOver / SurpriseMe (023 FR-2308)', () => {
 
   test('SurpriseMePicked does NOT clear email (FR-2308 — the field must survive Surprise Me)', () => {
     const picks = {
-      archetype: 'ai-engineer' as const,
-      universe: 'cyberpunk' as const,
+      archetype: 'data-analyst' as const,
+      universe: 'retro-synthwave' as const,
       artStyle: 'pop-art' as const,
     }
     const seeded: AlterEgoSession = {
@@ -614,8 +615,8 @@ describe('SurpriseMePicked preserves customRole (028)', () => {
   // page refresh are the only clearing mechanisms. The 022 prefab-vs-
   // custom precedence invariant continues to hold via CustomRoleChanged.
   const picks = {
-    archetype: 'ai-engineer' as const,
-    universe: 'cyberpunk' as const,
+    archetype: 'data-analyst' as const,
+    universe: 'retro-synthwave' as const,
     artStyle: 'pop-art' as const,
   }
 
@@ -627,7 +628,7 @@ describe('SurpriseMePicked preserves customRole (028)', () => {
     }
     const next = reduce(seeded, { type: 'SurpriseMePicked', picks })
     expect(next.customRole).toBe('Tester')
-    expect(next.archetype).toBe('ai-engineer')
+    expect(next.archetype).toBe('data-analyst')
     expect(next.phase).toBe('picking')
   })
 
@@ -645,12 +646,12 @@ describe('SurpriseMePicked preserves customRole (028)', () => {
     // bug elsewhere produces a session where both channels are filled.
     const seeded: AlterEgoSession = {
       ...initialAlterEgoSession(),
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
       customRole: 'Tester',
     }
     const next = reduce(seeded, { type: 'SurpriseMePicked', picks })
-    expect(next.archetype).toBe('ai-engineer')
-    expect(next.universe).toBe('cyberpunk')
+    expect(next.archetype).toBe('data-analyst')
+    expect(next.universe).toBe('retro-synthwave')
     expect(next.artStyle).toBe('pop-art')
     expect(next.customRole).toBe('Tester')
   })

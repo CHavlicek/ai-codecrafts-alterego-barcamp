@@ -132,13 +132,17 @@ export function useGenerateAlterEgo() {
       dispatch({ type: 'SurpriseMePicked', picks })
       const trimmedCustomRole = state.customRole.trim()
       const hasCustomRole = trimmedCustomRole.length > 0
+      const trimmedCustomUniverse = state.customUniverse.trim()
+      const hasCustomUniverse = trimmedCustomUniverse.length > 0
       const selections: Selections = {
         // 022 (FR-2211) + 028 (FR-2812): when Custom Role is the explicit
         // Role channel, the outbound `archetype` is null — matching the
         // Generate path's handleSubmit (AlterEgoPage.tsx) byte-for-byte.
         // The serialiser drops the field entirely when null.
         archetype: hasCustomRole ? null : picks.archetype,
-        universe: picks.universe,
+        // 029: same precedence for Universe — when Custom Universe is the
+        // explicit channel, the outbound `universe` is null.
+        universe: hasCustomUniverse ? null : picks.universe,
         artStyle: picks.artStyle,
         photoMode: args.photoMode,
         firstName: args.firstName.trim(),
@@ -146,6 +150,8 @@ export function useGenerateAlterEgo() {
         // precedence as the role-of-record; the serialiser in
         // alterEgoClient.ts omits the field when blank.
         ...(hasCustomRole ? { customRole: trimmedCustomRole } : {}),
+        // 029: same precedence + wire-omission for the custom universe.
+        ...(hasCustomUniverse ? { customUniverse: trimmedCustomUniverse } : {}),
       }
       mutation.mutate({ photoBlob: args.photoBlob, selections })
     },

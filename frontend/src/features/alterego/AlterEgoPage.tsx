@@ -63,10 +63,13 @@ function AlterEgoPageContent() {
     // EITHER a prefab selection OR a non-blank custom-role string
     // (FR-2210). Both empty keeps Generate disabled.
     const trimmedCustomRole = state.customRole.trim()
+    // 029 — the universe gate mirrors the role gate: satisfied by EITHER a
+    // prefab selection OR a non-blank custom-universe string.
+    const trimmedCustomUniverse = state.customUniverse.trim()
     if (
       !state.photoBlob ||
       (!state.archetype && trimmedCustomRole === '') ||
-      !state.universe ||
+      (!state.universe && trimmedCustomUniverse === '') ||
       !state.artStyle
     ) {
       return
@@ -88,6 +91,8 @@ function AlterEgoPageContent() {
       // the role-of-record; the serialiser in alterEgoClient.ts omits the
       // field when blank so the wire shape stays minimal for old backends.
       ...(trimmedCustomRole.length > 0 ? { customRole: trimmedCustomRole } : {}),
+      // 029: same precedence + wire-omission for the custom universe.
+      ...(trimmedCustomUniverse.length > 0 ? { customUniverse: trimmedCustomUniverse } : {}),
     }
     submit({ photoBlob: state.photoBlob, selections })
   }

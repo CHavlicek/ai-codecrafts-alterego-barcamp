@@ -44,6 +44,14 @@ export function customRoleOfRecord(state: AlterEgoSession): string {
 }
 
 /**
+ * 029 (verbund-rebrand): trimmed custom-universe string or `""` when blank.
+ * Mirrors {@link customRoleOfRecord}; consumed by the gating selector below.
+ */
+export function customUniverseOfRecord(state: AlterEgoSession): string {
+  return state.customUniverse.trim()
+}
+
+/**
  * 023 (FR-2303 / FR-2304) — the captured email is optional but
  * format-checked when non-blank. `'valid'` covers BOTH blank and
  * well-formed; `'invalid'` only fires when the user has typed
@@ -82,7 +90,9 @@ export function missingInputs(state: AlterEgoSession): RequiredInput[] {
   // 022 (FR-2210): the archetype gate is satisfied by EITHER a prefab
   // selection OR a non-blank custom-role string.
   if (!state.archetype && customRoleOfRecord(state) === '') missing.push('archetype')
-  if (!state.universe) missing.push('universe')
+  // 029: the universe gate is satisfied by EITHER a prefab selection OR a
+  // non-blank custom-universe string (mirrors the archetype gate).
+  if (!state.universe && customUniverseOfRecord(state) === '') missing.push('universe')
   if (!state.artStyle) missing.push('artStyle')
   // 023 (FR-2304): a malformed non-blank email blocks Generate / Surprise.
   // Insert at the position that mirrors the field's visual position on

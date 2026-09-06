@@ -6,16 +6,18 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 
 /**
- * Fictional setting framing the poster's visual context. Expanded and re-keyed
- * by 002-sleek-tabbed-ui to the six options shown in the mockup.
+ * Fictional setting framing the poster's visual context. Re-keyed by
+ * 029-verbund-rebrand from the nerd-leaning 002 set to a broadly recognisable
+ * pop-culture mix spanning the 80s, 90s and 2000s (Marvel & Star Wars kept).
+ * A free-form {@code customUniverse} on the request can override this entirely.
  */
 public enum Universe {
     MARVEL("marvel", "Marvel"),
     STAR_WARS("star-wars", "Star Wars"),
-    CYBERPUNK("cyberpunk", "Cyberpunk"),
-    THE_OFFICE("the-office", "The Office"),
-    INDIANA_JONES("indiana-jones", "Indiana Jones"),
-    LORD_OF_THE_RINGS("lord-of-the-rings", "Lord of the Rings");
+    RETRO_SYNTHWAVE("retro-synthwave", "80s Retro / Synthwave"),
+    NINETIES_SITCOM("nineties-sitcom", "90s Sitcom"),
+    SPY_THRILLER("spy-thriller", "Spy Thriller"),
+    GHOSTBUSTERS("ghostbusters", "Ghostbusters");
 
     private final String wire;
     private final String label;

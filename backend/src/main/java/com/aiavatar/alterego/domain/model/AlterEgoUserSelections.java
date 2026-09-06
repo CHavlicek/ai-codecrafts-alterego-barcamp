@@ -1,6 +1,7 @@
 package com.aiavatar.alterego.domain.model;
 
 import com.aiavatar.alterego.domain.model.validation.RoleOfRecordPresent;
+import com.aiavatar.alterego.domain.model.validation.UniverseOfRecordPresent;
 import com.aiavatar.alterego.domain.model.validation.ValidFirstName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,25 +33,41 @@ import jakarta.validation.constraints.Size;
  * </ul>
  */
 @RoleOfRecordPresent
+@UniverseOfRecordPresent
 public record AlterEgoUserSelections(
         Archetype archetype,
-        @NotNull Universe universe,
+        Universe universe,
         @NotNull ArtStyle artStyle,
         @NotBlank @Size(max = 50) @ValidFirstName String firstName,
         PhotoMode photoMode,
-        @Size(max = 100) String customRole
+        @Size(max = 100) String customRole,
+        @Size(max = 100) String customUniverse
 ) {
 
     /**
      * 022 — secondary constructor preserving the pre-022 5-arg call shape.
-     * Delegates to the canonical 6-arg constructor with {@code customRole = null}.
+     * Delegates to the canonical constructor with {@code customRole = null}
+     * and {@code customUniverse = null}.
      */
     public AlterEgoUserSelections(Archetype archetype,
                                   Universe universe,
                                   ArtStyle artStyle,
                                   String firstName,
                                   PhotoMode photoMode) {
-        this(archetype, universe, artStyle, firstName, photoMode, null);
+        this(archetype, universe, artStyle, firstName, photoMode, null, null);
+    }
+
+    /**
+     * 022 — 6-arg constructor preserving the pre-029 call shape (customRole
+     * but no customUniverse). Delegates with {@code customUniverse = null}.
+     */
+    public AlterEgoUserSelections(Archetype archetype,
+                                  Universe universe,
+                                  ArtStyle artStyle,
+                                  String firstName,
+                                  PhotoMode photoMode,
+                                  String customRole) {
+        this(archetype, universe, artStyle, firstName, photoMode, customRole, null);
     }
 
     /**
@@ -71,6 +88,18 @@ public record AlterEgoUserSelections(
         if (customRole != null && !customRole.isBlank()) {
             return customRole.trim();
         }
-        return archetype != null ? archetype.label() : "Engineer";
+        return archetype != null ? archetype.label() : "Innovator";
+    }
+
+    /**
+     * 029 — universe-of-record helper, mirroring {@link #roleLabel()}. Custom
+     * universe (trimmed, when non-blank) takes precedence over the prefab
+     * universe's label.
+     */
+    public String universeLabel() {
+        if (customUniverse != null && !customUniverse.isBlank()) {
+            return customUniverse.trim();
+        }
+        return universe != null ? universe.label() : "an inspiring future";
     }
 }
