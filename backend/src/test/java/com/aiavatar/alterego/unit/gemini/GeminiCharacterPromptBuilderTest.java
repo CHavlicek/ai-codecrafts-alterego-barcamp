@@ -153,16 +153,16 @@ class GeminiCharacterPromptBuilderTest {
                 Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, universe,
                 null, ArtStyle.OIL_PAINTING, "Paula", null);
         String prompt = builder.build(req);
-        // 029 (verbund-rebrand): the character builder's universe labels no
-        // longer derive from the wire value (e.g. NINETIES_SITCOM →
-        // "1990s sitcom", not "nineties"). Pin each to a distinctive token
-        // from its GeminiCharacterPromptBuilder.UNIVERSE_LABELS entry.
+        // The character builder's universe labels no longer derive from the
+        // wire value (e.g. NINETIES_SITCOM → "The Office", not "nineties").
+        // Pin each to a distinctive token from its
+        // GeminiCharacterPromptBuilder.UNIVERSE_LABELS entry.
         String expectedToken = switch (universe) {
             case MARVEL -> "marvel";
             case STAR_WARS -> "star wars";
-            case RETRO_SYNTHWAVE -> "synthwave";
-            case NINETIES_SITCOM -> "1990s sitcom";
-            case SPY_THRILLER -> "spy thriller";
+            case RETRO_SYNTHWAVE -> "miami vice";
+            case NINETIES_SITCOM -> "the office";
+            case SPY_THRILLER -> "james bond";
             case GHOSTBUSTERS -> "ghostbusters";
         };
         assertTrue(prompt.toLowerCase().contains(expectedToken),

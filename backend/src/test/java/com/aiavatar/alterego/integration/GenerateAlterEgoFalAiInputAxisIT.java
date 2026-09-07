@@ -170,7 +170,7 @@ class GenerateAlterEgoFalAiInputAxisIT {
         String promptB = capturePrompt(b);
 
         assertThat(promptA).contains("Star Wars");
-        assertThat(promptB).contains("synthwave");
+        assertThat(promptB).contains("Miami Vice");
         assertThat(promptA).isNotEqualTo(promptB);
     }
 

@@ -67,7 +67,7 @@ class AlterEgoEmailServiceTest {
         emailConfigured = mock(EmailConfigured.class);
         emailProperties = new EmailProperties(
                 "alter-ego@ai-verbund-2026.local",
-                "Your AI Generated Alter Ego - AI @ Verbund 2026");
+                "Dein AI Alter Ego vom VERBUND AI Barcamp 🚀");
         bodyBuilder = new AlterEgoEmailBodyBuilder();
 
         service = new AlterEgoEmailService(
@@ -120,20 +120,19 @@ class AlterEgoEmailServiceTest {
         verify(mailSender, times(1)).send(captor.capture());
 
         MimeMessage sent = captor.getValue();
-        // Subject must match FR-2313 exactly.
-        assertThat(sent.getSubject()).isEqualTo("Your AI Generated Alter Ego - AI @ Verbund 2026");
+        // Subject must match the configured BarCamp subject exactly.
+        assertThat(sent.getSubject()).isEqualTo("Dein AI Alter Ego vom VERBUND AI Barcamp 🚀");
         // Recipient must be the trimmed-to address.
         assertThat(sent.getAllRecipients()).hasSize(1);
         assertThat(sent.getAllRecipients()[0].toString()).isEqualTo("someone@example.com");
         // From must come from EmailProperties.
         assertThat(sent.getFrom()).hasSize(1);
         assertThat(sent.getFrom()[0].toString()).isEqualTo("alter-ego@ai-verbund-2026.local");
-        // Body must contain the FR-2314 substituted text.
+        // Body must contain the BarCamp copy. Assert on ASCII-stable lines to
+        // stay robust against MIME transfer-encoding of the umlaut/emoji lines.
         String raw = extractContent(sent);
-        assertThat(raw).contains("Hey, Dmytro!");
-        assertThat(raw).contains("Thank you, for being a part of AI @ Verbund 2026!");
-        assertThat(raw).contains("Find your AI Generated Alter Ego attached to this letter.");
-        assertThat(raw).contains("Happy times!");
+        assertThat(raw).contains("Hi,");
+        assertThat(raw).contains("Dein AI@VERBUND Barcamp Team");
     }
 
     @Test

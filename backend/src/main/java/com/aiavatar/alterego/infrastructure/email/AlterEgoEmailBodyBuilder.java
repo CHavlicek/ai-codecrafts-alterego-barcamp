@@ -23,13 +23,20 @@ public class AlterEgoEmailBodyBuilder {
             throw new IllegalArgumentException(
                     "firstName must be non-blank before composing the email body");
         }
-        String trimmed = firstName.trim();
-        return "Hey, " + trimmed + "!\n"
+        // The name-substitution guard is retained (the controller passes a
+        // validated firstName and blank is a real upstream regression signal),
+        // but the copy itself is fixed German BarCamp wording that greets with
+        // a plain "Hi," rather than interpolating the first name.
+        return "Hi,\n"
                 + "\n"
-                + "Thank you, for being a part of AI @ Verbund 2026!\n"
+                + "dein persönliches AI Alter Ego ist fertig und wartet auf dich.\n"
                 + "\n"
-                + "Find your AI Generated Alter Ego attached to this letter.\n"
+                + "Du kannst es direkt speichern, weiterverwenden oder einfach als Erinnerung an deinen Barcamp-Tag mitnehmen.\n"
                 + "\n"
-                + "Happy times!\n";
+                + "Vielleicht hilft es dir ja auch dabei, dich an deine ganz persönlichen Superkräfte zu erinnern. 😉\n"
+                + "\n"
+                + "Viel Spaß damit – und weiterhin eine gute Mission!\n"
+                + "\n"
+                + "Dein AI@VERBUND Barcamp Team\n";
     }
 }

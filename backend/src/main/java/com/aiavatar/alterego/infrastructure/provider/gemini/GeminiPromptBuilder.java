@@ -58,9 +58,9 @@ public class GeminiPromptBuilder {
         // (Marvel & Star Wars kept). A free-form customUniverse overrides these.
         UNIVERSE_LABELS.put(Universe.MARVEL, "Marvel superhero universe");
         UNIVERSE_LABELS.put(Universe.STAR_WARS, "Star Wars");
-        UNIVERSE_LABELS.put(Universe.RETRO_SYNTHWAVE, "1980s retro synthwave, neon sunset and chrome");
-        UNIVERSE_LABELS.put(Universe.NINETIES_SITCOM, "warm, bright 1990s sitcom set");
-        UNIVERSE_LABELS.put(Universe.SPY_THRILLER, "sleek 1960s-style spy thriller, adventurous and glamorous");
+        UNIVERSE_LABELS.put(Universe.RETRO_SYNTHWAVE, "1980s Miami Vice, pastel neon, palm trees and chrome");
+        UNIVERSE_LABELS.put(Universe.NINETIES_SITCOM, "The Office, a warm, bright mockumentary workplace sitcom set");
+        UNIVERSE_LABELS.put(Universe.SPY_THRILLER, "a sleek, glamorous James Bond spy thriller, adventurous and suave");
         UNIVERSE_LABELS.put(Universe.GHOSTBUSTERS, "playful 1980s Ghostbusters adventure");
 
         VIBE_LABELS.put(Vibe.BUILDER, "builder / tinkerer");
@@ -112,8 +112,9 @@ public class GeminiPromptBuilder {
         appendCategoryLines(sb, request);
         sb.append("\nComposition notes:\n");
         sb.append("- Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subject.\n");
-        sb.append("- Overall mood: hopeful, positive, energetic and forward-looking — the subject looks confident and inspired, like someone helping build a brighter, more sustainable tomorrow.\n");
-        sb.append("- Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones, with subtle hints of renewable-energy optimism (open sky, sunlight, greenery or clean-energy motifs) where they fit the scene naturally. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.\n");
+        sb.append("- Overall mood: hopeful, positive and forward-looking, but it need not be earnest — the image can be playful, tongue-in-cheek and humorous, having fun with the theme and not taking itself too seriously. The subject looks confident and inspired, like someone helping build a brighter, more sustainable tomorrow.\n");
+        sb.append("- Adapt the mood to the chosen universe / aesthetic: fully embrace its signature look and energy even when it is moodier, edgier or more conflict-driven (e.g. neon-noir Miami Vice, a tense spy thriller). Lean into that atmosphere with confidence and wit while keeping the underlying spirit optimistic and fun — never bleak, grim or hopeless.\n");
+        sb.append("- Background: lean bright, clean and airy where the universe allows — a light, luminous setting leaning toward whites, soft blues and cool daylight tones — but let the chosen aesthetic drive the palette when it calls for something richer or moodier. Weave in subtle hints of renewable-energy optimism where they fit the scene naturally: open sky, sunlight, greenery, clean-energy motifs and especially hydropower (flowing water, rivers, dams, reservoirs and turbines — Verbund produces most of its energy from hydropower). Prefer light, open scenes over gloomy, murky or heavily shadowed ones so the poster stays inviting.\n");
         sb.append("- Clear focus on the subject; the universe aesthetic is the setting, not the subject.\n");
         sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");
         return sb.toString();
@@ -131,8 +132,9 @@ public class GeminiPromptBuilder {
         appendCategoryLines(sb, request);
         sb.append("\nComposition notes:\n");
         sb.append("- Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subjects.\n");
-        sb.append("- Overall mood: hopeful, positive, energetic and forward-looking — the subjects look confident and inspired, like a team helping build a brighter, more sustainable tomorrow.\n");
-        sb.append("- Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones, with subtle hints of renewable-energy optimism (open sky, sunlight, greenery or clean-energy motifs) where they fit the scene naturally. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.\n");
+        sb.append("- Overall mood: hopeful, positive and forward-looking, but it need not be earnest — the image can be playful, tongue-in-cheek and humorous, having fun with the theme and not taking itself too seriously. The subjects look confident and inspired, like a team helping build a brighter, more sustainable tomorrow.\n");
+        sb.append("- Adapt the mood to the chosen universe / aesthetic: fully embrace its signature look and energy even when it is moodier, edgier or more conflict-driven (e.g. neon-noir Miami Vice, a tense spy thriller). Lean into that atmosphere with confidence and wit while keeping the underlying spirit optimistic and fun — never bleak, grim or hopeless.\n");
+        sb.append("- Background: lean bright, clean and airy where the universe allows — a light, luminous setting leaning toward whites, soft blues and cool daylight tones — but let the chosen aesthetic drive the palette when it calls for something richer or moodier. Weave in subtle hints of renewable-energy optimism where they fit the scene naturally: open sky, sunlight, greenery, clean-energy motifs and especially hydropower (flowing water, rivers, dams, reservoirs and turbines — Verbund produces most of its energy from hydropower). Prefer light, open scenes over gloomy, murky or heavily shadowed ones so the poster stays inviting.\n");
         sb.append("- Clear focus on all subjects as a group; the universe aesthetic is the setting, not the subjects.\n");
         sb.append("- Arrange the group so every face is clearly visible.\n");
         sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");

@@ -145,17 +145,21 @@ def main():
     # fifty1 wordmark, white, centred in the very bottom margin (below the
     # text-overlay safe area so it never collides with name/role/quote).
     fifty1 = Image.open(os.path.join(FRONTEND_BRAND, "fifty1-logo-black.png")).convert("RGBA")
-    # 25% smaller than the original 150px so the footer logo sits further
-    # clear of the 017 name/role/quote text overlay above it.
-    target_w = 112
+    # Shrunk from the original 150px so the footer logo sits clear of the
+    # 017 name/role/quote text overlay above it. Trimmed further (112 -> 96)
+    # and dropped to hug the bottom edge so there is a comfortable
+    # top-padding gap between the overlay text and this "Powered by" footer.
+    target_w = 96
     scale = target_w / fifty1.width
     fifty1 = fifty1.resize((target_w, int(fifty1.height * scale)), Image.LANCZOS)
     fifty1_white = recolor(fifty1, WHITE[:3])
-    # "Powered by fifty1" — small label + logo, bottom-centre.
+    # "Powered by fifty1" — small label + logo, bottom-centre. Pushed down
+    # to H-28 so the footer group sits near the bottom margin, widening the
+    # gap to the text overlay (text safe region ends y=1083).
     lbl_font = ImageFont.truetype(GEIST, 15)
     lbl = "Powered by"
     lb = draw.textbbox((0, 0), lbl, font=lbl_font)
-    footer_cy = H - 34
+    footer_cy = H - 28
     lbl_w = lb[2] - lb[0]
     gap = 12
     total_w = lbl_w + gap + fifty1_white.width

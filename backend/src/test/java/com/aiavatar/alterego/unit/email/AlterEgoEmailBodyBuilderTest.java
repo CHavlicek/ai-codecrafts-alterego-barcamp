@@ -15,31 +15,30 @@ class AlterEgoEmailBodyBuilderTest {
 
     private final AlterEgoEmailBodyBuilder builder = new AlterEgoEmailBodyBuilder();
 
-    private static final String EXPECTED_BODY_DMYTRO =
-            "Hey, Dmytro!\n"
+    private static final String EXPECTED_BODY =
+            "Hi,\n"
                     + "\n"
-                    + "Thank you, for being a part of AI @ Verbund 2026!\n"
+                    + "dein persönliches AI Alter Ego ist fertig und wartet auf dich.\n"
                     + "\n"
-                    + "Find your AI Generated Alter Ego attached to this letter.\n"
+                    + "Du kannst es direkt speichern, weiterverwenden oder einfach als Erinnerung an deinen Barcamp-Tag mitnehmen.\n"
                     + "\n"
-                    + "Happy times!\n";
+                    + "Vielleicht hilft es dir ja auch dabei, dich an deine ganz persönlichen Superkräfte zu erinnern. 😉\n"
+                    + "\n"
+                    + "Viel Spaß damit – und weiterhin eine gute Mission!\n"
+                    + "\n"
+                    + "Dein AI@VERBUND Barcamp Team\n";
 
     @Test
-    void buildsExactFr2314ByteSequenceWithFirstNameSubstituted() {
-        assertEquals(EXPECTED_BODY_DMYTRO, builder.build("Dmytro"));
+    void buildsExactBodyByteSequence() {
+        assertEquals(EXPECTED_BODY, builder.build("Dmytro"));
     }
 
     @Test
-    void substitutesAnyFirstNameVerbatim() {
-        String expected =
-                "Hey, Paula!\n"
-                        + "\n"
-                        + "Thank you, for being a part of AI @ Verbund 2026!\n"
-                        + "\n"
-                        + "Find your AI Generated Alter Ego attached to this letter.\n"
-                        + "\n"
-                        + "Happy times!\n";
-        assertEquals(expected, builder.build("Paula"));
+    void bodyCopyIsFixedRegardlessOfFirstName() {
+        // The BarCamp copy greets with a plain "Hi," and no longer
+        // interpolates the first name, so any non-blank name yields the
+        // identical body.
+        assertEquals(EXPECTED_BODY, builder.build("Paula"));
     }
 
     @Test
@@ -56,8 +55,10 @@ class AlterEgoEmailBodyBuilderTest {
     }
 
     @Test
-    void firstNameWithSurroundingWhitespaceIsTrimmedBeforeSubstitution() {
-        // Controller passes the trimmed value, but defend in depth.
-        assertEquals(EXPECTED_BODY_DMYTRO, builder.build("  Dmytro  "));
+    void nonBlankFirstNameWithSurroundingWhitespaceStillProducesBody() {
+        // Controller passes the trimmed value, but defend in depth — a
+        // padded-but-non-blank name must still pass the guard and yield
+        // the fixed copy.
+        assertEquals(EXPECTED_BODY, builder.build("  Dmytro  "));
     }
 }

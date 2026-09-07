@@ -21,7 +21,7 @@ function App() {
           ·
         </span>
         <span>
-          An AI Experience Barcamp by <strong>fifty1</strong> for <strong>VERBUND</strong>
+          An AI Barcamp by <strong>fifty1</strong> for <strong>VERBUND</strong>
         </span>
       </footer>
     </LiveRegionProvider>

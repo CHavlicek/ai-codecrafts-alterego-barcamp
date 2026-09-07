@@ -118,7 +118,7 @@ aiavatar:
   # (FR-2311 / FR-2318) — see EmailConfigured.
   email:
     from: ${AIAVATAR_EMAIL_FROM:alter-ego@ai-verbund-2026.local}
-    subject: ${AIAVATAR_EMAIL_SUBJECT:Your AI Generated Alter Ego - AI @ Verbund 2026}
+    subject: ${AIAVATAR_EMAIL_SUBJECT:Dein AI Alter Ego vom VERBUND AI Barcamp 🚀}
 
 management:
   endpoints:

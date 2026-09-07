@@ -14,9 +14,9 @@ import java.util.Arrays;
 public enum Universe {
     MARVEL("marvel", "Marvel"),
     STAR_WARS("star-wars", "Star Wars"),
-    RETRO_SYNTHWAVE("retro-synthwave", "80s Retro / Synthwave"),
-    NINETIES_SITCOM("nineties-sitcom", "90s Sitcom"),
-    SPY_THRILLER("spy-thriller", "Spy Thriller"),
+    RETRO_SYNTHWAVE("retro-synthwave", "Miami Vice"),
+    NINETIES_SITCOM("nineties-sitcom", "The Office"),
+    SPY_THRILLER("spy-thriller", "James Bond"),
     GHOSTBUSTERS("ghostbusters", "Ghostbusters");
 
     private final String wire;

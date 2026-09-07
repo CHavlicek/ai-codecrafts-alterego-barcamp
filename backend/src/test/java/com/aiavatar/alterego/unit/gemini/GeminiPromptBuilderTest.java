@@ -227,8 +227,8 @@ class GeminiPromptBuilderTest {
         String b = builder.build(new AlterEgoRequest(
                 Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.NINETIES_SITCOM, null, ArtStyle.OIL_PAINTING, "Paula", null));
         assertFalse(a.equals(b), "universe change must alter the prompt");
-        assertTrue(a.contains("synthwave"));
-        assertTrue(b.contains("1990s sitcom"));
+        assertTrue(a.contains("Miami Vice"));
+        assertTrue(b.contains("The Office"));
         assertFalse(a.contains("retro-synthwave"), "lowercase wire value must not appear");
         assertFalse(b.contains("nineties-sitcom"));
     }
@@ -399,8 +399,9 @@ class GeminiPromptBuilderTest {
 
                 Composition notes:
                 - Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subject.
-                - Overall mood: hopeful, positive, energetic and forward-looking — the subject looks confident and inspired, like someone helping build a brighter, more sustainable tomorrow.
-                - Background: bright, clean and airy — a light, luminous setting with an overall high-key palette that leans toward whites, soft blues and cool daylight tones, with subtle hints of renewable-energy optimism (open sky, sunlight, greenery or clean-energy motifs) where they fit the scene naturally. Avoid dark, murky, black or heavily shadowed backgrounds; the poster frame around this image is bright white and blue, so the scene must feel light and open, not gloomy.
+                - Overall mood: hopeful, positive and forward-looking, but it need not be earnest — the image can be playful, tongue-in-cheek and humorous, having fun with the theme and not taking itself too seriously. The subject looks confident and inspired, like someone helping build a brighter, more sustainable tomorrow.
+                - Adapt the mood to the chosen universe / aesthetic: fully embrace its signature look and energy even when it is moodier, edgier or more conflict-driven (e.g. neon-noir Miami Vice, a tense spy thriller). Lean into that atmosphere with confidence and wit while keeping the underlying spirit optimistic and fun — never bleak, grim or hopeless.
+                - Background: lean bright, clean and airy where the universe allows — a light, luminous setting leaning toward whites, soft blues and cool daylight tones — but let the chosen aesthetic drive the palette when it calls for something richer or moodier. Weave in subtle hints of renewable-energy optimism where they fit the scene naturally: open sky, sunlight, greenery, clean-energy motifs and especially hydropower (flowing water, rivers, dams, reservoirs and turbines — Verbund produces most of its energy from hydropower). Prefer light, open scenes over gloomy, murky or heavily shadowed ones so the poster stays inviting.
                 - Clear focus on the subject; the universe aesthetic is the setting, not the subject.
                 - ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the role label. The poster's text overlay is composited downstream — your job is the visual scene only.
                 """;

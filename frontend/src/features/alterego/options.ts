@@ -76,9 +76,9 @@ export const ARCHETYPE_OPTIONS: ReadonlyArray<EnumOption<Archetype>> = [
 export const UNIVERSE_OPTIONS: ReadonlyArray<EnumOption<Universe>> = [
   { value: 'marvel', label: 'Marvel', icon: Sparkles },
   { value: 'star-wars', label: 'Star Wars', icon: Rocket },
-  { value: 'retro-synthwave', label: '80s Retro / Synthwave', icon: Radio },
-  { value: 'nineties-sitcom', label: '90s Sitcom', icon: Tv },
-  { value: 'spy-thriller', label: 'Spy Thriller', icon: Cpu },
+  { value: 'retro-synthwave', label: 'Miami Vice', icon: Radio },
+  { value: 'nineties-sitcom', label: 'The Office', icon: Tv },
+  { value: 'spy-thriller', label: 'James Bond', icon: Cpu },
   { value: 'ghostbusters', label: 'Ghostbusters', icon: Ghost },
 ]
 

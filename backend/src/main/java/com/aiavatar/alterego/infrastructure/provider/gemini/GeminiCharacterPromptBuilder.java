@@ -68,9 +68,9 @@ public class GeminiCharacterPromptBuilder {
         // 029 — broadly recognisable 80s/90s/2000s pop-culture aesthetics.
         UNIVERSE_LABELS.put(Universe.MARVEL, "Marvel superhero universe");
         UNIVERSE_LABELS.put(Universe.STAR_WARS, "Star Wars");
-        UNIVERSE_LABELS.put(Universe.RETRO_SYNTHWAVE, "1980s retro synthwave");
-        UNIVERSE_LABELS.put(Universe.NINETIES_SITCOM, "1990s sitcom");
-        UNIVERSE_LABELS.put(Universe.SPY_THRILLER, "classic spy thriller");
+        UNIVERSE_LABELS.put(Universe.RETRO_SYNTHWAVE, "1980s Miami Vice");
+        UNIVERSE_LABELS.put(Universe.NINETIES_SITCOM, "The Office sitcom");
+        UNIVERSE_LABELS.put(Universe.SPY_THRILLER, "a James Bond spy thriller");
         UNIVERSE_LABELS.put(Universe.GHOSTBUSTERS, "Ghostbusters adventure");
 
         VIBE_LABELS.put(Vibe.BUILDER, "builder / tinkerer");
