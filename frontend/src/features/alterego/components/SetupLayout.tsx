@@ -2,6 +2,7 @@ import type { AlterEgoSession } from '../state/reducer'
 import { ArchetypeGrid } from './ArchetypeGrid'
 import { ArtStyleGrid } from './ArtStyleGrid'
 import { CustomRoleInput } from './CustomRoleInput'
+import { CustomUniverseInput } from './CustomUniverseInput'
 import { EmailInput } from './EmailInput'
 import { FirstNameInput } from './FirstNameInput'
 import { GenerateButton } from './GenerateButton'
@@ -99,9 +100,20 @@ export function SetupLayout({ session, dispatch, isSubmitting, onSubmit, onSurpr
         </div>
 
         <div className="setup-layout__numbered-group" data-step="2">
+          {/* 029 (verbund-rebrand): mirrors the custom-Role precedence — when
+              the custom-universe input has a non-blank trimmed value the
+              prefab grid renders blurred and non-interactive. */}
           <UniverseGrid
             value={session.universe}
             onChange={(universe) => dispatch({ type: 'UniverseSelected', universe })}
+            disabled={session.customUniverse.trim().length > 0}
+          />
+          <CustomUniverseInput
+            value={session.customUniverse}
+            onChange={(customUniverse) =>
+              dispatch({ type: 'CustomUniverseChanged', customUniverse })
+            }
+            disabled={isSubmitting}
           />
         </div>
 

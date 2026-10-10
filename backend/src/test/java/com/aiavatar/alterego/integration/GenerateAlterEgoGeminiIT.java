@@ -110,7 +110,7 @@ class GenerateAlterEgoGeminiIT {
                         .withBody(geminiBody)));
 
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
                 "/api/v1/alter-egos",
@@ -154,7 +154,7 @@ class GenerateAlterEgoGeminiIT {
                         .withBody(geminiBody)));
 
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.STEALTHY, Archetype.AI_ENGINEER, Universe.CYBERPUNK, null, ArtStyle.CEL_SHADED, "Maria", null);
+                Pose.STEALTHY, Archetype.DATA_ANALYST, Universe.RETRO_SYNTHWAVE, null, ArtStyle.CEL_SHADED, "Maria", null);
 
         restTemplate.exchange("/api/v1/alter-egos", HttpMethod.POST,
                 MultipartHelper.generateRequest(SamplePhotos.tinyJpeg(), "image/jpeg", selections),
@@ -205,17 +205,15 @@ class GenerateAlterEgoGeminiIT {
 
     private static String expectedPromptLabel(Archetype a) {
         return switch (a) {
-            case CLOUD_ARCHITECT -> "Cloud Architect";
-            case BACKEND_DEV -> "Backend Developer";
-            case FRONTEND_DEV -> "Frontend Developer";
-            case AI_ENGINEER -> "AI Engineer";
-            case PLATFORM_ENG -> "Platform Engineer";
-            case DATA_ENGINEER -> "Data Engineer";
-            // 022 (issue #50) — three non-engineering prefab options. Same
-            // expansion convention as 021 (UI label ≠ prompt label).
-            case HR -> "Human Resources";
-            case ADMINISTRATION -> "Administration / Operations";
-            case CUSTOMER_RELATIONS -> "Customer Relations / Support";
+            case SOFTWARE_DEVELOPER -> "Software Developer";
+            case PROJECT_MANAGER -> "Project Manager";
+            case DATA_ANALYST -> "Data Analyst";
+            case MARKETING_SPECIALIST -> "Marketing & Communications Specialist";
+            case SALES_CUSTOMER_RELATIONS -> "Sales & Customer Relations";
+            case PEOPLE_CULTURE -> "People & Culture (HR)";
+            case OPERATIONS_MANAGER -> "Operations Manager";
+            case FINANCE_CONTROLLER -> "Finance & Controlling";
+            case SUSTAINABILITY_LEAD -> "Sustainability & Energy-Transition Lead";
         };
     }
 

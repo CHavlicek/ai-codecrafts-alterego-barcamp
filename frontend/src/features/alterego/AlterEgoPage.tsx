@@ -3,6 +3,7 @@ import { AlterEgoProvider } from './state/AlterEgoProvider'
 import { useAlterEgoSession } from './hooks/useAlterEgoSession'
 import { useGenerateAlterEgo } from './hooks/useGenerateAlterEgo'
 import { AlterEgoPanel } from './components/AlterEgoPanel'
+import { BrandHeader } from './components/BrandHeader'
 import { SetupLayout } from './components/SetupLayout'
 import { TabsShell } from './components/TabsShell'
 import { tabDisabled } from './state/selectors'
@@ -62,10 +63,13 @@ function AlterEgoPageContent() {
     // EITHER a prefab selection OR a non-blank custom-role string
     // (FR-2210). Both empty keeps Generate disabled.
     const trimmedCustomRole = state.customRole.trim()
+    // 029 — the universe gate mirrors the role gate: satisfied by EITHER a
+    // prefab selection OR a non-blank custom-universe string.
+    const trimmedCustomUniverse = state.customUniverse.trim()
     if (
       !state.photoBlob ||
       (!state.archetype && trimmedCustomRole === '') ||
-      !state.universe ||
+      (!state.universe && trimmedCustomUniverse === '') ||
       !state.artStyle
     ) {
       return
@@ -87,6 +91,8 @@ function AlterEgoPageContent() {
       // the role-of-record; the serialiser in alterEgoClient.ts omits the
       // field when blank so the wire shape stays minimal for old backends.
       ...(trimmedCustomRole.length > 0 ? { customRole: trimmedCustomRole } : {}),
+      // 029: same precedence + wire-omission for the custom universe.
+      ...(trimmedCustomUniverse.length > 0 ? { customUniverse: trimmedCustomUniverse } : {}),
     }
     submit({ photoBlob: state.photoBlob, selections })
   }
@@ -115,7 +121,11 @@ function AlterEgoPageContent() {
 
   return (
     <main className="alter-ego-page">
-      <h1 className="alter-ego-page__title">AI Alter Ego</h1>
+      <BrandHeader />
+      <h1 className="alter-ego-page__title">AI @ VERBUND 2026</h1>
+      <p className="alter-ego-page__subtitle">
+        Discover your AI alter ego — powering the energy transition.
+      </p>
       <TabsShell
         tabs={[
           {

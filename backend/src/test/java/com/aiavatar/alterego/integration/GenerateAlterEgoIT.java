@@ -45,7 +45,7 @@ class GenerateAlterEgoIT {
         // outcome=REAL. The user-visible behaviour (poster appears, generic
         // fallback notice when applicable) is unchanged.
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
                 "/api/v1/alter-egos",
@@ -80,9 +80,9 @@ class GenerateAlterEgoIT {
         // character text under a real provider is covered by the gemini-profile
         // ITs (GenerateAlterEgoGeminiCharacterIT).
         AlterEgoRequest paula = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         AlterEgoRequest maria = new AlterEgoRequest(
-                Pose.STEALTHY, Archetype.AI_ENGINEER, Universe.CYBERPUNK, null, ArtStyle.CEL_SHADED, "Maria", null);
+                Pose.STEALTHY, Archetype.DATA_ANALYST, Universe.RETRO_SYNTHWAVE, null, ArtStyle.CEL_SHADED, "Maria", null);
 
         ResponseEntity<AlterEgoResponse> r1 = restTemplate.exchange(
                 "/api/v1/alter-egos", HttpMethod.POST,

@@ -1,6 +1,7 @@
 package com.aiavatar.alterego.domain.model;
 
 import com.aiavatar.alterego.domain.model.validation.RoleOfRecordPresent;
+import com.aiavatar.alterego.domain.model.validation.UniverseOfRecordPresent;
 import com.aiavatar.alterego.domain.model.validation.ValidFirstName;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -43,20 +44,23 @@ import jakarta.validation.constraints.Size;
  * </ul>
  */
 @RoleOfRecordPresent
+@UniverseOfRecordPresent
 public record AlterEgoRequest(
         @NotNull Pose pose,
         Archetype archetype,
-        @NotNull Universe universe,
+        Universe universe,
         Vibe vibe,
         @NotNull ArtStyle artStyle,
         @NotBlank @Size(max = 50) @ValidFirstName String firstName,
         PhotoMode photoMode,
-        @Size(max = 100) String customRole
+        @Size(max = 100) String customRole,
+        @Size(max = 100) String customUniverse
 ) {
 
     /**
      * 022 — secondary constructor preserving the pre-022 7-arg call shape.
-     * Delegates to the canonical 8-arg constructor with {@code customRole = null}.
+     * Delegates to the canonical constructor with {@code customRole = null}
+     * and {@code customUniverse = null}.
      */
     public AlterEgoRequest(Pose pose,
                            Archetype archetype,
@@ -65,7 +69,22 @@ public record AlterEgoRequest(
                            ArtStyle artStyle,
                            String firstName,
                            PhotoMode photoMode) {
-        this(pose, archetype, universe, vibe, artStyle, firstName, photoMode, null);
+        this(pose, archetype, universe, vibe, artStyle, firstName, photoMode, null, null);
+    }
+
+    /**
+     * 022 — 8-arg constructor preserving the pre-029 call shape (customRole
+     * but no customUniverse). Delegates with {@code customUniverse = null}.
+     */
+    public AlterEgoRequest(Pose pose,
+                           Archetype archetype,
+                           Universe universe,
+                           Vibe vibe,
+                           ArtStyle artStyle,
+                           String firstName,
+                           PhotoMode photoMode,
+                           String customRole) {
+        this(pose, archetype, universe, vibe, artStyle, firstName, photoMode, customRole, null);
     }
 
     /**
@@ -80,7 +99,7 @@ public record AlterEgoRequest(
         String trimmed = firstName.trim();
         return trimmed.equals(firstName)
                 ? this
-                : new AlterEgoRequest(pose, archetype, universe, vibe, artStyle, trimmed, photoMode, customRole);
+                : new AlterEgoRequest(pose, archetype, universe, vibe, artStyle, trimmed, photoMode, customRole, customUniverse);
     }
 
     /**
@@ -108,6 +127,20 @@ public record AlterEgoRequest(
         if (customRole != null && !customRole.isBlank()) {
             return customRole.trim();
         }
-        return archetype != null ? archetype.label() : "Engineer";
+        return archetype != null ? archetype.label() : "Innovator";
+    }
+
+    /**
+     * 029 — the single decision point for "what universe label does this
+     * request carry?". Custom universe (trimmed, when non-blank) takes
+     * precedence over the prefab universe's label. Defensive default returns
+     * {@code "an inspiring future"} so prompt builders never see an empty
+     * string even if an upstream validator regresses.
+     */
+    public String universeLabel() {
+        if (customUniverse != null && !customUniverse.isBlank()) {
+            return customUniverse.trim();
+        }
+        return universe != null ? universe.label() : "an inspiring future";
     }
 }

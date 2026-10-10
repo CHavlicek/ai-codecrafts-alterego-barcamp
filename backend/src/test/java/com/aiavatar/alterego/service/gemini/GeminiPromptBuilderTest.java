@@ -31,7 +31,7 @@ class GeminiPromptBuilderTest {
     @Test
     void singlePromptStatesThreeToFourAspectRatioAndDropsTwoToThree() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.SINGLE);
 
         String prompt = builder.build(req);
@@ -45,7 +45,7 @@ class GeminiPromptBuilderTest {
     @Test
     void groupPromptStatesThreeToFourAspectRatioAndDropsTwoToThree() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Crew Six", PhotoMode.GROUP);
 
         String prompt = builder.build(req);

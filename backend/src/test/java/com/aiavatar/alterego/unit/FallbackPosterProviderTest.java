@@ -57,7 +57,7 @@ class FallbackPosterProviderTest {
 
     @Test
     void posterReturnsValidPng() {
-        PosterImage poster = provider.poster(Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS);
+        PosterImage poster = provider.poster(Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS);
         assertEquals("image/png", poster.mediaType());
         // Fallback emits at 3:4 portrait — matching the frame asset's
         // transparent inner cutout (PosterFrameOverlayService.TARGET_ASPECT)
@@ -74,7 +74,7 @@ class FallbackPosterProviderTest {
 
     @Test
     void posterRatioIsThreeToFourPortrait() {
-        PosterImage poster = provider.poster(Archetype.AI_ENGINEER, Universe.CYBERPUNK);
+        PosterImage poster = provider.poster(Archetype.DATA_ANALYST, Universe.RETRO_SYNTHWAVE);
         double ratio = poster.heightPx() / (double) poster.widthPx();
         assertTrue(Math.abs(ratio - (4.0 / 3.0)) <= 0.015,
                 "fallback poster MUST be 3:4 portrait within ±1%, got " + ratio);
@@ -97,8 +97,8 @@ class FallbackPosterProviderTest {
 
     @Test
     void accentDerivationIsDeterministic() {
-        AccentTone first = AccentResolver.deriveAccent(Archetype.PLATFORM_ENG, Universe.CYBERPUNK);
-        AccentTone second = AccentResolver.deriveAccent(Archetype.PLATFORM_ENG, Universe.CYBERPUNK);
+        AccentTone first = AccentResolver.deriveAccent(Archetype.OPERATIONS_MANAGER, Universe.RETRO_SYNTHWAVE);
+        AccentTone second = AccentResolver.deriveAccent(Archetype.OPERATIONS_MANAGER, Universe.RETRO_SYNTHWAVE);
         assertEquals(first, second);
     }
 }

@@ -13,10 +13,10 @@ describe('UniverseGrid', () => {
     for (const label of [
       'Marvel',
       'Star Wars',
-      'Cyberpunk',
+      'Miami Vice',
       'The Office',
-      'Indiana Jones',
-      'Lord of the Rings',
+      'James Bond',
+      'Ghostbusters',
     ]) {
       expect(screen.getByRole('radio', { name: label })).toBeInTheDocument()
     }

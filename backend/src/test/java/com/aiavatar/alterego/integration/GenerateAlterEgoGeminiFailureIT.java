@@ -191,7 +191,7 @@ class GenerateAlterEgoGeminiFailureIT {
 
     private AlterEgoResponse postGenerate() {
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
                 "/api/v1/alter-egos", HttpMethod.POST,
                 MultipartHelper.generateRequest(SamplePhotos.tinyJpeg(), "image/jpeg", selections),

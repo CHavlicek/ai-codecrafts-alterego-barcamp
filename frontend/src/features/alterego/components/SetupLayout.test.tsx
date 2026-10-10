@@ -163,10 +163,10 @@ describe('SetupLayout', () => {
       </LiveRegionProvider>,
     )
 
-    await user.click(screen.getByRole('radio', { name: 'Cloud Architect' }))
+    await user.click(screen.getByRole('radio', { name: 'Software Developer' }))
     expect(dispatch).toHaveBeenCalledWith({
       type: 'ArchetypeSelected',
-      archetype: 'cloud-architect',
+      archetype: 'software-developer',
     })
 
     await user.click(screen.getByRole('radio', { name: 'Star Wars' }))

@@ -115,7 +115,7 @@ class GenerateAlterEgoGeminiCharacterIT {
         GeminiTextWireMockStubs.happyPath(wireMock, TEXT_MODEL_ID);
 
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(
@@ -177,7 +177,7 @@ class GenerateAlterEgoGeminiCharacterIT {
         GeminiTextWireMockStubs.happyPath(wireMock, TEXT_MODEL_ID);
 
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.STEALTHY, Archetype.AI_ENGINEER, Universe.CYBERPUNK,
+                Pose.STEALTHY, Archetype.DATA_ANALYST, Universe.RETRO_SYNTHWAVE,
                 null, ArtStyle.CEL_SHADED, "Maria", null);
 
         restTemplate.exchange("/api/v1/alter-egos", HttpMethod.POST,

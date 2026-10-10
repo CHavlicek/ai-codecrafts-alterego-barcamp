@@ -15,28 +15,27 @@
  */
 import type { ComponentType, SVGProps } from 'react'
 import {
-  BrainCog,
+  BarChart3,
   Briefcase,
   Brush,
-  Castle,
   CircleDot,
-  ClipboardList,
-  Cloud,
   Code2,
-  Compass,
   Cpu,
-  Database,
   Droplets,
   Film,
   Frame,
-  Gauge,
-  MessageCircle,
-  PenTool,
+  Ghost,
+  Handshake,
+  Leaf,
+  Megaphone,
+  PiggyBank,
+  Radio,
   Rocket,
+  Settings,
   Sparkles,
   Star,
   Sword,
-  Terminal,
+  Tv,
   Users,
   Waves,
   Zap,
@@ -58,27 +57,29 @@ export interface EnumOption<T extends string> {
 // The server rolls Pose and Vibe per request; neither category is exposed
 // to the user on the Setup tab any more.
 
+// 029 (verbund-rebrand): broad corporate role set for "AI @ Verbund 2026".
+// Surprise Me draws uniformly from this nine-element list.
 export const ARCHETYPE_OPTIONS: ReadonlyArray<EnumOption<Archetype>> = [
-  { value: 'cloud-architect', label: 'Cloud Architect', icon: Cloud },
-  { value: 'backend-dev', label: 'Backend Developer', icon: Terminal },
-  { value: 'frontend-dev', label: 'Frontend Developer', icon: PenTool },
-  { value: 'ai-engineer', label: 'AI Engineer', icon: BrainCog },
-  { value: 'platform-eng', label: 'Platform Engineer', icon: Gauge },
-  { value: 'data-engineer', label: 'Data Engineer', icon: Database },
-  // 022 (issue #50): three non-engineering prefab options. Surprise Me
-  // draws uniformly from this nine-element list once they're appended.
-  { value: 'hr', label: 'People Operations', icon: Users },
-  { value: 'administration', label: 'Administration', icon: ClipboardList },
-  { value: 'customer-relations', label: 'Customer Relations', icon: MessageCircle },
+  { value: 'software-developer', label: 'Software Developer', icon: Code2 },
+  { value: 'project-manager', label: 'Project Manager', icon: Briefcase },
+  { value: 'data-analyst', label: 'Data Analyst', icon: BarChart3 },
+  { value: 'marketing-specialist', label: 'Marketing Specialist', icon: Megaphone },
+  { value: 'sales-customer-relations', label: 'Sales & Customer Relations', icon: Handshake },
+  { value: 'people-culture', label: 'People & Culture', icon: Users },
+  { value: 'operations-manager', label: 'Operations Manager', icon: Settings },
+  { value: 'finance-controller', label: 'Finance Controller', icon: PiggyBank },
+  { value: 'sustainability-lead', label: 'Sustainability Lead', icon: Leaf },
 ]
 
+// 029: broadly recognisable 80s/90s/2000s pop-culture aesthetics
+// (Marvel & Star Wars kept). A free-form custom universe can override these.
 export const UNIVERSE_OPTIONS: ReadonlyArray<EnumOption<Universe>> = [
   { value: 'marvel', label: 'Marvel', icon: Sparkles },
   { value: 'star-wars', label: 'Star Wars', icon: Rocket },
-  { value: 'cyberpunk', label: 'Cyberpunk', icon: Cpu },
-  { value: 'the-office', label: 'The Office', icon: Briefcase },
-  { value: 'indiana-jones', label: 'Indiana Jones', icon: Compass },
-  { value: 'lord-of-the-rings', label: 'Lord of the Rings', icon: Castle },
+  { value: 'retro-synthwave', label: 'Miami Vice', icon: Radio },
+  { value: 'nineties-sitcom', label: 'The Office', icon: Tv },
+  { value: 'spy-thriller', label: 'James Bond', icon: Cpu },
+  { value: 'ghostbusters', label: 'Ghostbusters', icon: Ghost },
 ]
 
 /**

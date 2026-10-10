@@ -12,9 +12,26 @@ services:
     container_name: ai-avatar-backend
     ports:
       - "8080:8080"
+    # Load secrets (Gemini key, Gmail SMTP creds) straight from backend/.env.
+    # Values here are overridden by anything explicitly set in `environment:`.
+    env_file:
+      - ./backend/.env
     environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-default}
+      # Activate the Gemini image+text provider by default (the .env supplies
+      # the key). Override to `default` for offline/stub-only, or `falai` to
+      # use fal.ai instead. Setting a key alone does NOT flip the profile.
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-gemini}
       SERVER_PORT: 8080
+      # Outbound email (023/027) — pulled from ./backend/.env so the "email me
+      # my poster" button works. Blank values keep email on the graceful
+      # "not configured" path instead of erroring.
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST:-}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-587}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
+      AIAVATAR_EMAIL_FROM: ${AIAVATAR_EMAIL_FROM:-}
+      # Gemini text model override (the .env pins a key-compatible model).
+      GEMINI_TEXT_MODEL_ID: ${GEMINI_TEXT_MODEL_ID:-gemini-2.5-flash}
       # 003 Gemini image-generator envs — backend-only (FR-211: frontend MUST
       # NOT receive the key). Defaults mirror application.yml's so an unset
       # host variable never resolves to an empty string (which would then

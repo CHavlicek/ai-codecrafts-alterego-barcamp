@@ -120,28 +120,28 @@ describe('randomSelections', () => {
 
   test('022 — ARCHETYPE_OPTIONS exposes all 9 prefab values in stable order', () => {
     expect(ARCHETYPE_OPTIONS.map((o) => o.value)).toEqual([
-      'cloud-architect',
-      'backend-dev',
-      'frontend-dev',
-      'ai-engineer',
-      'platform-eng',
-      'data-engineer',
-      'hr',
-      'administration',
-      'customer-relations',
+      'software-developer',
+      'project-manager',
+      'data-analyst',
+      'marketing-specialist',
+      'sales-customer-relations',
+      'people-culture',
+      'operations-manager',
+      'finance-controller',
+      'sustainability-lead',
     ])
   })
 
-  test('022 — seeded RNG can pick every one of the nine archetypes (covers HR / Administration / Customer Relations)', () => {
+  test('022 — seeded RNG can pick every one of the nine archetypes (covers the three non-engineering roles)', () => {
     const seen = new Set<string>()
     for (let i = 0; i < 9; i++) {
       const seeded = () => (i + 0.5) / 9
       seen.add(randomSelections(seeded).archetype)
     }
     expect(seen.size).toBe(9)
-    expect(seen.has('hr')).toBe(true)
-    expect(seen.has('administration')).toBe(true)
-    expect(seen.has('customer-relations')).toBe(true)
+    expect(seen.has('people-culture')).toBe(true)
+    expect(seen.has('operations-manager')).toBe(true)
+    expect(seen.has('sales-customer-relations')).toBe(true)
   })
 
   test('022 — across 200 Math.random draws the three new options each appear at least once', () => {
@@ -149,9 +149,9 @@ describe('randomSelections', () => {
     for (let i = 0; i < 200; i++) {
       seen.add(randomSelections().archetype)
     }
-    expect(seen.has('hr')).toBe(true)
-    expect(seen.has('administration')).toBe(true)
-    expect(seen.has('customer-relations')).toBe(true)
+    expect(seen.has('people-culture')).toBe(true)
+    expect(seen.has('operations-manager')).toBe(true)
+    expect(seen.has('sales-customer-relations')).toBe(true)
   })
 
   test('022 — randomSelections never returns a customRole field (Surprise Me stays grounded in the prefab enum)', () => {

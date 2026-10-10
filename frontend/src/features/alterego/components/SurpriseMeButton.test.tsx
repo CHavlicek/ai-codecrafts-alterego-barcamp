@@ -73,7 +73,7 @@ describe('SurpriseMeButton', () => {
         session={session({
           photoBlob: samplePhoto(),
           firstName: 'Paula',
-          archetype: 'cloud-architect',
+          archetype: 'software-developer',
           artStyle: 'oil-painting',
         })}
         isSubmitting={false}

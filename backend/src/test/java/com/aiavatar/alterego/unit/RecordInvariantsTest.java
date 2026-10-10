@@ -83,7 +83,7 @@ class RecordInvariantsTest {
     @Test
     void alterEgoRequestWithTrimmedFirstNameReturnsIdentityWhenAlreadyTrimmed() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
         assertSame(req, req.withTrimmedFirstName());
     }
 
@@ -91,7 +91,7 @@ class RecordInvariantsTest {
     void alterEgoRequestWithTrimmedFirstNamePreservesNullSafelyOnNonStringFields() {
         // Null firstName short-circuits before touching trim().
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, null, null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, null, null);
         assertSame(req, req.withTrimmedFirstName());
     }
 
@@ -101,16 +101,16 @@ class RecordInvariantsTest {
         // layer; domain default for downstream consumers is SINGLE. All
         // prompt-builder / integration code MUST funnel through this accessor.
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
         assertEquals(PhotoMode.SINGLE, req.effectivePhotoMode());
     }
 
     @Test
     void alterEgoRequestEffectivePhotoModeEchoesFieldWhenSet() {
         AlterEgoRequest single = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.SINGLE);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", PhotoMode.SINGLE);
         AlterEgoRequest group = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "The Architects", PhotoMode.GROUP);
         assertEquals(PhotoMode.SINGLE, single.effectivePhotoMode());
         assertEquals(PhotoMode.GROUP, group.effectivePhotoMode());
     }
@@ -118,7 +118,7 @@ class RecordInvariantsTest {
     @Test
     void alterEgoRequestWithTrimmedFirstNamePreservesPhotoMode() {
         AlterEgoRequest req = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "  Paula  ", PhotoMode.GROUP);
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "  Paula  ", PhotoMode.GROUP);
         AlterEgoRequest trimmed = req.withTrimmedFirstName();
         assertEquals("Paula", trimmed.firstName());
         assertEquals(PhotoMode.GROUP, trimmed.photoMode());

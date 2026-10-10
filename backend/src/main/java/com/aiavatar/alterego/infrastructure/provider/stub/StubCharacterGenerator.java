@@ -97,10 +97,16 @@ public class StubCharacterGenerator implements CharacterGeneratorPort {
         }
     }
 
+    // 029 — accent/variant-key default when the user supplied a custom role
+    // (archetype null on the wire). Keeps the stub path deterministic and
+    // NPE-free; the role-of-record shown/prompted is still the custom string.
+    private static final Archetype CUSTOM_ROLE_VARIANT_DEFAULT = Archetype.SOFTWARE_DEVELOPER;
+
     @Override
     public GeneratedCharacter generate(AlterEgoRequest request) {
         AlterEgoRequest req = request.withTrimmedFirstName();
-        List<CharacterVariant> archetypeVariants = variants.get(req.archetype());
+        Archetype variantKey = req.archetype() != null ? req.archetype() : CUSTOM_ROLE_VARIANT_DEFAULT;
+        List<CharacterVariant> archetypeVariants = variants.get(variantKey);
         // Loaded eagerly; a missing archetype here means a configuration bug, not a runtime miss.
         int idx = pickIndex(req, archetypeVariants.size());
         CharacterVariant pick = archetypeVariants.get(idx);
@@ -130,9 +136,18 @@ public class StubCharacterGenerator implements CharacterGeneratorPort {
     private static int pickIndex(AlterEgoRequest req, int variantCount) {
         try {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
+            // 029 — archetype + universe may be null (custom role / custom
+            // universe). Fold the custom strings into the hash key so distinct
+            // custom values still spread across variants deterministically.
+            String archetypeKey = req.archetype() != null
+                    ? req.archetype().wire()
+                    : "custom:" + (req.customRole() == null ? "" : req.customRole().trim());
+            String universeKey = req.universe() != null
+                    ? req.universe().wire()
+                    : "custom:" + (req.customUniverse() == null ? "" : req.customUniverse().trim());
             String key = req.pose().wire() + "|"
-                    + req.archetype().wire() + "|"
-                    + req.universe().wire() + "|"
+                    + archetypeKey + "|"
+                    + universeKey + "|"
                     + (req.vibe() == null ? "" : req.vibe().wire()) + "|"
                     + req.firstName();
             byte[] hash = sha.digest(key.getBytes(StandardCharsets.UTF_8));

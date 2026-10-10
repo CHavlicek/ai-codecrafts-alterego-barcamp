@@ -31,7 +31,7 @@ vi.mock('../services/alterEgoClient', () => ({
 }))
 
 const sampleSelections: Selections = {
-  archetype: 'cloud-architect',
+  archetype: 'software-developer',
   universe: 'star-wars',
   artStyle: 'oil-painting',
   photoMode: 'single',
@@ -371,8 +371,11 @@ describe('useGenerateAlterEgo', () => {
       const { result } = renderHook(useTestHook, { wrapper })
       const photo = new Blob([new Uint8Array([1])], { type: 'image/jpeg' })
 
-      result.current.session.dispatch({ type: 'ArchetypeSelected', archetype: 'cloud-architect' })
-      await waitFor(() => expect(result.current.session.state.archetype).toBe('cloud-architect'))
+      result.current.session.dispatch({
+        type: 'ArchetypeSelected',
+        archetype: 'software-developer',
+      })
+      await waitFor(() => expect(result.current.session.state.archetype).toBe('software-developer'))
 
       result.current.mutation.surprise({
         photoBlob: photo,
@@ -382,10 +385,10 @@ describe('useGenerateAlterEgo', () => {
 
       await waitFor(() => expect(generateAlterEgoMock).toHaveBeenCalledTimes(1))
       const arg = generateAlterEgoMock.mock.calls[0]![0]
-      expect(arg.selections.archetype).toBe('cloud-architect')
+      expect(arg.selections.archetype).toBe('software-developer')
       expect(UNIVERSE_OPTIONS.map((o) => o.value)).toContain(arg.selections.universe)
       expect(ART_STYLE_OPTIONS.map((o) => o.value)).toContain(arg.selections.artStyle)
-      expect(result.current.session.state.archetype).toBe('cloud-architect')
+      expect(result.current.session.state.archetype).toBe('software-developer')
     })
 
     test('028 US1 — multiple explicit categories all pass through unchanged (FR-2805)', async () => {
@@ -393,9 +396,9 @@ describe('useGenerateAlterEgo', () => {
       const { result } = renderHook(useTestHook, { wrapper })
       const photo = new Blob([new Uint8Array([1])], { type: 'image/jpeg' })
 
-      result.current.session.dispatch({ type: 'UniverseSelected', universe: 'cyberpunk' })
+      result.current.session.dispatch({ type: 'UniverseSelected', universe: 'retro-synthwave' })
       result.current.session.dispatch({ type: 'ArtStyleSelected', artStyle: 'pop-art' })
-      await waitFor(() => expect(result.current.session.state.universe).toBe('cyberpunk'))
+      await waitFor(() => expect(result.current.session.state.universe).toBe('retro-synthwave'))
       await waitFor(() => expect(result.current.session.state.artStyle).toBe('pop-art'))
 
       result.current.mutation.surprise({
@@ -406,7 +409,7 @@ describe('useGenerateAlterEgo', () => {
 
       await waitFor(() => expect(generateAlterEgoMock).toHaveBeenCalledTimes(1))
       const arg = generateAlterEgoMock.mock.calls[0]![0]
-      expect(arg.selections.universe).toBe('cyberpunk')
+      expect(arg.selections.universe).toBe('retro-synthwave')
       expect(arg.selections.artStyle).toBe('pop-art')
       // Only the still-empty archetype slot gets a rolled value.
       expect(ARCHETYPE_OPTIONS.map((o) => o.value)).toContain(arg.selections.archetype)
@@ -450,7 +453,10 @@ describe('useGenerateAlterEgo', () => {
       const { result } = renderHook(useTestHook, { wrapper })
       const photo = new Blob([new Uint8Array([1])], { type: 'image/jpeg' })
 
-      result.current.session.dispatch({ type: 'ArchetypeSelected', archetype: 'cloud-architect' })
+      result.current.session.dispatch({
+        type: 'ArchetypeSelected',
+        archetype: 'software-developer',
+      })
       result.current.session.dispatch({ type: 'UniverseSelected', universe: 'star-wars' })
       result.current.session.dispatch({ type: 'ArtStyleSelected', artStyle: 'oil-painting' })
       await waitFor(() => expect(result.current.session.state.artStyle).toBe('oil-painting'))
@@ -463,7 +469,7 @@ describe('useGenerateAlterEgo', () => {
 
       await waitFor(() => expect(generateAlterEgoMock).toHaveBeenCalledTimes(1))
       const arg = generateAlterEgoMock.mock.calls[0]![0]
-      expect(arg.selections.archetype).toBe('cloud-architect')
+      expect(arg.selections.archetype).toBe('software-developer')
       expect(arg.selections.universe).toBe('star-wars')
       expect(arg.selections.artStyle).toBe('oil-painting')
     })

@@ -77,14 +77,18 @@ function buildMultipartBody(photoBlob: Blob, selections: Selections): FormData {
  */
 function serialiseSelections(selections: Selections): Record<string, unknown> {
   const trimmedCustom = selections.customRole?.trim() ?? ''
+  const trimmedCustomUniverse = selections.customUniverse?.trim() ?? ''
   const wire: Record<string, unknown> = {
-    universe: selections.universe,
     artStyle: selections.artStyle,
     photoMode: selections.photoMode,
     firstName: selections.firstName,
   }
   if (selections.archetype != null) wire.archetype = selections.archetype
   if (trimmedCustom.length > 0) wire.customRole = trimmedCustom
+  // 029: mirror the custom-Role wire shape for Universe. Omit `universe`
+  // when null (custom supplied); include `customUniverse` only when non-blank.
+  if (selections.universe != null) wire.universe = selections.universe
+  if (trimmedCustomUniverse.length > 0) wire.customUniverse = trimmedCustomUniverse
   return wire
 }
 

@@ -2,6 +2,7 @@ package com.aiavatar.alterego.infrastructure.provider.falai;
 
 import com.aiavatar.alterego.domain.model.AlterEgoRequest;
 import com.aiavatar.alterego.domain.prompt.RoleOfRecord;
+import com.aiavatar.alterego.domain.prompt.UniverseOfRecord;
 import com.aiavatar.alterego.domain.model.Archetype;
 import com.aiavatar.alterego.domain.model.ArtStyle;
 import com.aiavatar.alterego.domain.model.PhotoMode;
@@ -44,29 +45,25 @@ public class FalAiPromptBuilder {
         POSE_LABELS.put(Pose.MYSTICAL, "mystical, ethereal");
         POSE_LABELS.put(Pose.SCHOLAR, "scholarly, thoughtful");
 
-        // 021 (issue #54): role labels forked from GeminiCharacterPromptBuilder.ROLE_LABELS
-        // (016 R11 "fork rather than share") so this builder can diverge
-        // independently from the Gemini image builder and the bio prompt.
-        // Today the three label sets are identical — see
-        // specs/021-engineer-role-prompt/data-model.md.
-        ROLE_LABELS.put(Archetype.CLOUD_ARCHITECT, "Cloud Architect");
-        ROLE_LABELS.put(Archetype.BACKEND_DEV, "Backend Developer");
-        ROLE_LABELS.put(Archetype.FRONTEND_DEV, "Frontend Developer");
-        ROLE_LABELS.put(Archetype.AI_ENGINEER, "AI Engineer");
-        ROLE_LABELS.put(Archetype.PLATFORM_ENG, "Platform Engineer");
-        ROLE_LABELS.put(Archetype.DATA_ENGINEER, "Data Engineer");
-        // 022 (issue #50) — non-engineering prefab options forked from
+        // 029 (verbund-rebrand): corporate role vocabulary, forked from
         // GeminiPromptBuilder.ROLE_LABELS per 016 R11 ("fork rather than share").
-        ROLE_LABELS.put(Archetype.HR, "Human Resources");
-        ROLE_LABELS.put(Archetype.ADMINISTRATION, "Administration / Operations");
-        ROLE_LABELS.put(Archetype.CUSTOMER_RELATIONS, "Customer Relations / Support");
+        ROLE_LABELS.put(Archetype.SOFTWARE_DEVELOPER, "Software Developer");
+        ROLE_LABELS.put(Archetype.PROJECT_MANAGER, "Project Manager");
+        ROLE_LABELS.put(Archetype.DATA_ANALYST, "Data Analyst");
+        ROLE_LABELS.put(Archetype.MARKETING_SPECIALIST, "Marketing & Communications Specialist");
+        ROLE_LABELS.put(Archetype.SALES_CUSTOMER_RELATIONS, "Sales & Customer Relations");
+        ROLE_LABELS.put(Archetype.PEOPLE_CULTURE, "People & Culture (HR)");
+        ROLE_LABELS.put(Archetype.OPERATIONS_MANAGER, "Operations Manager");
+        ROLE_LABELS.put(Archetype.FINANCE_CONTROLLER, "Finance & Controlling");
+        ROLE_LABELS.put(Archetype.SUSTAINABILITY_LEAD, "Sustainability & Energy-Transition Lead");
 
+        // 029 — broadly recognisable 80s/90s/2000s pop-culture aesthetics.
         UNIVERSE_LABELS.put(Universe.MARVEL, "Marvel superhero universe");
         UNIVERSE_LABELS.put(Universe.STAR_WARS, "Star Wars");
-        UNIVERSE_LABELS.put(Universe.CYBERPUNK, "Cyberpunk neo-noir");
-        UNIVERSE_LABELS.put(Universe.THE_OFFICE, "The Office sitcom");
-        UNIVERSE_LABELS.put(Universe.INDIANA_JONES, "Indiana Jones adventure");
-        UNIVERSE_LABELS.put(Universe.LORD_OF_THE_RINGS, "Lord of the Rings");
+        UNIVERSE_LABELS.put(Universe.RETRO_SYNTHWAVE, "1980s Miami Vice, pastel neon, palm trees and chrome");
+        UNIVERSE_LABELS.put(Universe.NINETIES_SITCOM, "The Office, a warm, bright mockumentary workplace sitcom set");
+        UNIVERSE_LABELS.put(Universe.SPY_THRILLER, "a sleek, glamorous James Bond spy thriller, adventurous and suave");
+        UNIVERSE_LABELS.put(Universe.GHOSTBUSTERS, "playful 1980s Ghostbusters adventure");
 
         VIBE_LABELS.put(Vibe.BUILDER, "builder / tinkerer");
         VIBE_LABELS.put(Vibe.THINKER, "thinker / strategist");
@@ -100,32 +97,40 @@ public class FalAiPromptBuilder {
 
     private String buildSingle(AlterEgoRequest request) {
         StringBuilder sb = new StringBuilder(768);
-        sb.append("Edit the reference photo to render the person as their alter ego.\n\n");
+        sb.append("Edit the reference photo to render the person as an uplifting alter ego ")
+                .append("for a hopeful, innovation-driven future.\n\n");
         sb.append("The subject's face, hair, skin tone, approximate age, and general build ")
                 .append("MUST closely match the reference photo. ")
-                .append("Render the subject as an alter ego with the following attributes:\n\n");
+                .append("Render the subject as an optimistic, forward-looking alter ego with the following attributes:\n\n");
         appendCategoryLines(sb, request);
         sb.append("\nComposition notes:\n");
-        sb.append("- Portrait orientation, 3:4 aspect ratio, dramatic rim lighting.\n");
+        sb.append("- Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subject.\n");
+        sb.append("- Overall mood: hopeful, positive and forward-looking, but it need not be earnest — the image can be playful, tongue-in-cheek and humorous, having fun with the theme and not taking itself too seriously. The subject looks confident and inspired, like someone helping build a brighter, more sustainable tomorrow.\n");
+        sb.append("- Adapt the mood to the chosen universe / aesthetic: fully embrace its signature look and energy even when it is moodier, edgier or more conflict-driven (e.g. neon-noir Miami Vice, a tense spy thriller). Lean into that atmosphere with confidence and wit while keeping the underlying spirit optimistic and fun — never bleak, grim or hopeless.\n");
+        sb.append("- Background: lean bright, clean and airy where the universe allows — a light, luminous setting leaning toward whites, soft blues and cool daylight tones — but let the chosen aesthetic drive the palette when it calls for something richer or moodier. Weave in subtle hints of renewable-energy optimism where they fit the scene naturally: open sky, sunlight, greenery, clean-energy motifs and especially hydropower (flowing water, rivers, dams, reservoirs and turbines — Verbund produces most of its energy from hydropower). Prefer light, open scenes over gloomy, murky or heavily shadowed ones so the poster stays inviting.\n");
         sb.append("- Clear focus on the subject; the universe aesthetic is the setting, not the subject.\n");
-        sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the engineering-role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");
+        sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");
         return sb.toString();
     }
 
     private String buildGroup(AlterEgoRequest request) {
         StringBuilder sb = new StringBuilder(896);
-        sb.append("Edit the reference photo to render every person as the same alter ego.\n\n");
+        sb.append("Edit the reference photo to render every person as an uplifting alter ego ")
+                .append("for a hopeful, innovation-driven future.\n\n");
         sb.append("Render EVERY person visible in the reference photo as the same alter ego. ")
                 .append("Each person's appearance (face, hair, skin tone, approximate age, general build) ")
                 .append("MUST closely match their own face in the reference photo. ")
                 .append("Do NOT invent additional people who are not in the reference photo. ")
-                .append("Apply the same attributes uniformly to every person:\n\n");
+                .append("Apply the same optimistic, forward-looking attributes uniformly to every person:\n\n");
         appendCategoryLines(sb, request);
         sb.append("\nComposition notes:\n");
-        sb.append("- Portrait orientation, 3:4 aspect ratio, dramatic rim lighting.\n");
+        sb.append("- Portrait orientation, 3:4 aspect ratio, bright rim lighting on the subjects.\n");
+        sb.append("- Overall mood: hopeful, positive and forward-looking, but it need not be earnest — the image can be playful, tongue-in-cheek and humorous, having fun with the theme and not taking itself too seriously. The subjects look confident and inspired, like a team helping build a brighter, more sustainable tomorrow.\n");
+        sb.append("- Adapt the mood to the chosen universe / aesthetic: fully embrace its signature look and energy even when it is moodier, edgier or more conflict-driven (e.g. neon-noir Miami Vice, a tense spy thriller). Lean into that atmosphere with confidence and wit while keeping the underlying spirit optimistic and fun — never bleak, grim or hopeless.\n");
+        sb.append("- Background: lean bright, clean and airy where the universe allows — a light, luminous setting leaning toward whites, soft blues and cool daylight tones — but let the chosen aesthetic drive the palette when it calls for something richer or moodier. Weave in subtle hints of renewable-energy optimism where they fit the scene naturally: open sky, sunlight, greenery, clean-energy motifs and especially hydropower (flowing water, rivers, dams, reservoirs and turbines — Verbund produces most of its energy from hydropower). Prefer light, open scenes over gloomy, murky or heavily shadowed ones so the poster stays inviting.\n");
         sb.append("- Clear focus on all subjects as a group; the universe aesthetic is the setting, not the subjects.\n");
         sb.append("- Arrange the group so every face is clearly visible.\n");
-        sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the engineering-role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");
+        sb.append("- ABSOLUTELY NO rendered text anywhere in the image: no name plates, no banners, no parchment scrolls, no signs, no captions, no watermarks, no logos, and NO transcribing the role label. The poster's text overlay is composited downstream — your job is the visual scene only.\n");
         return sb.toString();
     }
 
@@ -145,8 +150,8 @@ public class FalAiPromptBuilder {
      * {@code GeminiCharacterPromptBuilder.ROLE_LABELS} per 016 R11).
      */
     private static void appendCategoryLines(StringBuilder sb, AlterEgoRequest request) {
-        sb.append("- Fictional universe / aesthetic: ").append(label(UNIVERSE_LABELS, request.universe())).append('\n');
-        sb.append("- Engineering role (render as visual cues — props, environment, attire, activity — NOT as text): ")
+        sb.append("- Fictional universe / aesthetic: ").append(resolveUniverseLabel(request)).append('\n');
+        sb.append("- Professional role (render as uplifting visual cues — props, environment, attire, activity — NOT as text): ")
                 .append(resolveRoleLabel(request)).append('\n');
         sb.append("- Art style: ").append(label(ART_STYLE_LABELS, request.artStyle())).append('\n');
         sb.append("- Pose / stance: ").append(label(POSE_LABELS, request.pose())).append('\n');
@@ -171,5 +176,18 @@ public class FalAiPromptBuilder {
         return request.archetype() != null
                 ? label(ROLE_LABELS, request.archetype())
                 : RoleOfRecord.from(request).value();
+    }
+
+    /**
+     * 029 — resolves the universe string for the prompt. A non-blank
+     * {@code customUniverse} takes precedence over the prefab universe's label.
+     */
+    private static String resolveUniverseLabel(AlterEgoRequest request) {
+        if (request.customUniverse() != null && !request.customUniverse().isBlank()) {
+            return request.customUniverse().trim();
+        }
+        return request.universe() != null
+                ? label(UNIVERSE_LABELS, request.universe())
+                : UniverseOfRecord.from(request).value();
     }
 }

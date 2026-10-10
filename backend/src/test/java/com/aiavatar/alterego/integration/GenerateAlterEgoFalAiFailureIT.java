@@ -204,7 +204,7 @@ class GenerateAlterEgoFalAiFailureIT {
 
     private void assertFallback(FallbackReason expectedReason) {
         AlterEgoRequest selections = new AlterEgoRequest(
-                Pose.HEROIC, Archetype.CLOUD_ARCHITECT, Universe.STAR_WARS,
+                Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER, Universe.STAR_WARS,
                 Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
 
         ResponseEntity<AlterEgoResponse> response = restTemplate.exchange(

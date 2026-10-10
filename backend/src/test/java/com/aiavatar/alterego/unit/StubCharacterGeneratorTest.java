@@ -37,7 +37,7 @@ class StubCharacterGeneratorTest {
 
     @Test
     void sameInputProducesSameOutput() {
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         GeneratedCharacter a = generator.generate(req);
         GeneratedCharacter b = generator.generate(req);
@@ -46,14 +46,14 @@ class StubCharacterGeneratorTest {
 
     @Test
     void firstNameIsUppercasedIntoHeroTitleLine1() {
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "paula", null);
         assertEquals("PAULA", generator.generate(req).heroTitleLine1());
     }
 
     @Test
     void firstNameIsTrimmedBeforeUppercasing() {
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "  Paula  ", null);
         assertEquals("PAULA", generator.generate(req).heroTitleLine1());
     }
@@ -62,7 +62,7 @@ class StubCharacterGeneratorTest {
     void differentFirstNamesPickDifferentVariants() {
         Set<String> distinctTitles = new HashSet<>();
         for (int i = 0; i < 30; i++) {
-            AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+            AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                     Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "name" + i, null);
             distinctTitles.add(generator.generate(req).heroTitleLine2());
         }
@@ -72,9 +72,9 @@ class StubCharacterGeneratorTest {
 
     @Test
     void vibePresenceTiltsTitleLine2() {
-        AlterEgoRequest withoutVibe = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest withoutVibe = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, null, ArtStyle.OIL_PAINTING, "Paula", null);
-        AlterEgoRequest withVibe = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest withVibe = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 Universe.STAR_WARS, Vibe.REBEL, ArtStyle.OIL_PAINTING, "Paula", null);
         // The hash bucket MAY be the same (vibe changes the key), but in either case
         // the presence of a vibe should prepend its label to line 2.
@@ -105,7 +105,7 @@ class StubCharacterGeneratorTest {
     @ParameterizedTest
     @EnumSource(Universe.class)
     void everyUniverseProducesWellFormedOutput(Universe universe) {
-        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.CLOUD_ARCHITECT,
+        AlterEgoRequest req = new AlterEgoRequest(Pose.HEROIC, Archetype.SOFTWARE_DEVELOPER,
                 universe, null, ArtStyle.OIL_PAINTING, "Paula", null);
         GeneratedCharacter character = generator.generate(req);
         assertNotNull(character.heroTitleLine2());
